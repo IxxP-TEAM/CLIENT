@@ -25,9 +25,7 @@ jobs:
         run: npm install
 
       - name: Build the project
-        run: npm run build
+        run: npm run build  # Vue.js 프로젝트 빌드
 
-      - name: Deploy to Cloudflare Pages
-        run: |
-          npx @cloudflare/cli pages deploy dist --project client --branch main --token ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
+      - name: Install Wrangler
+        run: npm install -g wrangler  # wrangler 설치
