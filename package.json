@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp -r dist/* ../backend/src/main/resources/static/",
+    "build": "vite build && cp -r dist/* /Users/songjuhee/Downloads/demo 3/src/main/resources/static",
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
