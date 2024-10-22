@@ -1,9 +1,24 @@
 <script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true,
-  },
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+// msg 값을 API로부터 받아서 업데이트할 수 있도록 ref 사용
+const msg = ref('')
+
+// API 호출하여 데이터 가져오기
+const fetchMessage = async () => {
+  try {
+    const response = await axios.get('/api/hello')
+    msg.value = response.data  // API 응답을 msg에 할당
+  } catch (error) {
+    console.error('Error fetching message:', error)
+    msg.value = 'Error fetching message'
+  }
+}
+
+// 컴포넌트가 마운트될 때 API 호출
+onMounted(() => {
+  fetchMessage()
 })
 </script>
 
