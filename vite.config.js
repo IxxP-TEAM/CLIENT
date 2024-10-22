@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   build:{
-    outDir: "../"  //backend 위치
+    outDir: 'dist',  //backend 위치
   },
   server: {
     proxy: {
