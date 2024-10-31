@@ -103,7 +103,11 @@ export default {
         this.closeModal();
       } catch (error) {
         console.error(error);
+        if (error.response && error.response.data && error.response.data.message) {
+          this.responseMessage = error.response.data.message;  
+        } else {
         this.responseMessage = '회원가입 실패';
+        }
       }
     },
     closeSuccessModal() {
