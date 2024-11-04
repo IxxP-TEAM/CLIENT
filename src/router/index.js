@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import EmployeeList from '@/components/admin/EmployeeList.vue'
+import Login from '@/components/Login.vue'
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
 
@@ -10,8 +11,13 @@ const router = createRouter({
       path: "/empList",
       name: 'empList',
       component: EmployeeList,
+      meta: { requiresAuth: true },
     },
-    
+    {
+      path: "/login",
+      name: 'login',
+      component: Login
+    },  
     //고객사 등록
     {
       path: '/register-customer',
@@ -40,6 +46,5 @@ router.beforeEach((to, from, next) => {
     next(); // 인증된 경우 또는 인증이 필요 없는 페이지는 계속 진행
   }
 });
-
 
 export default router

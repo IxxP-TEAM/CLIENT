@@ -16,22 +16,22 @@
 import EmployeeModal from './EmployeeModal.vue';
 
 export default {
-  components: {
-    EmployeeModal,
-  },
-  data() {
-    return {
-      isModalVisible: false,
-      employees: [], // 실제 직원 목록은 API를 통해 가져와야 함
-    };
-  },
-  methods: {
-    openModal() {
-      this.isModalVisible = true;
+    components: {
+        EmployeeModal,
     },
-    closeModal() {
-      this.isModalVisible = false;
+    data() {
+        return {
+        isModalVisible: false,
+        employees: [], // 실제 직원 목록은 API를 통해 가져와야 함
+        };
+    },
+    methods: {
+        openModal() {
+        this.isModalVisible = true;
+        },
+        closeModal() {
+        this.isModalVisible = false;
+        }
     }
-  }
 };
 </script>
