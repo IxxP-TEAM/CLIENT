@@ -5,4 +5,10 @@ export default {
   registerUser(userData) {
     return api.post('/admin/join', userData);
   },
+
+    // 고객사 등록 요청
+    createCustomer(customerData) {
+      return api.post('/customer/create', customerData);
+    },
+    
 };
