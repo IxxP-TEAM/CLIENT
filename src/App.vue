@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
+import Sidebar from './components/Sidebar.vue'; 
 </script>
 
 <template>
@@ -8,6 +9,12 @@ import Header from './components/Header.vue';
   <main class="content">
     <RouterView />
   </main>
+  <div class="app-container">
+    <Sidebar />
+    <main class="content">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>
@@ -16,16 +23,25 @@ header {
   max-height: 100vh;
 }
 
+.app-container {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
 .logo {
   display: block;
   margin: 0 auto 2rem;
 }
 
 nav {
-  width: 100%;
   font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+  text-align: left;
 }
 
 nav a.router-link-exact-active {
@@ -37,19 +53,20 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
 }
 
-nav a:first-of-type {
-  border: 0;
+nav a:hover {
+  background-color: #ddd;
 }
 
 .content {
-  padding-top: 60px;
-  margin: 0 auto;
-  max-width: 1200px;
+  padding: 2rem;
+  flex: 1;
+  max-width: calc(100% - 250px);
 }
 
 @media (min-width: 1024px) {
@@ -70,12 +87,7 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
     font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
   }
 }
 </style>
