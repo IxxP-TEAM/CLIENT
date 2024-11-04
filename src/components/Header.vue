@@ -15,6 +15,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* 다른 요소보다 위에 표시 */
+  z-index: 1000;
 }
 </style>

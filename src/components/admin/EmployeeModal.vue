@@ -11,10 +11,7 @@
         <input type="text" v-model="formData.name" required />
 
         <label for="address">주소 </label>
-        <input type="text" v-model="formData.address.zipCode" placeholder="우편번호" required /> <br>
-        <input type="text" v-model="formData.address.state" placeholder="도"/> <br>
-        <input type="text" v-model="formData.address.city" placeholder="시" /> <br>
-        <input type="text" v-model="formData.address.street" placeholder="상세주소" required />
+        <input type="text" v-model="formData.address" placeholder="우편번호" required />
 
         <label for="department">부서</label>
         <select v-model="formData.department" required >
@@ -39,7 +36,10 @@
         <input type="date" v-model="formData.hireDate" required />
 
         <label for="jobTitle">직책</label>
-        <input type="text" v-model="formData.jobTitle" required />
+        <select type="text" v-model="formData.jobTitle" required >
+          <option value="사원">사원</option>
+          <option value="대표">대표</option>
+        </select>
 
         <label for="userStatus">상태</label>
         <select v-model="formData.userStatus" required>
@@ -81,12 +81,7 @@ export default {
       formData: {
         email: '',
         name: '',
-        address: {
-          street: '',
-          city: '',
-          state: '',
-          zipCode: '',
-        },
+        address: '',
         birth: '',
         userPhone: '',
         hireDate: '',
@@ -108,7 +103,11 @@ export default {
         this.closeModal();
       } catch (error) {
         console.error(error);
+        if (error.response && error.response.data && error.response.data.message) {
+          this.responseMessage = error.response.data.message;  
+        } else {
         this.responseMessage = '회원가입 실패';
+        }
       }
     },
     closeSuccessModal() {
