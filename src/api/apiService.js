@@ -5,4 +5,8 @@ export default {
   registerUser(userData) {
     return api.post('/admin/join', userData);
   },
+
+  login(userData) {
+    return api.get('/users/login', userData);
+  }
 };
