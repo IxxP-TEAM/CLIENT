@@ -23,14 +23,15 @@ const router = createRouter({
       path: '/register-customer',
       name: 'RegisterCustomer',
       component: CustomerForm,
+      meta: { requiresAuth: true },
     },
     
     //고객사 목록
     {
       path: '/customer-list',
       name: 'CustomerList',
-      component: CustomerList
-      
+      component: CustomerList,
+      meta: { requiresAuth: true },
     }  
   ],
 })

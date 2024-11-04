@@ -2,19 +2,13 @@
 import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue'; 
+
 </script>
 
 <template>
   <Header />
-  <main class="content">
-    <RouterView />
-  </main>
-  <div class="app-container">
-    <Sidebar />
-    <main class="content">
-      <RouterView />
-    </main>
-  </div>
+  <Sidebar />
+  <RouterView />
 </template>
 
 <style scoped>
