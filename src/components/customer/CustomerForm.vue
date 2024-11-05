@@ -74,9 +74,17 @@ export default {
   },
   data() {
     return {
-      formData: { ...this.customerData }, // formData 초기화
+      formData: {}, // formData를 빈 객체로 초기화
       message: '',
     };
+  },
+  mounted() {
+    // 등록과 수정 모드에 따라 formData 초기화
+    if (this.isEditMode) {
+      this.formData = { ...this.customerData }; // 수정 모드일 때, customerData를 복사
+    } else {
+      this.resetFormData(); // 등록 모드일 때, formData를 빈 필드로 설정
+    }
   },
   methods: {
     async handleSubmit() {
@@ -90,7 +98,7 @@ export default {
           await apiService.createCustomer(this.formData);
           this.message = '등록 성공';
         }
-        this.$emit('registered');
+        this.$emit('registered'); // 부모 컴포넌트로 이벤트 전송
         this.close();
       } catch (error) {
         console.error("오류:", error);
@@ -99,10 +107,37 @@ export default {
     },
     close() {
       this.$emit('close');
+      this.resetFormData(); // 모달을 닫을 때 formData를 리셋
+    },
+    resetFormData() {
+      // formData를 초기화하여 등록 모드로 설정
+      this.formData = {
+        customerName: '',
+        customerPhone: '',
+        customerAddress: '',
+        customerAdddetail: '',
+        customerPersonName: '',
+        customerPersonPhone: '',
+        customerPersonEmail: '',
+        registrationNumber: '',
+        customerStatus: 'ACTIVE',
+        customerSdate: '',
+      };
+    },
+  },
+  watch: {
+    isEditMode(newVal) {
+      // isEditMode가 바뀔 때마다 formData를 업데이트
+      if (newVal) {
+        this.formData = { ...this.customerData };
+      } else {
+        this.resetFormData();
+      }
     },
   },
 };
 </script>
+
 
 <style scoped>
 .modal-overlay {
