@@ -7,7 +7,7 @@ export default {
   },
 
   login(userData) {
-    return api.get('/users/login', userData);
+    return api.post('/users/login', userData);
   },
     // 고객사 등록 요청
     createCustomer(customerData) {
