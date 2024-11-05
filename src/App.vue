@@ -1,14 +1,16 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
-import EmployeeList from './components/admin/EmployeeList.vue';
+// import EmployeeList from './components/admin/EmployeeList.vue';
+// import ProductList from './components/product/ProductList.vue';
 </script>
 
 <template>
   <Header />
   <main class="content">
-    <EmployeeList />
+    <!-- <EmployeeList /> -->
     <RouterView />
+    <!-- <ProductList/> -->
   </main>
 </template>
 
