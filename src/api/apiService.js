@@ -5,7 +5,7 @@ export default {
   registerUser(userData) {
     return api.post('/admin/join', userData);
   },
-  
+
   // 제품 목록 조회 요청
   getProductList() {
     return api.get('/products');
@@ -13,15 +13,15 @@ export default {
 
   // 제품 등록 요청
   createProduct(productData) {
-    return api.post('/products/create', productData); 
+    return api.post('/products/create', productData);
   },
 
   // 제품 삭제 요청
   deleteProduct(productId) {
-    return api.delete(`/products/delete/${productId}`);  
+    return api.delete(`/products/delete/${productId}`);
   },
 
-   // 제품 검색 요청
+  // 제품 검색 요청
   searchProducts(name) {
     return api.get(`/products/search`, {
       params: { name },
@@ -32,6 +32,14 @@ export default {
   updateProduct(productId, updatedData) {
     return api.post(`/products/update/${productId}`, updatedData);
   },
-
+  
+  // 고객사 등록 요청
+  createCustomer(customerData) {
+    return api.post('/customer/create', customerData);
+  },
 
 };
+
+
+
+

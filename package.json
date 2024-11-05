@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
+<<<<<<< HEAD
     "frontend": "file:",
+=======
+>>>>>>> d9560b1fc654c3d704ff5c6c8a9d379ef0639f80
     "pinia": "^2.2.4",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
