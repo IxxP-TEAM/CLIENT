@@ -241,8 +241,18 @@ export default {
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow: auto; 
+  overflow-y: auto; /* 세로 스크롤 활성화 */
 }
+
+/* 스크롤바를 숨기기 위한 스타일 */
+.customer-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+.customer-list {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -327,4 +337,4 @@ th {
   font-weight: bold;
   color: #3f72af;
 }
-</style>
+</style> 

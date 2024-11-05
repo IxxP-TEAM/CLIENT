@@ -3,51 +3,130 @@
     <div class="modal-content">
       <h2>{{ isEditMode ? '고객사 수정' : '고객사 등록' }}</h2>
       <form @submit.prevent="handleSubmit" class="grid-form">
-        <!-- 각 필드를 표시 -->
+        <!-- 고객사 정보 필드 -->
         <div class="grid-item">
           <label for="customerName">고객사 이름</label>
-          <input v-model="formData.customerName" type="text" id="customerName" required />
+          <input
+            v-model="formData.customerName"
+            type="text"
+            id="customerName"
+            required
+          />
         </div>
         <div class="grid-item">
           <label for="customerPhone">고객사 전화번호</label>
-          <input v-model="formData.customerPhone" type="text" id="customerPhone" required />
+          <input
+            v-model="formData.customerPhone"
+            type="text"
+            id="customerPhone"
+            required
+          />
         </div>
         <div class="grid-item">
           <label for="customerAddress">고객사 주소</label>
-          <input v-model="formData.customerAddress" type="text" id="customerAddress" required />
+          <input
+            v-model="formData.customerAddress"
+            type="text"
+            id="customerAddress"
+            required
+          />
         </div>
         <div class="grid-item">
           <label for="customerAdddetail">고객사 상세주소</label>
-          <input v-model="formData.customerAdddetail" type="text" id="customerAdddetail" required />
+          <input
+            v-model="formData.customerAdddetail"
+            type="text"
+            id="customerAdddetail"
+            required
+          />
+        </div>
+
+        <div class="grid-item">
+          <label for="customerPersonName">고객사 담당자 이름</label>
+          <input
+            v-model="formData.customerPersonName"
+            type="text"
+            id="customerPersonName"
+            required
+          />
         </div>
         <div class="grid-item">
-          <label for="customerPersonName">담당자 이름</label>
-          <input v-model="formData.customerPersonName" type="text" id="customerPersonName" required />
+          <label for="customerPersonPhone">고객사 담당자 전화번호</label>
+          <input
+            v-model="formData.customerPersonPhone"
+            type="text"
+            id="customerPersonPhone"
+            required
+          />
         </div>
         <div class="grid-item">
-          <label for="customerPersonPhone">담당자 전화번호</label>
-          <input v-model="formData.customerPersonPhone" type="text" id="customerPersonPhone" required />
+          <label for="customerPersonEmail">고객사 담당자 이메일</label>
+          <input
+            v-model="formData.customerPersonEmail"
+            type="email"
+            id="customerPersonEmail"
+            required
+          />
         </div>
-        <div class="grid-item">
-          <label for="customerPersonEmail">담당자 이메일</label>
-          <input v-model="formData.customerPersonEmail" type="email" id="customerPersonEmail" required />
-        </div>
+
         <div class="grid-item">
           <label for="registrationNumber">사업자등록번호</label>
-          <input v-model="formData.registrationNumber" type="text" id="registrationNumber" required />
+          <input
+            v-model="formData.registrationNumber"
+            type="text"
+            id="registrationNumber"
+            required
+          />
         </div>
         <div class="grid-item">
           <label for="customerStatus">고객사 상태</label>
-          <select v-model="formData.customerStatus" id="customerStatus" required>
+          <select
+            v-model="formData.customerStatus"
+            id="customerStatus"
+            required
+          >
             <option value="ACTIVE">활성</option>
             <option value="INACTIVE">비활성</option>
           </select>
         </div>
         <div class="grid-item">
           <label for="customerSdate">고객사 시작일</label>
-          <input v-model="formData.customerSdate" type="date" id="customerSdate" required />
+          <input
+            v-model="formData.customerSdate"
+            type="date"
+            id="customerSdate"
+            required
+          />
         </div>
 
+        <!-- 고객사 메모 필드 추가 -->
+        <div class="grid-item full-width">
+          <label for="customerNote">고객사 메모</label>
+          <textarea
+            v-model="formData.customerNote"
+            id="customerNote"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <!-- 담당자 정보 -->
+        <div class="grid-item full-width">
+          <label for="userId">직원 인덱스</label>
+          <input
+            type="text"
+            v-model="userIdInput"
+            placeholder="유저 인덱스 입력"
+            @blur="fetchEmployeeName"
+          />
+          <p v-if="selectedEmployeeName">
+            선택된 직원 이름: {{ selectedEmployeeName }}
+          </p>
+          <p v-if="userNotFound" class="error-message">
+            해당 인덱스의 직원이 존재하지 않습니다.
+          </p>
+        </div>
+
+        <!-- 버튼 그룹 -->
         <div class="button-group">
           <button type="submit">{{ isEditMode ? '수정' : '등록' }}</button>
           <button type="button" @click="close">취소</button>
@@ -59,7 +138,7 @@
 </template>
 
 <script>
-import apiService from '@/api/apiService';
+import apiService from '@/api/apiService'
 
 export default {
   props: {
@@ -74,43 +153,47 @@ export default {
   },
   data() {
     return {
-      formData: {}, // formData를 빈 객체로 초기화
+      formData: {}, // formData 초기화
+      userIdInput: '', // 유저 인덱스 입력 필드
+      selectedEmployeeName: '', // 가져온 직원 이름
+      userNotFound: false, // 사용자가 존재하지 않는 경우를 표시
       message: '',
-    };
+    }
   },
   mounted() {
-    // 등록과 수정 모드에 따라 formData 초기화
     if (this.isEditMode) {
-      this.formData = { ...this.customerData }; // 수정 모드일 때, customerData를 복사
+      this.formData = { ...this.customerData }
     } else {
-      this.resetFormData(); // 등록 모드일 때, formData를 빈 필드로 설정
+      this.resetFormData()
     }
   },
   methods: {
     async handleSubmit() {
       try {
+        this.formData.userId = this.userIdInput // 유저 인덱스를 formData에 저장
+
         if (this.isEditMode) {
-          // 수정 모드일 때 API 호출
-          await apiService.updateCustomer(this.formData.customerId, this.formData);
-          this.message = '수정 성공';
+          await apiService.updateCustomer(
+            this.formData.customerId,
+            this.formData
+          )
+          this.message = '수정 성공'
         } else {
-          // 등록 모드일 때 API 호출
-          await apiService.createCustomer(this.formData);
-          this.message = '등록 성공';
+          await apiService.createCustomer(this.formData)
+          this.message = '등록 성공'
         }
-        this.$emit('registered'); // 부모 컴포넌트로 이벤트 전송
-        this.close();
+        this.$emit('registered') // 부모 컴포넌트로 이벤트 전송
+        this.close()
       } catch (error) {
-        console.error("오류:", error);
-        this.message = this.isEditMode ? '수정 실패' : '등록 실패';
+        console.error('오류:', error)
+        this.message = this.isEditMode ? '수정 실패' : '등록 실패'
       }
     },
     close() {
-      this.$emit('close');
-      this.resetFormData(); // 모달을 닫을 때 formData를 리셋
+      this.$emit('close')
+      this.resetFormData()
     },
     resetFormData() {
-      // formData를 초기화하여 등록 모드로 설정
       this.formData = {
         customerName: '',
         customerPhone: '',
@@ -122,22 +205,36 @@ export default {
         registrationNumber: '',
         customerStatus: 'ACTIVE',
         customerSdate: '',
-      };
+        customerNote: '',
+        userId: '', // 사용자 인덱스 초기화
+      }
+      this.userIdInput = ''
+      this.selectedEmployeeName = ''
+      this.userNotFound = false
+    },
+    async fetchEmployeeName() {
+      try {
+        const response = await apiService.getEmployeeById(this.userIdInput)
+        this.selectedEmployeeName = response.data.userName
+        this.userNotFound = false
+      } catch (error) {
+        console.error('해당 유저를 찾을 수 없음:', error)
+        this.selectedEmployeeName = ''
+        this.userNotFound = true
+      }
     },
   },
   watch: {
     isEditMode(newVal) {
-      // isEditMode가 바뀔 때마다 formData를 업데이트
       if (newVal) {
-        this.formData = { ...this.customerData };
+        this.formData = { ...this.customerData }
       } else {
-        this.resetFormData();
+        this.resetFormData()
       }
     },
   },
-};
+}
 </script>
-
 
 <style scoped>
 .modal-overlay {
@@ -157,13 +254,24 @@ export default {
   background: white;
   padding: 30px;
   border-radius: 8px;
-  width: 500px;
-  max-width: 90%;
+  width: 800px; /* 가로 너비 증가 */
+  max-width: 95%;
+  max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
+  overflow-y: auto; /* 스크롤 활성화 */
+}
+
+/* 스크롤바를 숨기기 위한 스타일 */
+.modal-content::-webkit-scrollbar {
+  display: none;
+}
+.modal-content {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .grid-form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr); /* 2열 레이아웃 */
   gap: 20px;
 }
 
@@ -172,45 +280,57 @@ export default {
   flex-direction: column;
 }
 
-.button-group {
+.full-width {
   grid-column: span 2;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+}
+
+.button-group {
+  grid-column: span 2; /* 버튼 그룹 전체 너비 차지 */
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 가운데 정렬 */
+  gap: 20px;
   margin-top: 20px;
 }
 
-input, select {
+input,
+select,
+textarea {
   padding: 12px;
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-button[type="submit"],
-button[type="button"] {
-  background-color: #3F72AF;
+button[type='submit'],
+button[type='button'] {
+  background-color: #3f72af;
   color: white;
   border: none;
   border-radius: 4px;
-  width: 48%;
+  width: 150px; /* 버튼 너비 고정 */
   padding: 12px;
   cursor: pointer;
 }
 
-button[type="button"] {
+button[type='button'] {
   background-color: #f44336;
 }
 
-button[type="submit"]:hover {
-  background-color: #3F72AF;
+button[type='submit']:hover {
+  background-color: #3f72af;
 }
 
-button[type="button"]:hover {
+button[type='button']:hover {
   background-color: #e53935;
 }
 
 .message {
-  color: #3F72AF;
+  color: #3f72af;
   margin-top: 15px;
   text-align: center;
 }
