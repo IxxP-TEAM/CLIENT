@@ -9,7 +9,7 @@
             <button type="submit">로그인</button>
         </form>
         <div class="find-pw">
-            <span>비밀번호 찾기</span>
+            <span @click="goToResetPassword">비밀번호 재설정</span>
         </div>
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
@@ -38,6 +38,9 @@ export default {
                 console.error(error);
             }
         },
+        goToResetPassword() {
+            this.$router.push('/resetPassword');
+        }
     },
 };
 </script>

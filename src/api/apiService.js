@@ -27,6 +27,17 @@ export default {
     // 고객사 수정 요청
     updateCustomer(customerId, updatedData) {
       return api.patch(`/customer/${customerId}`, updatedData); // 고객사 정보를 수정하는 API 엔드포인트 설정
-    }
+    },
     
+    // 비밀번호 - 이메일 인증 코드 요청
+    sendResetPassword(email) {
+      return api.post('/hr/email-code', { email });
+    },
+    
+    // 비밀번호 재설정
+    resetPassword(email, code, newPassword) {
+      return api.post(`/hr/reset-pw`, {email, code, newPassword});
+    }
+
+  
 };
