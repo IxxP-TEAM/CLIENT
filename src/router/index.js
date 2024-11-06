@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import EmployeeList from '@/components/admin/EmployeeList.vue'
+import EmployeeList from '@/components/employee/EmployeeList.vue'
 import Login from '@/components/Login.vue'
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
