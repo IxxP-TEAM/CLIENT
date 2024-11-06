@@ -6,24 +6,16 @@
         <input type="text" v-model="searchQuery" placeholder="이름으로 검색" @input="handleSearch" />
 
         <div class="filter-options">
-        <select v-model="selectedDepartment" @change="handleDepartmentChange">
-          <option value="">전체 부서</option>
-          <option v-for="department in departments" :key="department" :value="department">{{ department }}</option>
-        </select>
-
-        <button @click="openModal">직원 등록</button>
+          <select v-model="selectedDepartment" @change="handleDepartmentChange">
+            <option value="">전체 부서</option>
+            <option v-for="department in departments" :key="department" :value="department">{{ department }}</option>
+          </select>
         </div>
+        <button @click="openModal">직원 등록</button>
 
-        <employee-modal
-          :isVisible="isModalVisible"
-          :closeModal="closeModal"
-        />
-        <employee-detail-modal
-          v-if="isDetailModalVisible"
-          :isVisible="isDetailModalVisible"
-          :closeModal="closeDetailModal"
-          :user="selectedUser"
-        />
+        <employee-modal :isVisible="isModalVisible" :closeModal="closeModal" />
+        <employee-detail-modal v-if="isDetailModalVisible" :isVisible="isDetailModalVisible"
+          :closeModal="closeDetailModal" :user="selectedUser" />
       </div>
       <div class="table-container">
         <table>
@@ -42,9 +34,9 @@
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.department }}</td>
-              <td>{{ user.jobtitle }}</td>
+              <td>{{ user.jobTitle }}</td>
               <td>{{ user.userPhone }}</td>
-              <td>{{ user.status }}</td>
+              <td>{{ user.userStatus }}</td>
             </tr>
           </tbody>
         </table>
@@ -52,7 +44,8 @@
 
       <div class="pagination">
         <button @click="prevPage" :disabled="currentPage === 0">&lt;</button>
-        <span v-for="page in totalPages" :key="page" @click="setPage(page - 1)" :class="{ active: currentPage === page - 1 }">
+        <span v-for="page in totalPages" :key="page" @click="setPage(page - 1)"
+          :class="{ active: currentPage === page - 1 }">
           {{ page }}
         </span>
         <button @click="nextPage" :disabled="currentPage >= totalPages - 1">&gt;</button>
@@ -137,7 +130,7 @@ export default {
         const response = await api.get(`/hr/${userIdx}`);
         this.selectedUser = response.data.data;
         this.isDetailModalVisible = true;
-        console.log("userdetail" , response);
+        console.log("userdetail", response);
       } catch (error) {
         console.error("직원 상세 정보를 가져오는 데 오류가 발생했습니다.", error);
       }
@@ -174,14 +167,15 @@ export default {
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow: auto; 
+  overflow: auto;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
+  gap: 13px;
 }
 
 .header input[type="text"] {
@@ -205,11 +199,6 @@ export default {
   color: #333;
 }
 
-.header select option[value=""] {
-  color: #999;
-  font-weight: bold;
-}
-
 .header button {
   padding: 10px 20px;
   font-size: 16px;
@@ -218,6 +207,7 @@ export default {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-left: auto;
 }
 
 .table-container {
@@ -230,7 +220,8 @@ table {
   margin-bottom: 20px;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;

@@ -27,17 +27,23 @@
           <option value="생산3팀">생산3팀</option>
         </select>
 
+        <label for="birth">생년월일</label>
+        <input type="date" v-model="editableUser.birth" readonly />
+
         <label for="userPhone">전화번호</label>
         <input type="tel" v-model="editableUser.userPhone" required />
 
-        <label for="jobtitle">직책</label>
-        <select v-model="editableUser.jobtitle" required>
+        <label for="hireDate">입사일</label>
+        <input type="date" v-model="editableUser.hireDate" readonly />
+
+        <label for="jobTitle">직책</label>
+        <select v-model="editableUser.jobTitle" required>
           <option value="사원">사원</option>
           <option value="대표">대표</option>
         </select>
 
-        <label for="status">상태</label>
-        <select v-model="editableUser.status" required>
+        <label for="userStatus">상태</label>
+        <select v-model="editableUser.userStatus" required>
           <option value="재직">재직</option>
           <option value="퇴사">퇴사</option>
         </select>
@@ -53,9 +59,11 @@
         <p><strong>이름:</strong> {{ user.name }}</p>
         <p><strong>주소:</strong> {{ user.address }}</p>
         <p><strong>부서:</strong> {{ user.department }}</p>
+        <p><strong>생년월일:</strong> {{ user.birth }}</p>
         <p><strong>전화번호:</strong> {{ user.userPhone }}</p>
-        <p><strong>직책:</strong> {{ user.jobtitle }}</p>
-        <p><strong>상태:</strong> {{ user.status }}</p>
+        <p><strong>입사일:</strong> {{ user.hireDate }}</p>
+        <p><strong>직책:</strong> {{ user.jobTitle }}</p>
+        <p><strong>상태:</strong> {{ user.userStatus }}</p>
 
         <button @click="toggleEdit" class="edit-button">수정</button>
       </div>
@@ -78,7 +86,11 @@ export default {
   data() {
     return {
       isEditing: false,
-      editableUser: { ...this.user },
+      editableUser: {
+        ...this.user,
+        jobtitle: this.user.jobtitle,
+        status: this.user.status
+      },
       errorMessage: '',
       successMessage: ''
     };
@@ -89,12 +101,20 @@ export default {
     },
     async saveChanges() {
       try {
-        const response = await apiService.updateUser(this.editableUser);
-        console.log(response);
-        this.successMessage = '수정이 완료되었습니다.';
-        this.$emit('updateUser', this.editableUser);
-        this.isEditing = false;
-        this.closeModal();
+        const dataToSend = JSON.parse(JSON.stringify(this.editableUser));
+        console.log('저장할 데이터:', dataToSend);
+        const response = await apiService.updateUser(dataToSend);
+        console.log('응답 데이터:', response);
+
+        // 응답에서 message와 data 분리
+        if (response.data.code === "200") {
+          this.successMessage = response.data.message || '수정이 완료되었습니다.';
+          this.$emit('updateUser', this.editableUser); // 사용자 데이터 업데이트
+          this.isEditing = false;
+          this.closeModal();
+        } else {
+          this.errorMessage = '수정에 실패했습니다. 다시 시도해 주세요.';
+        }
       } catch (error) {
         this.errorMessage = '수정에 실패했습니다. 다시 시도해 주세요.';
         console.error(error);
