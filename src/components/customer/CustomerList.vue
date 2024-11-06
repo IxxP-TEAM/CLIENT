@@ -34,7 +34,9 @@
             <td>{{ customer.customerPhone }}</td>
             <td>{{ customer.customerPersonName }}</td>
             <td>{{ customer.customerPersonPhone }}</td>
-            <td>{{ customer.customerAddress }}</td>
+            <td>
+              <span class="ellipsis">{{ truncatedAddress(customer.customerAddress) }}</span>
+            </td>
             <td>{{ customer.customerStatus }}</td>
             <td class="action-cell">
               <button @click="toggleDropdown(index, $event)" class="dropdown-button">▼</button>
@@ -53,16 +55,17 @@
     </div>
 
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">&lt;</button>
+      <button @click="prevPage" :disabled="currentPage === 1" class="pagination-arrow">&lt;</button>
       <span
         v-for="page in totalPages"
         :key="page"
         @click="setPage(page)"
         :class="{ active: currentPage === page }"
+        class="pagination-page"
       >
         {{ page }}
       </span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-arrow">
         &gt;
       </button>
     </div>
@@ -132,6 +135,9 @@ export default {
     },
   },
   methods: {
+    truncatedAddress(address) {
+      return address.length > 20 ? address.substring(0, 20) + '...' : address;
+    },
     async fetchCustomers() {
       try {
         const response = await apiService.fetchCustomerList()
@@ -169,9 +175,8 @@ export default {
       } else {
         this.dropdownIndex = index;
 
-        // Get the button position and set dropdown position accordingly
         const buttonRect = event.target.getBoundingClientRect();
-        const dropdownHeight = 80; // approximate height of the dropdown
+        const dropdownHeight = 80;
         const spaceBelow = window.innerHeight - buttonRect.bottom;
 
         this.dropdownStyle = {
@@ -241,16 +246,15 @@ export default {
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-y: auto;
 }
 
-/* 스크롤바를 숨기기 위한 스타일 */
 .customer-list::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
 }
 .customer-list {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .header {
@@ -272,9 +276,18 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .table-container {
   overflow-x: auto;
 }
+.table-container::-webkit-scrollbar {
+  display: none;
+}
+.table-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -285,6 +298,13 @@ td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+.ellipsis {
+  display: inline-block;
+  max-width: 200px; /* 제한된 너비 설정 */
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 th {
@@ -321,20 +341,52 @@ th {
 .dropdown-menu button:hover {
   background-color: #f0f0f0;
 }
+/* 페이지네이션 스타일 */
 .pagination {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
 }
-.pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-.pagination span {
-  margin: 0 5px;
-  cursor: pointer;
-}
-.pagination .active {
+
+.pagination-page {
+  font-size: 16px;
   font-weight: bold;
-  color: #3f72af;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.3s ease;
 }
-</style> 
+
+.pagination-page:hover {
+  color: #1d4f7a;
+}
+
+.pagination-page.active {
+  color: #3f72af;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.pagination-arrow {
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #3f72af;
+  border: 1px solid #3f72af;
+  background-color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-arrow:hover {
+  background-color: #3f72af;
+  color: white;
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
