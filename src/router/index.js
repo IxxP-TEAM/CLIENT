@@ -32,7 +32,7 @@ const router = createRouter({
       name: 'CustomerList',
       component: CustomerList,
       meta: { requiresAuth: true },
-    }  
+    },
   ],
 })
 

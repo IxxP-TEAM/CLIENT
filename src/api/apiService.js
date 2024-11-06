@@ -27,6 +27,12 @@ export default {
     // 고객사 수정 요청
     updateCustomer(customerId, updatedData) {
       return api.patch(`/customer/${customerId}`, updatedData); // 고객사 정보를 수정하는 API 엔드포인트 설정
-    }
-    
+    },
+    //고객사 세부 내역
+    getCustomerDetails(customerId) {
+      return api.get(`/customer/${customerId}`); // 고객사 세부 정보를 가져오는 API 엔드포인트 설정
+    },    
+    checkDuplicateRegistrationNumber(registrationNumber) {
+      return api.post('/customer/check-duplicate-registration-number', { registrationNumber });
+    },   
 };
