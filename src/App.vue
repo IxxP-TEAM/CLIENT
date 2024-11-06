@@ -7,12 +7,8 @@ import Sidebar from './components/Sidebar.vue';
 
 <template>
   <Header />
-  <div class="app-container">
-    <Sidebar />
-    <main class="content">
-      <RouterView />
-    </main>
-  </div>
+  <Sidebar />
+  <RouterView />
 </template>
 
 <style scoped>

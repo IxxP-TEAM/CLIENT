@@ -17,8 +17,10 @@
       :currentPage="currentPage"
       :itemsPerPage="itemsPerPage"
       :isDeleteMode="isDeleteMode"
+      :sortedColumn="sortedColumn"
       @delete="openDeleteModal"
       @update="openUpdateModal"
+      @sort="sortByColumn"
     />
 
     <!-- 제품등록 버튼 -->
@@ -82,11 +84,31 @@ const isUpdateModalVisible = ref(false)
 const selectedProduct = ref(null)
 const searchQuery = ref('')
 
+// 정렬 상태 변수
+const isAscending = ref(true)
+const sortedColumn = ref(null)
+
+// 정렬된 전체 데이터셋
+const sortedProducts = computed(() => {
+  return [...products.value].sort((a, b) => {
+    if (sortedColumn.value === 'name') {
+      return isAscending.value
+        ? a.productName.localeCompare(b.productName)
+        : b.productName.localeCompare(a.productName)
+    } else if (sortedColumn.value === 'type') {
+      return isAscending.value
+        ? a.productType.localeCompare(b.productType)
+        : b.productType.localeCompare(a.productType)
+    }
+    return 0
+  })
+})
+
 // 현재 페이지에 맞는 아이템만 필터링
 const currentItems = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
   const end = start + itemsPerPage
-  return products.value.slice(start, end)
+  return sortedProducts.value.slice(start, end)
 })
 
 // 총 페이지 수 계산
@@ -96,6 +118,16 @@ const totalPages = computed(() => Math.ceil(products.value.length / itemsPerPage
 function goToPage(page) {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
+  }
+}
+
+// 정렬 함수
+function sortByColumn(column) {
+  if (sortedColumn.value === column) {
+    isAscending.value = !isAscending.value // 같은 열 클릭 시 방향 변경
+  } else {
+    isAscending.value = true // 새로운 열 클릭 시 오름차순 초기화
+    sortedColumn.value = column
   }
 }
 
@@ -112,7 +144,6 @@ function closeModal() {
 // 수정 모달 열기
 function openUpdateModal(product) {
   if (product) {
-    console.log("선택된 제품:", product);
     selectedProduct.value = product
     isUpdateModalVisible.value = true
   } else {
@@ -145,9 +176,11 @@ function closeDeleteModal() {
 
 // 초기 상태로 복귀
 async function resetToInitialState() {
-  searchQuery.value = '' // 검색어 초기화
-  currentPage.value = 1 // 페이지를 처음으로 설정
-  await fetchProducts() // 전체 제품 목록을 다시 가져오기
+  searchQuery.value = ''       // 검색어 초기화
+  currentPage.value = 1        // 첫 페이지로 이동
+  sortedColumn.value = null    // 정렬 초기화
+  isAscending.value = true     // 정렬 방향 초기화
+  await fetchProducts()        // 전체 제품 목록 새로 가져오기
 }
 
 // 제품 삭제
@@ -200,7 +233,6 @@ async function updateProduct(updatedData) {
     console.error('수정할 제품이 선택되지 않았습니다.')
     return
   }
-  console.log("업데이트할 데이터:", updatedData)
   try {
     await apiService.updateProduct(selectedProduct.value.productId, updatedData)
     await fetchProducts()
@@ -218,9 +250,9 @@ onMounted(() => {
 <style lang="css" scoped>
 .product-list{
   padding: 100px;
-    width: max-content;
-    margin-left: 100px;
-    height: calc(100vh - 50px); /* Adjusts height to take up viewport height minus header */
-    overflow: auto;
+  width: max-content;
+  margin-left: 100px;
+  height: calc(100vh - 50px);
+  overflow: auto;
 }
 </style>

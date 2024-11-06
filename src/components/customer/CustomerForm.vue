@@ -1,124 +1,200 @@
 <template>
-  <div>
-    <!-- 고객사 등록 버튼 -->
-    <button @click="openForm">고객사 등록</button>
+  <div class="modal-overlay" @click.self="close">
+    <div class="modal-content">
+      <h2>{{ isEditMode ? '고객사 수정' : '고객사 등록' }}</h2>
+      <form @submit.prevent="handleSubmit" class="grid-form">
+        <!-- 고객사 정보 필드 -->
+        <div class="grid-item">
+          <label for="customerName">고객사 이름</label>
+          <input
+            v-model="formData.customerName"
+            type="text"
+            id="customerName"
+            required
+          />
+        </div>
+        <div class="grid-item">
+          <label for="customerPhone">고객사 전화번호</label>
+          <input
+            v-model="formData.customerPhone"
+            type="text"
+            id="customerPhone"
+            required
+          />
+        </div>
+        <div class="grid-item">
+          <label for="customerAddress">고객사 주소</label>
+          <input
+            v-model="formData.customerAddress"
+            type="text"
+            id="customerAddress"
+            required
+          />
+        </div>
+        <div class="grid-item">
+          <label for="customerAdddetail">고객사 상세주소</label>
+          <input
+            v-model="formData.customerAdddetail"
+            type="text"
+            id="customerAdddetail"
+            required
+          />
+        </div>
 
-    <!-- 모달 형태의 작성 폼 -->
-    <div v-if="showForm" class="modal-overlay" @click.self="closeForm">
-      <div class="modal-content">
-        <h2>고객사 등록</h2>
-        <form @submit.prevent="handleSubmit" class="grid-form">
-          <div class="grid-item">
-            <label for="name">고객사 이름</label>
-            <input type="text" id="name" v-model="customerData.customerName" required />
-          </div>
+        <div class="grid-item">
+          <label for="customerPersonName">고객사 담당자 이름</label>
+          <input
+            v-model="formData.customerPersonName"
+            type="text"
+            id="customerPersonName"
+            required
+          />
+        </div>
+        <div class="grid-item">
+          <label for="customerPersonPhone">고객사 담당자 전화번호</label>
+          <input
+            v-model="formData.customerPersonPhone"
+            type="text"
+            id="customerPersonPhone"
+            required
+          />
+        </div>
+        <div class="grid-item">
+          <label for="customerPersonEmail">고객사 담당자 이메일</label>
+          <input
+            v-model="formData.customerPersonEmail"
+            type="email"
+            id="customerPersonEmail"
+            required
+          />
+        </div>
 
-          <div class="grid-item">
-            <label for="phone">고객사 전화번호</label>
-            <input type="text" id="phone" v-model="customerData.customerPhone" required />
-          </div>
+        <div class="grid-item">
+          <label for="registrationNumber">사업자등록번호</label>
+          <input
+            v-model="formData.registrationNumber"
+            type="text"
+            id="registrationNumber"
+            required
+          />
+        </div>
+        <div class="grid-item">
+          <label for="customerStatus">고객사 상태</label>
+          <select
+            v-model="formData.customerStatus"
+            id="customerStatus"
+            required
+          >
+            <option value="ACTIVE">활성</option>
+            <option value="INACTIVE">비활성</option>
+          </select>
+        </div>
+        <div class="grid-item">
+          <label for="customerSdate">고객사 시작일</label>
+          <input
+            v-model="formData.customerSdate"
+            type="date"
+            id="customerSdate"
+            required
+          />
+        </div>
 
-          <div class="grid-item">
-            <label for="address">고객사 주소</label>
-            <input type="text" id="address" v-model="customerData.customerAddress" required />
-          </div>
+        <!-- 고객사 메모 필드 추가 -->
+        <div class="grid-item full-width">
+          <label for="customerNote">고객사 메모</label>
+          <textarea
+            v-model="formData.customerNote"
+            id="customerNote"
+            rows="4"
+          ></textarea>
+        </div>
 
-          <div class="grid-item">
-            <label for="address-detail">고객사 상세주소</label>
-            <input type="text" id="address-detail" v-model="customerData.customerAdddetail" required />
-          </div>
+        <!-- 담당자 정보 -->
+        <div class="grid-item full-width">
+          <label for="userId">직원 인덱스</label>
+          <input
+            type="text"
+            v-model="userIdInput"
+            placeholder="유저 인덱스 입력"
+            @blur="fetchEmployeeName"
+          />
+          <p v-if="selectedEmployeeName">
+            선택된 직원 이름: {{ selectedEmployeeName }}
+          </p>
+          <p v-if="userNotFound" class="error-message">
+            해당 인덱스의 직원이 존재하지 않습니다.
+          </p>
+        </div>
 
-          <div class="grid-item">
-            <label for="contact">담당자 이름</label>
-            <input type="text" id="contact" v-model="customerData.customerPersonName" required />
-          </div>
-
-          <div class="grid-item">
-            <label for="contactPhone">담당자 전화번호</label>
-            <input type="text" id="contactPhone" v-model="customerData.customerPersonPhone" required />
-          </div>
-
-          <div class="grid-item">
-            <label for="contactEmail">담당자 이메일</label>
-            <input type="email" id="contactEmail" v-model="customerData.customerPersonEmail" required />
-          </div>
-
-          <div class="grid-item">
-            <label for="registrationNumber">사업자등록번호</label>
-            <input type="text" id="registrationNumber" v-model="customerData.registrationNumber" required />
-          </div>
-
-          <div class="grid-item">
-            <label for="status">고객사 상태</label>
-            <select id="status" v-model="customerData.customerStatus" required>
-              <option value="ACTIVE">활성</option>
-              <option value="INACTIVE">비활성</option>
-            </select>
-          </div>
-
-          <div class="grid-item">
-            <label for="startDate">고객사 시작일</label>
-            <input type="date" id="startDate" v-model="customerData.customerSdate" required />
-          </div>
-
-          <!-- 버튼 영역을 전체 너비로 차지하도록 설정 -->
-          <div class="button-group">
-            <button type="submit">등록</button>
-            <button type="button" @click="closeForm">취소</button>
-          </div>
-        </form>
-
-        <p v-if="message" class="message">{{ message }}</p>
-      </div>
+        <!-- 버튼 그룹 -->
+        <div class="button-group">
+          <button type="submit">{{ isEditMode ? '수정' : '등록' }}</button>
+          <button type="button" @click="close">취소</button>
+        </div>
+      </form>
+      <p v-if="message" class="message">{{ message }}</p>
     </div>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import apiService from '@/api/apiService';
+import apiService from '@/api/apiService'
 
 export default {
-  name: 'CustomerForm',
+  props: {
+    customerData: {
+      type: Object,
+      default: () => ({}),
+    },
+    isEditMode: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      showForm: false, // 폼 모달의 표시 여부
-      customerData: {
-        customerName: '',
-        customerPhone: '',
-        customerAddress: '',
-        customerAdddetail: '',
-        customerPersonName: '',
-        customerPersonPhone: '',
-        customerPersonEmail: '',
-        registrationNumber: '',
-        customerStatus: 'ACTIVE',
-        customerSdate: '',
-        userId: 1,
-      },
-      message: '', // 성공 또는 실패 메시지
-    };
+      formData: {}, // formData 초기화
+      userIdInput: '', // 유저 인덱스 입력 필드
+      selectedEmployeeName: '', // 가져온 직원 이름
+      userNotFound: false, // 사용자가 존재하지 않는 경우를 표시
+      message: '',
+    }
+  },
+  mounted() {
+    if (this.isEditMode) {
+      this.formData = { ...this.customerData }
+    } else {
+      this.resetFormData()
+    }
   },
   methods: {
-    openForm() {
-      this.showForm = true; // 폼 모달 열기
-    },
-    closeForm() {
-      this.showForm = false; // 폼 모달 닫기
-      this.resetForm();
-    },
     async handleSubmit() {
       try {
-        await apiService.createCustomer(this.customerData);
-        this.message = '고객사가 성공적으로 등록되었습니다.';
-        this.closeForm(); // 폼 닫기
+        this.formData.userId = this.userIdInput // 유저 인덱스를 formData에 저장
+
+        if (this.isEditMode) {
+          await apiService.updateCustomer(
+            this.formData.customerId,
+            this.formData
+          )
+          this.message = '수정 성공'
+        } else {
+          await apiService.createCustomer(this.formData)
+          this.message = '등록 성공'
+        }
+        this.$emit('registered') // 부모 컴포넌트로 이벤트 전송
+        this.close()
       } catch (error) {
-        console.error(error);
-        this.message = '등록 중 오류가 발생했습니다.';
+        console.error('오류:', error)
+        this.message = this.isEditMode ? '수정 실패' : '등록 실패'
       }
     },
-    resetForm() {
-      this.customerData = {
+    close() {
+      this.$emit('close')
+      this.resetFormData()
+    },
+    resetFormData() {
+      this.formData = {
         customerName: '',
         customerPhone: '',
         customerAddress: '',
@@ -129,15 +205,38 @@ export default {
         registrationNumber: '',
         customerStatus: 'ACTIVE',
         customerSdate: '',
-        userId: 1,
-      };
+        customerNote: '',
+        userId: '', // 사용자 인덱스 초기화
+      }
+      this.userIdInput = ''
+      this.selectedEmployeeName = ''
+      this.userNotFound = false
+    },
+    async fetchEmployeeName() {
+      try {
+        const response = await apiService.getEmployeeById(this.userIdInput)
+        this.selectedEmployeeName = response.data.userName
+        this.userNotFound = false
+      } catch (error) {
+        console.error('해당 유저를 찾을 수 없음:', error)
+        this.selectedEmployeeName = ''
+        this.userNotFound = true
+      }
     },
   },
-};
+  watch: {
+    isEditMode(newVal) {
+      if (newVal) {
+        this.formData = { ...this.customerData }
+      } else {
+        this.resetFormData()
+      }
+    },
+  },
+}
 </script>
 
 <style scoped>
-/* 모달 스타일 */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -155,14 +254,25 @@ export default {
   background: white;
   padding: 30px;
   border-radius: 8px;
-  width: 500px;
-  max-width: 90%;
+  width: 800px; /* 가로 너비 증가 */
+  max-width: 95%;
+  max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
+  overflow-y: auto; /* 스크롤 활성화 */
+}
+
+/* 스크롤바를 숨기기 위한 스타일 */
+.modal-content::-webkit-scrollbar {
+  display: none;
+}
+.modal-content {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .grid-form {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2열 레이아웃 */
-  gap: 20px; /* 그리드 항목 간 간격을 넓힘 */
+  grid-template-columns: repeat(2, 1fr); /* 2열 레이아웃 */
+  gap: 20px;
 }
 
 .grid-item {
@@ -170,45 +280,57 @@ export default {
   flex-direction: column;
 }
 
+.full-width {
+  grid-column: span 2;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+}
+
 .button-group {
-  grid-column: span 2; /* 버튼은 두 칸을 차지 */
+  grid-column: span 2; /* 버튼 그룹 전체 너비 차지 */
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 가운데 정렬 */
+  gap: 20px;
   margin-top: 20px;
 }
 
-input, select {
-  padding: 12px; /* 필드 크기 넓힘 */
+input,
+select,
+textarea {
+  padding: 12px;
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-button[type="submit"],
-button[type="button"] {
-  background-color: #3F72AF;
+button[type='submit'],
+button[type='button'] {
+  background-color: #3f72af;
   color: white;
   border: none;
   border-radius: 4px;
-  width: 48%; /* 버튼 간격 조정 */
+  width: 150px; /* 버튼 너비 고정 */
   padding: 12px;
   cursor: pointer;
 }
 
-button[type="button"] {
+button[type='button'] {
   background-color: #f44336;
 }
 
-button[type="submit"]:hover {
-  background-color: #3F72AF;
+button[type='submit']:hover {
+  background-color: #3f72af;
 }
 
-button[type="button"]:hover {
+button[type='button']:hover {
   background-color: #e53935;
 }
 
 .message {
-  color: #3F72AF;
+  color: #3f72af;
   margin-top: 15px;
   text-align: center;
 }

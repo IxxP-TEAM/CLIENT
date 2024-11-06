@@ -1,10 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import EmployeeList from '@/components/admin/EmployeeList.vue'
-import ProductList from '@/components/product/ProductList.vue'
-
+import EmployeeList from '@/components/employee/EmployeeList.vue'
+import Login from '@/components/Login.vue'
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
-
+import ProductList from '@/components/product/ProductList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,28 +12,35 @@ const router = createRouter({
       path: "/empList",
       name: 'empList',
       component: EmployeeList,
+      meta: { requiresAuth: true },
     },
     {
-      path:"/products",
-      name:'products',
-      component:ProductList,
-      // meta: { requiresAuth: true },
+      path: "/login",
+      name: 'login',
+      component: Login
     },
-    
     //고객사 등록
     {
       path: '/register-customer',
       name: 'RegisterCustomer',
       component: CustomerForm,
+      meta: { requiresAuth: true },
     },
     
     //고객사 목록
     {
       path: '/customer-list',
       name: 'CustomerList',
-      component: CustomerList
-      
-    }  
+      component: CustomerList,
+      meta: { requiresAuth: true },
+    },
+
+    {
+      path:"/products",
+      name:'products',
+      component:ProductList,
+      // meta: { requiresAuth: true },
+    },  
   ],
 })
 

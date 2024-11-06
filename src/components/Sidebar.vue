@@ -1,13 +1,13 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <aside class="sidebar">
+  <aside v-if="showSidebar" class="sidebar">
     <div class="logo">
       <img src="/src/assets/logo.png" alt="IXXP ERP Logo" />
     </div>
 
     <!-- 로그인 정보 섹션 -->
     <div class="login-info">
-      <p>로그인 사용자: 홍길동</p>
+      <p>로그인 사용자: {{  userName  }}</p>
       <p>관리자</p> <!-- 예시 텍스트 -->
     </div>
 
@@ -63,20 +63,39 @@
   </aside>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      isDropdownOpen: null, // 현재 열려 있는 드롭다운 메뉴 상태
-    };
-  },
-  methods: {
-    toggleDropdown(dropdown) {
-      // 클릭한 드롭다운이 이미 열려 있으면 닫고, 아니면 해당 드롭다운을 열기
-      this.isDropdownOpen = this.isDropdownOpen === dropdown ? null : dropdown;
-    },
-  },
+<script setup>
+import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import VueJwtDecode from 'vue-jwt-decode'
+import { onMounted } from 'vue';
+
+const route = useRoute();
+const isDropdownOpen = ref(null); // 현재 열려 있는 드롭다운 메뉴 상태
+const userName = ref('')
+
+// 사이드바 표시 여부를 결정하는 computed property
+const showSidebar = computed(() => {
+  return route.path !== '/login';
+});
+
+// 드롭다운 토글 함수
+const toggleDropdown = (dropdown) => {
+  isDropdownOpen.value = isDropdownOpen.value === dropdown ? null : dropdown;
 };
+
+// 로그인한 사용자 이름 가져오는 함수
+const getUserNameFromToken = () => {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    const decodedToken = VueJwtDecode.decode(token);
+    userName.value = decodedToken.username;
+    console.log(userName.value);
+  }
+};
+
+onMounted(() => {
+  getUserNameFromToken();
+});
 </script>
 
 <style scoped>
