@@ -30,7 +30,7 @@
             :key="customer.customerId"
           >
             <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
-            <td>{{ customer.customerName }}</td>
+            <td @click="viewCustomerDetails(customer)" class="clickable">{{ customer.customerName }}</td>
             <td>{{ customer.customerPhone }}</td>
             <td>{{ customer.customerPersonName }}</td>
             <td>{{ customer.customerPersonPhone }}</td>
@@ -39,15 +39,6 @@
             </td>
             <td>{{ customer.customerStatus }}</td>
             <td class="action-cell">
-              <button @click="toggleDropdown(index, $event)" class="dropdown-button">▼</button>
-              <div
-                v-show="dropdownIndex === index"
-                class="dropdown-menu"
-                :style="dropdownStyle"
-              >
-                <button @click="editCustomer(customer)">수정하기</button>
-                <button @click="showDeleteModal(customer)">삭제하기</button>
-              </div>
             </td>
           </tr>
         </tbody>
@@ -70,10 +61,18 @@
       </button>
     </div>
 
-    <!-- 고객사 등록/수정 모달 컴포넌트 -->
+    <!-- 고객사 세부 정보 모달 -->
+    <CustomerDetailModal
+      v-if="showCustomerDetailModal"
+      :customerDetails="selectedCustomer"
+      @close="closeCustomerDetailModal"
+      @edit="openEditForm"
+    />    
+
+    <!-- 고객사 등록/수정 모달 -->
     <CustomerForm
       v-if="showForm"
-      :customerData="isEditMode ? selectedCustomer : {}"
+      :customerData="selectedCustomer"
       :isEditMode="isEditMode"
       @close="closeForm"
       @registered="fetchCustomers"
@@ -97,9 +96,11 @@
 import apiService from '@/api/apiService'
 import CustomerForm from './CustomerForm.vue'
 import ConfirmModal from '../ConfirmModal.vue'
+import CustomerDetailModal from './CustomerDetailModal.vue'
+
 
 export default {
-  components: { CustomerForm, ConfirmModal },
+  components: { CustomerForm, ConfirmModal, CustomerDetailModal },
   data() {
     return {
       customers: [],
@@ -107,6 +108,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       showForm: false,
+      showCustomerDetailModal: false,
       dropdownIndex: null,
       dropdownStyle: {}, // 드롭다운 위치 스타일
       showDeleteModalFlag: false,
@@ -154,12 +156,22 @@ export default {
     openForm(isEdit = false) {
       this.isEditMode = isEdit;
       this.showForm = true;
-      if (isEdit) {
-        // 수정 모드일 때는 selectedCustomer 유지
-      } else {
-        // 등록 모드일 때 selectedCustomer 초기화
-        this.selectedCustomer = null;
+      if (!isEdit) {
+        this.selectedCustomer = {}; // 등록 모드일 때 selectedCustomer 초기화
       }
+    },
+    viewCustomerDetails(customer) {
+      this.selectedCustomer = customer;
+      this.showCustomerDetailModal = true;
+    },
+    closeCustomerDetailModal() {
+      this.showCustomerDetailModal = false;
+    },
+    openEditForm(customer) {
+      this.selectedCustomer = customer;
+      this.isEditMode = true;
+      this.showForm = true;
+      this.showCustomerDetailModal = false;
     },
     closeForm() {
       this.showForm = false;

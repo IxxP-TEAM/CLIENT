@@ -28,6 +28,14 @@ export default {
     updateCustomer(customerId, updatedData) {
       return api.patch(`/customer/${customerId}`, updatedData); // 고객사 정보를 수정하는 API 엔드포인트 설정
     },
+
+    //고객사 세부 내역
+    getCustomerDetails(customerId) {
+      return api.get(`/customer/${customerId}`); 
+    },    
+    checkDuplicateRegistrationNumber(registrationNumber) {
+      return api.post('/customer/check-duplicate-registration-number', { registrationNumber });
+    },   
     
     // 비밀번호 - 이메일 인증 코드 요청
     sendResetPassword(email) {
@@ -39,5 +47,4 @@ export default {
       return api.post(`/hr/reset-pw`, {email, code, newPassword});
     }
 
-  
 };
