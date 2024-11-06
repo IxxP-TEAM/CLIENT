@@ -1,6 +1,6 @@
 <!-- ProductList.vue -->
 <template>
-  <div>
+  <div class="product-list">
     <h2 @click="resetToInitialState" style="cursor: pointer;">제품 목록</h2>
     <!-- 검색 입력 및 검색 버튼 -->
     <input
@@ -214,3 +214,13 @@ onMounted(() => {
   fetchProducts()
 })
 </script>
+
+<style lang="css" scoped>
+.product-list{
+  padding: 100px;
+    width: max-content;
+    margin-left: 100px;
+    height: calc(100vh - 50px); /* Adjusts height to take up viewport height minus header */
+    overflow: auto;
+}
+</style>

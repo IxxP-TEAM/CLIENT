@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import EmployeeList from '@/components/admin/EmployeeList.vue'
-<<<<<<< HEAD
 import ProductList from '@/components/product/ProductList.vue'
-=======
+
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
->>>>>>> d9560b1fc654c3d704ff5c6c8a9d379ef0639f80
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,17 +14,12 @@ const router = createRouter({
       name: 'empList',
       component: EmployeeList,
     },
-<<<<<<< HEAD
     {
       path:"/products",
       name:'products',
       component:ProductList,
       // meta: { requiresAuth: true },
-    }
-  ],
-})
-
-=======
+    },
     
     //고객사 등록
     {
@@ -45,7 +39,6 @@ const router = createRouter({
 })
 
 
->>>>>>> d9560b1fc654c3d704ff5c6c8a9d379ef0639f80
 // 인증 가드 설정
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('accessToken') !== null; // 로컬 스토리지에서 토큰 확인
@@ -57,8 +50,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-<<<<<<< HEAD
-=======
-
->>>>>>> d9560b1fc654c3d704ff5c6c8a9d379ef0639f80
 export default router

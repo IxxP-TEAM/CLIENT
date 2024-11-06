@@ -1,30 +1,18 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
-<<<<<<< HEAD
-// import EmployeeList from './components/admin/EmployeeList.vue';
-// import ProductList from './components/product/ProductList.vue';
-=======
 import Sidebar from './components/Sidebar.vue'; 
->>>>>>> d9560b1fc654c3d704ff5c6c8a9d379ef0639f80
+
 </script>
 
 <template>
   <Header />
-<<<<<<< HEAD
-  <main class="content">
-    <!-- <EmployeeList /> -->
-    <RouterView />
-    <!-- <ProductList/> -->
-  </main>
-=======
   <div class="app-container">
     <Sidebar />
     <main class="content">
       <RouterView />
     </main>
   </div>
->>>>>>> d9560b1fc654c3d704ff5c6c8a9d379ef0639f80
 </template>
 
 <style scoped>
