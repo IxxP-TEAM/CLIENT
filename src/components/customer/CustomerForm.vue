@@ -196,7 +196,7 @@ export default {
       if (this.isDuplicateRegistrationNumber) {
         this.message = '사업자등록번호가 중복되었습니다.';
         return;
-      }    
+      }     
   if (!this.isCustomerPhoneValid || !this.isCustomerPersonPhoneValid) {
     this.message = '전화번호 형식이 유효하지 않습니다.';
     return;

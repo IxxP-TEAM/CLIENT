@@ -82,7 +82,7 @@
     justify-content: center;
     gap: 20px;
     margin-top: 20px;
-  }
+  } 
   
   button {
     background-color: #3f72af;

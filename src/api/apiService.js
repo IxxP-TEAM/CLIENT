@@ -35,6 +35,9 @@ export default {
     },    
     checkDuplicateRegistrationNumber(registrationNumber) {
       return api.post('/customer/check-duplicate-registration-number', { registrationNumber });
+<<<<<<< HEAD
+    },    
+=======
     },   
     
     // 비밀번호 - 이메일 인증 코드 요청
@@ -47,4 +50,5 @@ export default {
       return api.post(`/hr/reset-pw`, {email, code, newPassword});
     }
 
+>>>>>>> 439b17bc39cfa47b5842476729e0c1dd9fafb39f
 };
