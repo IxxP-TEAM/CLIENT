@@ -37,7 +37,10 @@ export default {
     // 비밀번호 재설정
     resetPassword(email, code, newPassword) {
       return api.post(`/hr/reset-pw`, {email, code, newPassword});
-    }
+    },
 
+    updateUser(userData) {
+      return api.patch(`/hr/${userData.userIdx}`, userData);
+    }
   
 };
