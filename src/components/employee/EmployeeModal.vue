@@ -67,14 +67,8 @@ import apiService from '@/api/apiService';
 
 export default {
   props: {
-    isVisible: {
-      type: Boolean,
-      required: true,
-    },
-    closeModal: {
-      type: Function,
-      required: true,
-    }
+    isVisible: Boolean,
+    closeModal: Function,
   },
   data() {
     return {
@@ -123,7 +117,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -134,8 +128,6 @@ export default {
   padding: 20px;
   border-radius: 10px;
   width: 400px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  position: relative;
   max-height: 80vh; /* 최대 높이를 80%로 설정 */
   overflow-y: auto; /* 세로 스크롤 활성화 */
 }
