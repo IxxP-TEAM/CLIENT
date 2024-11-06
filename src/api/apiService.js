@@ -28,11 +28,27 @@ export default {
     updateCustomer(customerId, updatedData) {
       return api.patch(`/customer/${customerId}`, updatedData); // 고객사 정보를 수정하는 API 엔드포인트 설정
     },
+
     //고객사 세부 내역
     getCustomerDetails(customerId) {
-      return api.get(`/customer/${customerId}`); // 고객사 세부 정보를 가져오는 API 엔드포인트 설정
+      return api.get(`/customer/${customerId}`); 
     },    
     checkDuplicateRegistrationNumber(registrationNumber) {
       return api.post('/customer/check-duplicate-registration-number', { registrationNumber });
+<<<<<<< HEAD
     },    
+=======
+    },   
+    
+    // 비밀번호 - 이메일 인증 코드 요청
+    sendResetPassword(email) {
+      return api.post('/hr/email-code', { email });
+    },
+    
+    // 비밀번호 재설정
+    resetPassword(email, code, newPassword) {
+      return api.post(`/hr/reset-pw`, {email, code, newPassword});
+    }
+
+>>>>>>> 439b17bc39cfa47b5842476729e0c1dd9fafb39f
 };

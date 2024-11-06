@@ -3,6 +3,7 @@ import EmployeeList from '@/components/employee/EmployeeList.vue'
 import Login from '@/components/Login.vue'
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
+import ResetPassword from '@/components/employee/ResetPassword.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,12 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
+    //비밀번호 재설정(인증X)
+    {
+      path: '/resetPassword',
+      name: ResetPassword,
+      component: ResetPassword
+    }
   ],
 })
 
