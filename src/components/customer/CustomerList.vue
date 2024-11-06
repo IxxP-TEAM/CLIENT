@@ -12,7 +12,7 @@
     </div>
     <div class="table-container">
       <table>
-        <thead>
+        <thead> 
           <tr>
             <th>번호</th>
             <th>고객사명</th>

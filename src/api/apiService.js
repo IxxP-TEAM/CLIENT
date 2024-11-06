@@ -34,5 +34,5 @@ export default {
     },    
     checkDuplicateRegistrationNumber(registrationNumber) {
       return api.post('/customer/check-duplicate-registration-number', { registrationNumber });
-    },   
+    },    
 };
