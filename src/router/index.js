@@ -34,7 +34,6 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
-
     //비밀번호 재설정(인증X)
     {
       path: '/resetPassword',

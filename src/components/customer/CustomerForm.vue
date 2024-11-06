@@ -85,9 +85,15 @@
             v-model="formData.registrationNumber"
             type="text"
             id="registrationNumber"
+            @input="checkRegistrationNumber"
+            :class="{ 'invalid': isDuplicateRegistrationNumber }"
             required
           />
+          <p v-if="isDuplicateRegistrationNumber" class="error-message">
+            이미 등록된 사업자등록번호입니다.
+          </p>
         </div>
+
         <div class="grid-item">
           <label for="customerStatus">고객사 상태</label>
           <select
@@ -162,6 +168,7 @@ export default {
     return {
       formData: {},
       message: '',
+      isDuplicateRegistrationNumber: false, // 중복 여부 상태 추가
     }
   },
   mounted() {
@@ -173,7 +180,23 @@ export default {
     }
   },
   methods: {
+    // 사업자등록번호 중복 확인 메서드
+    async checkRegistrationNumber() {
+      if (!this.formData.registrationNumber) return;
+
+      try {
+        const response = await apiService.checkDuplicateRegistrationNumber(this.formData.registrationNumber);
+        this.isDuplicateRegistrationNumber = response.data.isDuplicate; // 서버 응답에 따라 중복 여부 설정
+      } catch (error) {
+        console.error('사업자등록번호 중복 확인 오류:', error);
+        this.isDuplicateRegistrationNumber = false;
+      }
+    },    
     async handleSubmit() {
+      if (this.isDuplicateRegistrationNumber) {
+        this.message = '사업자등록번호가 중복되었습니다.';
+        return;
+      }     
   if (!this.isCustomerPhoneValid || !this.isCustomerPersonPhoneValid) {
     this.message = '전화번호 형식이 유효하지 않습니다.';
     return;
@@ -360,8 +383,7 @@ textarea {
   border-radius: 4px;
 }
 
-button[type='submit'],
-button[type='button'] {
+button[type='submit'] {
   background-color: #3f72af;
   color: white;
   border: none;
@@ -371,16 +393,23 @@ button[type='button'] {
   cursor: pointer;
 }
 
-button[type='button'] {
-  background-color: #f44336;
+button[type='submit']:hover {
+  background-color: #2c5987;
 }
 
-button[type='submit']:hover {
-  background-color: #3f72af;
+/* 취소 버튼 스타일 변경 */
+button[type='button'] {
+  background-color: gray;
+  color: white;
+  border: 2px solid gray;
+  border-radius: 4px;
+  width: 150px; /* 버튼 너비 고정 */
+  padding: 12px;
+  cursor: pointer;
 }
 
 button[type='button']:hover {
-  background-color: #e53935;
+  background-color: rgb(80, 80, 80);
 }
 
 .message {
