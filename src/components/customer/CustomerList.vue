@@ -8,7 +8,7 @@
         placeholder="검색"
         @input="handleSearch"
       />
-      <button @click="openForm">고객사 등록</button>
+      <button @click="openForm(false)">고객사 등록</button>
     </div>
     <div class="table-container">
       <table>
@@ -70,7 +70,7 @@
     <!-- 고객사 등록/수정 모달 컴포넌트 -->
     <CustomerForm
       v-if="showForm"
-      :customerData="selectedCustomer"
+      :customerData="isEditMode ? selectedCustomer : {}"
       :isEditMode="isEditMode"
       @close="closeForm"
       @registered="fetchCustomers"
@@ -102,7 +102,7 @@ export default {
       customers: [],
       searchQuery: '',
       currentPage: 1,
-      pageSize: 7,
+      pageSize: 10,
       showForm: false,
       dropdownIndex: null,
       dropdownStyle: {}, // 드롭다운 위치 스타일
@@ -146,18 +146,22 @@ export default {
       this.currentPage = 1
     },
     openForm(isEdit = false) {
-      this.isEditMode = isEdit
-      this.showForm = true
-      if (!isEdit) {
-        this.selectedCustomer = null // 신규 등록일 경우 초기화
+      this.isEditMode = isEdit;
+      this.showForm = true;
+      if (isEdit) {
+        // 수정 모드일 때는 selectedCustomer 유지
+      } else {
+        // 등록 모드일 때 selectedCustomer 초기화
+        this.selectedCustomer = null;
       }
     },
     closeForm() {
-      this.showForm = false
+      this.showForm = false;
+      this.selectedCustomer = null;
     },
     editCustomer(customer) {
-      this.selectedCustomer = { ...customer } // 복사본 생성
-      this.openForm(true) // 수정 모드로 열기
+      this.selectedCustomer = { ...customer }; // 복사본 생성
+      this.openForm(true); // 수정 모드로 열기
     },
     toggleDropdown(index, event) {
       if (this.dropdownIndex === index) {
@@ -237,8 +241,18 @@ export default {
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow: auto; 
+  overflow-y: auto; /* 세로 스크롤 활성화 */
 }
+
+/* 스크롤바를 숨기기 위한 스타일 */
+.customer-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+.customer-list {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -323,4 +337,4 @@ th {
   font-weight: bold;
   color: #3f72af;
 }
-</style>
+</style> 
