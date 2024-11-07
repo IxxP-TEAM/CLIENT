@@ -19,8 +19,13 @@
             v-model="formData.customerPhone"
             type="text"
             id="customerPhone"
+            @input="formatCustomerPhone"
+            :class="{ 'invalid': !isCustomerPhoneValid && formData.customerPhone }"
             required
           />
+          <p v-if="!isCustomerPhoneValid && formData.customerPhone" class="error-message">
+            유효한 전화번호 형식이 아닙니다.
+          </p>
         </div>
         <div class="grid-item">
           <label for="customerAddress">고객사 주소</label>
@@ -56,8 +61,13 @@
             v-model="formData.customerPersonPhone"
             type="text"
             id="customerPersonPhone"
+            @input="formatCustomerPersonPhone"
+            :class="{ 'invalid': !isCustomerPersonPhoneValid && formData.customerPersonPhone }"
             required
           />
+          <p v-if="!isCustomerPersonPhoneValid && formData.customerPersonPhone" class="error-message">
+            유효한 담당자 전화번호 형식이 아닙니다.
+          </p>
         </div>
         <div class="grid-item">
           <label for="customerPersonEmail">고객사 담당자 이메일</label>
@@ -75,9 +85,15 @@
             v-model="formData.registrationNumber"
             type="text"
             id="registrationNumber"
+            @input="checkRegistrationNumber"
+            :class="{ 'invalid': isDuplicateRegistrationNumber }"
             required
           />
+          <p v-if="isDuplicateRegistrationNumber" class="error-message">
+            이미 등록된 사업자등록번호입니다.
+          </p>
         </div>
+
         <div class="grid-item">
           <label for="customerStatus">고객사 상태</label>
           <select
@@ -97,6 +113,7 @@
             id="customerSdate"
             required
           />
+          <p v-if="!isCustomerSdateValid" class="error-message">현재 날짜를 초과할 수 없습니다.</p>
         </div>
 
         <!-- 고객사 메모 필드 추가 -->
@@ -107,23 +124,6 @@
             id="customerNote"
             rows="4"
           ></textarea>
-        </div>
-
-        <!-- 담당자 정보 -->
-        <div class="grid-item full-width">
-          <label for="userId">직원 인덱스</label>
-          <input
-            type="text"
-            v-model="userIdInput"
-            placeholder="유저 인덱스 입력"
-            @blur="fetchEmployeeName"
-          />
-          <p v-if="selectedEmployeeName">
-            선택된 직원 이름: {{ selectedEmployeeName }}
-          </p>
-          <p v-if="userNotFound" class="error-message">
-            해당 인덱스의 직원이 존재하지 않습니다.
-          </p>
         </div>
 
         <!-- 버튼 그룹 -->
@@ -139,6 +139,7 @@
 
 <script>
 import apiService from '@/api/apiService'
+import VueJwtDecode from 'vue-jwt-decode'
 
 export default {
   props: {
@@ -151,16 +152,27 @@ export default {
       default: false,
     },
   },
+  computed: {
+    isCustomerPhoneValid() {
+      return this.validatePhoneNumber(this.formData.customerPhone);
+    },
+    isCustomerPersonPhoneValid() {
+      return this.validatePersonPhoneNumber(this.formData.customerPersonPhone);
+    },
+    isCustomerSdateValid() {
+      const today = new Date().toISOString().split('T')[0]; // 현재 날짜
+      return !this.formData.customerSdate || this.formData.customerSdate <= today;
+    },
+  },
   data() {
     return {
-      formData: {}, // formData 초기화
-      userIdInput: '', // 유저 인덱스 입력 필드
-      selectedEmployeeName: '', // 가져온 직원 이름
-      userNotFound: false, // 사용자가 존재하지 않는 경우를 표시
+      formData: {},
       message: '',
+      isDuplicateRegistrationNumber: false, // 중복 여부 상태 추가
     }
   },
   mounted() {
+    this.getUserNameFromToken() // 로그인한 사용자 이름 가져오기
     if (this.isEditMode) {
       this.formData = { ...this.customerData }
     } else {
@@ -168,25 +180,103 @@ export default {
     }
   },
   methods: {
-    async handleSubmit() {
-      try {
-        this.formData.userId = this.userIdInput // 유저 인덱스를 formData에 저장
+    // 사업자등록번호 중복 확인 메서드
+    async checkRegistrationNumber() {
+      if (!this.formData.registrationNumber) return;
 
-        if (this.isEditMode) {
-          await apiService.updateCustomer(
-            this.formData.customerId,
-            this.formData
-          )
-          this.message = '수정 성공'
-        } else {
-          await apiService.createCustomer(this.formData)
-          this.message = '등록 성공'
-        }
-        this.$emit('registered') // 부모 컴포넌트로 이벤트 전송
-        this.close()
+      try {
+        const response = await apiService.checkDuplicateRegistrationNumber(this.formData.registrationNumber);
+        this.isDuplicateRegistrationNumber = response.data.isDuplicate; // 서버 응답에 따라 중복 여부 설정
       } catch (error) {
-        console.error('오류:', error)
-        this.message = this.isEditMode ? '수정 실패' : '등록 실패'
+        console.error('사업자등록번호 중복 확인 오류:', error);
+        this.isDuplicateRegistrationNumber = false;
+      }
+    },    
+    async handleSubmit() {
+      if (this.isDuplicateRegistrationNumber) {
+        this.message = '사업자등록번호가 중복되었습니다.';
+        return;
+      }     
+  if (!this.isCustomerPhoneValid || !this.isCustomerPersonPhoneValid) {
+    this.message = '전화번호 형식이 유효하지 않습니다.';
+    return;
+  }
+  if (!this.isCustomerSdateValid) {
+        this.message = '고객사 시작일은 현재 날짜를 넘을 수 없습니다.';
+        return;
+      }
+  try {
+    this.formData.userName = this.selectedEmployeeName;
+    if (this.isEditMode) {
+      await apiService.updateCustomer(this.formData.customerId, this.formData);
+      this.message = '수정 성공';
+    } else {
+      await apiService.createCustomer(this.formData);
+      this.message = '등록 성공';
+    }
+    this.$emit('registered');
+    this.close();
+  } catch (error) {
+    console.error('오류:', error);
+    this.message = this.isEditMode ? '수정 실패' : '등록 실패';
+  }
+},
+    formatCustomerPhone() {
+      this.formData.customerPhone = this.formatPhoneNumber(this.formData.customerPhone);
+    },
+    formatCustomerPersonPhone() {
+      this.formData.customerPersonPhone = this.formatPersonPhoneNumber(this.formData.customerPersonPhone);
+    },
+    formatPhoneNumber(input) {
+      // 숫자만 남김
+      input = input.replace(/\D/g, '');
+
+      if (input.startsWith('02')) {
+        if (input.length <= 2) return input;
+        if (input.length <= 6) return `${input.slice(0, 2)}-${input.slice(2)}`;
+        if (input.length <= 10) return `${input.slice(0, 2)}-${input.slice(2, 6)}-${input.slice(6)}`;
+      } else {
+        if (input.length <= 3) return input;
+        if (input.length <= 7) return `${input.slice(0, 3)}-${input.slice(3)}`;
+        if (input.length <= 11) return `${input.slice(0, 3)}-${input.slice(3, 7)}-${input.slice(7)}`;
+      }
+      return input;
+    },
+    formatPersonPhoneNumber(input) {
+      // 숫자만 남김
+      input = input.replace(/\D/g, '');
+
+      if (input.startsWith('010')) {
+        if (input.length <= 3) return input;
+        if (input.length <= 7) return `${input.slice(0, 3)}-${input.slice(3)}`;
+        if (input.length <= 11) return `${input.slice(0, 3)}-${input.slice(3, 7)}-${input.slice(7)}`;
+      }
+      return input;
+    },
+    validatePhoneNumber(phoneNumber) {
+      // 02-1234-1234 또는 031-1234-1234 형식 허용
+      const phoneRegex = /^(02|0[3-9][0-9])-(\d{3,4})-(\d{4})$/;
+      return phoneRegex.test(phoneNumber);
+    },
+    validatePersonPhoneNumber(phoneNumber) {
+      // 010-1234-1234 형식 허용
+      const phoneRegex = /^010-\d{4}-\d{4}$/;
+      return phoneRegex.test(phoneNumber);
+    },
+    // 토큰에서 사용자 이름 가져오는 메서드
+    getUserNameFromToken() {
+      const token = localStorage.getItem('accessToken')
+      if (token) {
+        try {
+          const decodedToken = VueJwtDecode.decode(token)
+          this.selectedEmployeeName = decodedToken.username || '이름 정보 없음'
+          console.log('Decoded token:', decodedToken) // 토큰 구조 확인
+        } catch (error) {
+          console.error('토큰 디코딩 오류:', error)
+          this.selectedEmployeeName = '디코딩 실패'
+        }
+      } else {
+        this.selectedEmployeeName = '로그인 필요'
       }
     },
     close() {
@@ -206,22 +296,9 @@ export default {
         customerStatus: 'ACTIVE',
         customerSdate: '',
         customerNote: '',
-        userId: '', // 사용자 인덱스 초기화
+        userName: '', // formData에서 사용자 이름 초기화
       }
-      this.userIdInput = ''
       this.selectedEmployeeName = ''
-      this.userNotFound = false
-    },
-    async fetchEmployeeName() {
-      try {
-        const response = await apiService.getEmployeeById(this.userIdInput)
-        this.selectedEmployeeName = response.data.userName
-        this.userNotFound = false
-      } catch (error) {
-        console.error('해당 유저를 찾을 수 없음:', error)
-        this.selectedEmployeeName = ''
-        this.userNotFound = true
-      }
     },
   },
   watch: {
@@ -306,8 +383,7 @@ textarea {
   border-radius: 4px;
 }
 
-button[type='submit'],
-button[type='button'] {
+button[type='submit'] {
   background-color: #3f72af;
   color: white;
   border: none;
@@ -317,21 +393,36 @@ button[type='button'] {
   cursor: pointer;
 }
 
-button[type='button'] {
-  background-color: #f44336;
+button[type='submit']:hover {
+  background-color: #2c5987;
 }
 
-button[type='submit']:hover {
-  background-color: #3f72af;
+/* 취소 버튼 스타일 변경 */
+button[type='button'] {
+  background-color: gray;
+  color: white;
+  border: 2px solid gray;
+  border-radius: 4px;
+  width: 150px; /* 버튼 너비 고정 */
+  padding: 12px;
+  cursor: pointer;
 }
 
 button[type='button']:hover {
-  background-color: #e53935;
+  background-color: rgb(80, 80, 80);
 }
 
 .message {
   color: #3f72af;
   margin-top: 15px;
   text-align: center;
+}
+input.invalid {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
 }
 </style>

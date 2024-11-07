@@ -8,11 +8,17 @@
         placeholder="검색"
         @input="handleSearch"
       />
-      <button @click="openForm(false)">고객사 등록</button>
+      <div class="right-controls">
+        <select id="sortOrder" v-model="sortOrder" @change="fetchCustomers" class="filter">
+          <option value="asc">오름차순</option>
+          <option value="desc">내림차순</option>
+        </select>
+        <button @click="openForm(false)">고객사 등록</button>
+      </div>
     </div>
     <div class="table-container">
       <table>
-        <thead>
+        <thead> 
           <tr>
             <th>번호</th>
             <th>고객사명</th>
@@ -30,22 +36,15 @@
             :key="customer.customerId"
           >
             <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
-            <td>{{ customer.customerName }}</td>
+            <td @click="viewCustomerDetails(customer)" class="clickable">{{ customer.customerName }}</td>
             <td>{{ customer.customerPhone }}</td>
             <td>{{ customer.customerPersonName }}</td>
             <td>{{ customer.customerPersonPhone }}</td>
-            <td>{{ customer.customerAddress }}</td>
+            <td>
+              <span class="ellipsis">{{ truncatedAddress(customer.customerAddress) }}</span>
+            </td>
             <td>{{ customer.customerStatus }}</td>
             <td class="action-cell">
-              <button @click="toggleDropdown(index, $event)" class="dropdown-button">▼</button>
-              <div
-                v-show="dropdownIndex === index"
-                class="dropdown-menu"
-                :style="dropdownStyle"
-              >
-                <button @click="editCustomer(customer)">수정하기</button>
-                <button @click="showDeleteModal(customer)">삭제하기</button>
-              </div>
             </td>
           </tr>
         </tbody>
@@ -53,24 +52,33 @@
     </div>
 
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1">&lt;</button>
+      <button @click="prevPage" :disabled="currentPage === 1" class="pagination-arrow">&lt;</button>
       <span
         v-for="page in totalPages"
         :key="page"
         @click="setPage(page)"
         :class="{ active: currentPage === page }"
+        class="pagination-page"
       >
         {{ page }}
       </span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-arrow">
         &gt;
       </button>
     </div>
 
-    <!-- 고객사 등록/수정 모달 컴포넌트 -->
+    <!-- 고객사 세부 정보 모달 -->
+    <CustomerDetailModal
+      v-if="showCustomerDetailModal"
+      :customerDetails="selectedCustomer"
+      @close="closeCustomerDetailModal"
+      @edit="openEditForm"
+    />    
+
+    <!-- 고객사 등록/수정 모달 -->
     <CustomerForm
       v-if="showForm"
-      :customerData="isEditMode ? selectedCustomer : {}"
+      :customerData="selectedCustomer"
       :isEditMode="isEditMode"
       @close="closeForm"
       @registered="fetchCustomers"
@@ -94,9 +102,11 @@
 import apiService from '@/api/apiService'
 import CustomerForm from './CustomerForm.vue'
 import ConfirmModal from '../ConfirmModal.vue'
+import CustomerDetailModal from './CustomerDetailModal.vue'
+
 
 export default {
-  components: { CustomerForm, ConfirmModal },
+  components: { CustomerForm, ConfirmModal, CustomerDetailModal },
   data() {
     return {
       customers: [],
@@ -104,23 +114,35 @@ export default {
       currentPage: 1,
       pageSize: 10,
       showForm: false,
+      showCustomerDetailModal: false,
       dropdownIndex: null,
       dropdownStyle: {}, // 드롭다운 위치 스타일
       showDeleteModalFlag: false,
       selectedCustomer: null, // 선택된 고객사 정보를 저장
       isEditMode: false, // 수정 모드 여부 확인 플래그
+      sortOrder: 'asc',
     }
   },
   computed: {
     filteredCustomers() {
-      if (!this.searchQuery) {
-        return this.customers
+      let filtered = this.customers
+      if (this.searchQuery) {
+        filtered = filtered.filter(
+          customer =>
+            customer.customerName.includes(this.searchQuery) ||
+            customer.customerPersonName.includes(this.searchQuery)
+        )
       }
-      return this.customers.filter(
-        customer =>
-          customer.customerName.includes(this.searchQuery) ||
-          customer.customerPersonName.includes(this.searchQuery)
-      )
+      // 정렬을 적용
+      return filtered.sort((a, b) => {
+        const nameA = a.customerName || ""
+        const nameB = b.customerName || ""
+        if (this.sortOrder === 'asc') {
+          return nameA.localeCompare(nameB, 'ko') // 한국어 정렬
+        } else {
+          return nameB.localeCompare(nameA, 'ko') // 역순 정렬
+        }
+      })
     },
     totalPages() {
       return Math.ceil(this.filteredCustomers.length / this.pageSize)
@@ -132,28 +154,50 @@ export default {
     },
   },
   methods: {
+    toggleSortOrder() {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+    },
+    truncatedAddress(address) {
+      return address.length > 20 ? address.substring(0, 20) + '...' : address;
+    },
     async fetchCustomers() {
       try {
-        const response = await apiService.fetchCustomerList()
-        this.customers = Array.isArray(response.data.data)
-          ? response.data.data
-          : []
+        const response = await apiService.fetchCustomerList({
+          page: this.currentPage - 1, // API가 0부터 시작하므로 -1 적용
+          size: this.pageSize,
+          sort: `customerName,${this.sortOrder}`
+        });
+        
+        // API 응답 데이터에서 고객 목록과 페이지 정보를 설정
+        this.customers = response.data.content; // 현재 페이지의 고객 데이터
+        this.totalPages = response.data.totalPages; // 전체 페이지 수 설정
       } catch (error) {
-        console.error('고객사 목록을 불러오는 중 오류 발생:', error)
+        console.error('고객사 목록을 불러오는 중 오류 발생:', error);
       }
     },
     handleSearch() {
-      this.currentPage = 1
+      this.currentPage = 1;
+      this.fetchCustomers();
     },
     openForm(isEdit = false) {
       this.isEditMode = isEdit;
       this.showForm = true;
-      if (isEdit) {
-        // 수정 모드일 때는 selectedCustomer 유지
-      } else {
-        // 등록 모드일 때 selectedCustomer 초기화
-        this.selectedCustomer = null;
+      if (!isEdit) {
+        this.selectedCustomer = {}; // 등록 모드일 때 selectedCustomer 초기화
       }
+    },
+    viewCustomerDetails(customer) {
+      this.selectedCustomer = customer;
+      this.showCustomerDetailModal = true;
+    },
+    closeCustomerDetailModal() {
+      this.showCustomerDetailModal = false;
+    },
+    openEditForm(customer) {
+      this.selectedCustomer = customer;
+      this.isEditMode = true;
+      this.showForm = true;
+      this.showCustomerDetailModal = false;
     },
     closeForm() {
       this.showForm = false;
@@ -169,9 +213,8 @@ export default {
       } else {
         this.dropdownIndex = index;
 
-        // Get the button position and set dropdown position accordingly
         const buttonRect = event.target.getBoundingClientRect();
-        const dropdownHeight = 80; // approximate height of the dropdown
+        const dropdownHeight = 80;
         const spaceBelow = window.innerHeight - buttonRect.bottom;
 
         this.dropdownStyle = {
@@ -217,20 +260,23 @@ export default {
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage -= 1
+        this.currentPage--;
+        this.fetchCustomers();
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.currentPage += 1
+        this.currentPage++;
+        this.fetchCustomers();
       }
     },
     setPage(page) {
-      this.currentPage = page
+      this.currentPage = page;
+      this.fetchCustomers();
     },
   },
   mounted() {
-    this.fetchCustomers()
+    this.fetchCustomers();
   },
 }
 </script>
@@ -241,28 +287,43 @@ export default {
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-y: auto;
 }
 
-/* 스크롤바를 숨기기 위한 스타일 */
 .customer-list::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
 }
 .customer-list {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  gap: 10px; 
 }
+
 .header input[type='text'] {
   padding: 8px;
   font-size: 16px;
   width: 300px;
 }
+
+.right-controls {
+  display: flex;
+  gap: 10px; /* 버튼과 필터 사이 간격 */
+}
+
+.right-controls select.filter {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 .header button {
   padding: 10px 20px;
   font-size: 16px;
@@ -272,9 +333,19 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
+
+/* 테이블 스타일 */
 .table-container {
   overflow-x: auto;
 }
+.table-container::-webkit-scrollbar {
+  display: none;
+}
+.table-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -285,6 +356,13 @@ td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+.ellipsis {
+  display: inline-block;
+  max-width: 200px; /* 제한된 너비 설정 */
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 th {
@@ -321,20 +399,53 @@ th {
 .dropdown-menu button:hover {
   background-color: #f0f0f0;
 }
+
+/* 페이지네이션 스타일 */
 .pagination {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
 }
-.pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-.pagination span {
-  margin: 0 5px;
-  cursor: pointer;
-}
-.pagination .active {
+
+.pagination-page {
+  font-size: 16px;
   font-weight: bold;
-  color: #3f72af;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.3s ease;
 }
-</style> 
+
+.pagination-page:hover {
+  color: #1d4f7a;
+}
+
+.pagination-page.active {
+  color: #3f72af;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.pagination-arrow {
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #3f72af;
+  border: 1px solid #3f72af;
+  background-color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-arrow:hover {
+  background-color: #3f72af;
+  color: white;
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
