@@ -29,10 +29,18 @@ export default {
       return api.patch(`/customer/${customerId}`, updatedData); // 고객사 정보를 수정하는 API 엔드포인트 설정
     },
 
-    // 제품 목록 조회 요청
-  getProductList() {
-    return api.get('/products');
+  getProductList(page, size, sortBy, direction) {
+    return api.get('/products', {
+      params: {
+        page,
+        size,
+        sortBy,
+        direction,
+      },
+    });
   },
+
+  
 
   // 제품 등록 요청
   createProduct(productData) {
@@ -45,9 +53,15 @@ export default {
   },
 
   // 제품 검색 요청
-  searchProducts(name) {
-    return api.get(`/products/search`, {
-      params: { name },
+  searchProducts(productName, page, size, sortBy, direction) {
+    return api.get('/products/search', {
+      params: {
+        productName,
+        page,
+        size,
+        sortBy,
+        direction,
+      },
     });
   },
 

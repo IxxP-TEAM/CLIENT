@@ -1,16 +1,12 @@
 <!-- ProductTable.vue -->
 <template>
+  <div class="table-container">
   <table>
     <thead>
       <tr>
         <th>번호</th>
-        <!-- 열 헤더 클릭 시 상위 컴포넌트로 정렬 이벤트 전송 -->
-        <th @click="$emit('sort', 'name')" :class="{ sorted: sortedColumn === 'name' }" style="cursor: pointer;">
-          제품 이름
-        </th>
-        <th @click="$emit('sort', 'type')" :class="{ sorted: sortedColumn === 'type' }" style="cursor: pointer;">
-          제품 종류
-        </th>
+        <th>제품 이름</th>
+        <th>제품 종류</th>
         <th>임계 재고 수량</th>
       </tr>
     </thead>
@@ -23,16 +19,17 @@
         <td :class="{ sorted: sortedColumn === 'type' }">{{ product.productType }}</td>
         <td>
           {{ product.safetyStockQuantity }}
-          <button 
+          <span 
             v-if="isDeleteMode" 
             @click="$emit('delete', product)" 
             style="color: red; cursor: pointer; margin-left: 8px;">
             ✖
-          </button>
+          </span>
         </td>
       </tr>
     </tbody>
   </table>
+</div>
 </template>
 
 <script setup>
@@ -43,29 +40,36 @@ const props = defineProps({// eslint-disable-line no-unused-vars
   currentPage: Number,
   itemsPerPage: Number,
   isDeleteMode: Boolean,
-  sortedColumn: String,    // 정렬된 열 정보를 받아옴
 })
 </script>
 
 <style scoped>
+
+.table-container {
+  overflow-x: auto;
+}
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
 th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  /* border: 1px solid #ddd;
+  padding: 8px; */
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
 }
 
 th {
-  background-color: #f2f2f2;
-  text-align: left;
-  cursor: pointer;
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
-/* 정렬된 상태일 때 해당 열의 색상 변경 */
-.sorted {
-  color: blue;
+span {
+  float: right;
 }
+
 </style>

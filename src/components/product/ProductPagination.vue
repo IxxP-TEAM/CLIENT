@@ -1,16 +1,16 @@
 <!-- src/components/ProductPagination.vue -->
 <template>
     <div class="pagination">
-      <button @click="$emit('go-to-page', currentPage - 1)" :disabled="currentPage === 1">이전</button>
-      <button
+      <button @click="$emit('go-to-page', currentPage - 1)" :disabled="currentPage === 1">&lt;</button>
+      <span
         v-for="page in totalPages"
         :key="page"
         @click="$emit('go-to-page', page)"
         :class="{ active: currentPage === page }"
       >
         {{ page }}
-      </button>
-      <button @click="$emit('go-to-page', currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+      </span>
+      <button @click="$emit('go-to-page', currentPage + 1)" :disabled="currentPage === totalPages">&gt;</button>
     </div>
   </template>
   
@@ -25,20 +25,26 @@
   
   <style scoped>
   .pagination {
-    margin-top: 16px;
+    /* margin-top: 16px; */
     display: flex;
     justify-content: center;
-    gap: 8px;
+    /* gap: 8px; */
   }
   
   .pagination button {
-    padding: 4px 8px;
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-size: 14px;
   }
+  .pagination span {
+  margin: 0 5px;
+  cursor: pointer;
+}
   
   .pagination .active {
     font-weight: bold;
-    color: white;
-    background-color: #007bff;
+    color: #3f72af;
+    /* background-color: #007bff; */
   }
   </style>
   
