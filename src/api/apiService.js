@@ -36,6 +36,7 @@ export default {
     checkDuplicateRegistrationNumber(registrationNumber) {
       return api.post('/customer/check-duplicate-registration-number', { registrationNumber });
     },      
+
     // 비밀번호 - 이메일 인증 코드 요청
     sendResetPassword(email) {
       return api.post('/hr/email-code', { email });
@@ -44,5 +45,9 @@ export default {
     // 비밀번호 재설정
     resetPassword(email, code, newPassword) {
       return api.post(`/hr/reset-pw`, {email, code, newPassword});
+    },
+
+    updateUser(userData) {
+      return api.patch(`/hr/${userData.userIdx}`, userData);
     }
 };
