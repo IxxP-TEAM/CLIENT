@@ -162,16 +162,22 @@ export default {
     },
     async fetchCustomers() {
       try {
-        const response = await apiService.fetchCustomerList()
-        this.customers = Array.isArray(response.data.data)
-          ? response.data.data
-          : []
+        const response = await apiService.fetchCustomerList({
+          page: this.currentPage - 1, // API가 0부터 시작하므로 -1 적용
+          size: this.pageSize,
+          sort: `customerName,${this.sortOrder}`
+        });
+        
+        // API 응답 데이터에서 고객 목록과 페이지 정보를 설정
+        this.customers = response.data.content; // 현재 페이지의 고객 데이터
+        this.totalPages = response.data.totalPages; // 전체 페이지 수 설정
       } catch (error) {
-        console.error('고객사 목록을 불러오는 중 오류 발생:', error)
+        console.error('고객사 목록을 불러오는 중 오류 발생:', error);
       }
     },
     handleSearch() {
-      this.currentPage = 1
+      this.currentPage = 1;
+      this.fetchCustomers();
     },
     openForm(isEdit = false) {
       this.isEditMode = isEdit;
@@ -254,20 +260,23 @@ export default {
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage -= 1
+        this.currentPage--;
+        this.fetchCustomers();
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.currentPage += 1
+        this.currentPage++;
+        this.fetchCustomers();
       }
     },
     setPage(page) {
-      this.currentPage = page
+      this.currentPage = page;
+      this.fetchCustomers();
     },
   },
   mounted() {
-    this.fetchCustomers()
+    this.fetchCustomers();
   },
 }
 </script>
