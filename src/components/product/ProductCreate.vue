@@ -1,0 +1,159 @@
+<template>
+  <div v-if="isVisible" class="modal-overlay">
+    <div class="modal-content">
+      <h3 class="modal-title">제품 등록</h3>
+      <form @submit.prevent="submitForm" class="modal-form">
+        <label for="productName">제품 이름:</label>
+        <input v-model="productName" id="productName" type="text" required /><br>
+        
+        <label for="productType">제품 종류:</label>
+        <select v-model="productType" id="productType" required>
+          <option value="" disabled hidden>제품 종류를 선택하세요</option>
+          <option value="완제품">완제품</option>
+          <option value="원재료">원재료</option>
+        </select><br>
+        
+        <label for="safetyStockQuantity">임계 재고 수량:</label>
+        <input v-model="safetyStockQuantity" min="0" id="safetyStockQuantity" type="number" required /><br>
+        
+        <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
+        
+        <div class="button-group">
+          <button type="submit">등록</button>
+          <button class="button-a" @click="closeModal">닫기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, defineProps, defineEmits, computed } from 'vue'
+
+const props = defineProps({
+  isVisible: Boolean,
+  errorMessage: String,
+})
+
+const emits = defineEmits(['close', 'submit'])
+
+const productName = ref('')
+const productType = ref('')
+const safetyStockQuantity = ref(0)
+const computedErrorMessage = computed(() => props.errorMessage);
+
+function closeModal() {
+  resetForm() // 입력 필드 초기화
+  emits('close')
+}
+
+function submitForm() {
+  emits('submit', {
+    productName: productName.value,
+    productType: productType.value,
+    safetyStockQuantity: safetyStockQuantity.value
+  })
+}
+
+function resetForm() {
+  productName.value = ''
+  productType.value = ''
+  safetyStockQuantity.value = 0
+}
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 800px; /* 가로 너비 증가 */
+  max-width: 95%;
+  max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
+  overflow-y: auto; /* 스크롤 활성화 */
+}
+.modal-title {
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* 스크롤바를 숨기기 위한 스타일 */
+.modal-content::-webkit-scrollbar {
+  display: none;
+}
+.modal-content {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.modal-form {
+  display: flex;
+  flex-direction: column;
+}
+.close-button {
+  background-color: transparent;
+  color: #007BFF;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin-top: 17px;
+}
+.button-group {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽으로 정렬 */
+  gap: 10px; /* 두 버튼 사이 간격 */
+  margin-top: 20px;
+}
+
+
+.button-a{
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  }
+  button{
+    padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3f72af;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  }
+label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, select {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+</style>

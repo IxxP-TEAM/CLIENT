@@ -29,6 +29,45 @@ export default {
       return api.patch(`/customer/${customerId}`, updatedData); // 고객사 정보를 수정하는 API 엔드포인트 설정
     },
 
+  getProductList(page, size, sortBy, direction) {
+    return api.get('/products', {
+      params: {
+        page,
+        size,
+        sortBy,
+        direction,
+      },
+    });
+  },
+  
+  // 제품 등록 요청
+  createProduct(productData) {
+    return api.post('/products/create', productData);
+  },
+
+  // 제품 삭제 요청
+  deleteProduct(productId) {
+    return api.delete(`/products/delete/${productId}`);
+  },
+
+  // 제품 검색 요청
+  searchProducts(productName, page, size, sortBy, direction) {
+    return api.get('/products/search', {
+      params: {
+        productName,
+        page,
+        size,
+        sortBy,
+        direction,
+      },
+    });
+  },
+
+  // 제품 수정 요청
+  updateProduct(productId, updatedData) {
+    return api.post(`/products/update/${productId}`, updatedData);
+  },
+    
     //고객사 세부 내역
     getCustomerDetails(customerId) {
       return api.get(`/customer/${customerId}`); 
@@ -51,3 +90,4 @@ export default {
       return api.patch(`/hr/${userData.userIdx}`, userData);
     }
 };
+
