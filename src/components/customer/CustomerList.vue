@@ -8,7 +8,13 @@
         placeholder="검색"
         @input="handleSearch"
       />
-      <button @click="openForm(false)">고객사 등록</button>
+      <div class="right-controls">
+        <select id="sortOrder" v-model="sortOrder" @change="fetchCustomers" class="filter">
+          <option value="asc">오름차순</option>
+          <option value="desc">내림차순</option>
+        </select>
+        <button @click="openForm(false)">고객사 등록</button>
+      </div>
     </div>
     <div class="table-container">
       <table>
@@ -114,18 +120,29 @@ export default {
       showDeleteModalFlag: false,
       selectedCustomer: null, // 선택된 고객사 정보를 저장
       isEditMode: false, // 수정 모드 여부 확인 플래그
+      sortOrder: 'asc',
     }
   },
   computed: {
     filteredCustomers() {
-      if (!this.searchQuery) {
-        return this.customers
+      let filtered = this.customers
+      if (this.searchQuery) {
+        filtered = filtered.filter(
+          customer =>
+            customer.customerName.includes(this.searchQuery) ||
+            customer.customerPersonName.includes(this.searchQuery)
+        )
       }
-      return this.customers.filter(
-        customer =>
-          customer.customerName.includes(this.searchQuery) ||
-          customer.customerPersonName.includes(this.searchQuery)
-      )
+      // 정렬을 적용
+      return filtered.sort((a, b) => {
+        const nameA = a.customerName || ""
+        const nameB = b.customerName || ""
+        if (this.sortOrder === 'asc') {
+          return nameA.localeCompare(nameB, 'ko') // 한국어 정렬
+        } else {
+          return nameB.localeCompare(nameA, 'ko') // 역순 정렬
+        }
+      })
     },
     totalPages() {
       return Math.ceil(this.filteredCustomers.length / this.pageSize)
@@ -137,6 +154,9 @@ export default {
     },
   },
   methods: {
+    toggleSortOrder() {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+    },
     truncatedAddress(address) {
       return address.length > 20 ? address.substring(0, 20) + '...' : address;
     },
@@ -271,14 +291,30 @@ export default {
 
 .header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  gap: 10px; 
 }
+
 .header input[type='text'] {
   padding: 8px;
   font-size: 16px;
   width: 300px;
 }
+
+.right-controls {
+  display: flex;
+  gap: 10px; /* 버튼과 필터 사이 간격 */
+}
+
+.right-controls select.filter {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 .header button {
   padding: 10px 20px;
   font-size: 16px;
@@ -289,6 +325,7 @@ export default {
   cursor: pointer;
 }
 
+/* 테이블 스타일 */
 .table-container {
   overflow-x: auto;
 }
@@ -353,6 +390,7 @@ th {
 .dropdown-menu button:hover {
   background-color: #f0f0f0;
 }
+
 /* 페이지네이션 스타일 */
 .pagination {
   display: flex;
