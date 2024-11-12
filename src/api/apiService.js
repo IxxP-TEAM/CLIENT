@@ -49,5 +49,39 @@ export default {
 
     updateUser(userData) {
       return api.patch(`/hr/${userData.userIdx}`, userData);
-    }
+    },
+    // 주문 생성 요청
+    createOrder(orderData) {
+      return api.post('/orders/create', orderData);
+    },
+
+    // 주문 목록 가져오기 요청 (페이지 매개변수 포함)
+    fetchOrderList(page = 0, size = 10) {
+      return api.get(`/orders/all?page=${page}&size=${size}`);
+    },
+
+    // 특정 주문 조회 요청
+    getOrderDetails(orderId) {
+      return api.get(`/orders/${orderId}`);
+    },
+
+    // 주문 수정 요청
+    updateOrder(orderId, updatedOrderData) {
+      return api.patch(`/orders/${orderId}`, updatedOrderData);
+    },
+
+    // 주문 삭제 요청
+    deleteOrder(orderId) {
+      return api.delete(`/orders/${orderId}`);
+    },
+
+    // 제품 목록 가져오기
+    getProducts() {
+      return api.get('/products?sortBy=productType&direction=desc&page=0&size=10');
+    },
+    // 직원 목록 가져오기 요청
+    fetchUserList(page = 0, size = 10) {
+      return api.get(`/hr?page=${page}&size=${size}`);
+    },    
+    
 };

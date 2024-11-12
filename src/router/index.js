@@ -4,6 +4,7 @@ import Login from '@/components/Login.vue'
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
+import OrderForm from '@/components/order/OrderForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,7 +40,13 @@ const router = createRouter({
       path: '/resetPassword',
       name: ResetPassword,
       component: ResetPassword
-    }
+    },
+    {
+      path: '/register-order',
+      name: 'Registerorder',
+      component: OrderForm,
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

@@ -27,7 +27,6 @@
             <th>고객사 담당자 연락처</th>
             <th>고객사 주소</th>
             <th>고객사 거래상태</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
