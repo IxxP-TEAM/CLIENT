@@ -27,7 +27,6 @@
             <th>고객사 담당자 연락처</th>
             <th>고객사 주소</th>
             <th>고객사 거래상태</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -162,7 +161,7 @@ export default {
     },
     async fetchCustomers() {
       try {
-        const response = await apiService.fetchCustomerList({
+        const response = await apiService.fetchCustomerList2({
           page: this.currentPage - 1, // API가 0부터 시작하므로 -1 적용
           size: this.pageSize,
           sort: `customerName,${this.sortOrder}`

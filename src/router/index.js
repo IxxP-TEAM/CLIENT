@@ -5,6 +5,7 @@ import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
 import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
+import OrderForm from '@/components/order/OrderForm.vue'
 
 
 const router = createRouter({
@@ -48,7 +49,13 @@ const router = createRouter({
       path: '/resetPassword',
       name: ResetPassword,
       component: ResetPassword
-    }
+    },
+    {
+      path: '/register-order',
+      name: 'Registerorder',
+      component: OrderForm,
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
