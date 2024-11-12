@@ -101,8 +101,8 @@
             id="customerStatus"
             required
           >
-            <option value="ACTIVE">활성</option>
-            <option value="INACTIVE">비활성</option>
+            <option value="거래중">거래중</option>
+            <option value="거래중지">거래중지</option>
           </select>
         </div>
         <div class="grid-item">
@@ -293,7 +293,7 @@ export default {
         customerPersonPhone: '',
         customerPersonEmail: '',
         registrationNumber: '',
-        customerStatus: 'ACTIVE',
+        customerStatus: '거래중',
         customerSdate: '',
         customerNote: '',
         userName: '', // formData에서 사용자 이름 초기화

@@ -1,30 +1,28 @@
 <template>
     <div class="modal-overlay" @click.self="close">
       <div class="modal-content">
-        <h2>담당자 선택</h2>
-        <input v-model="searchTerm" @input="filterUsers" placeholder="담당자 검색" class="search-bar" />
-        <table class="user-table">
+        <h2>고객사 선택</h2>
+        <input v-model="searchTerm" @input="filterCustomers" placeholder="고객사 검색" class="search-bar" />
+        <table class="customer-table">
           <thead>
             <tr>
               <th>선택</th>
-              <th>이름</th>
-              <th>부서</th>
-              <th>이메일</th>
+              <th>고객사 이름</th>
+              <th>주소</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in paginatedUsers" :key="user.userIdx">
-              <td><input type="radio" :value="user" v-model="selectedUser" /></td>
-              <td>{{ user.name }}</td>
-              <td>{{ user.department }}</td>
-              <td>{{ user.email }}</td>
+            <tr v-for="customer in filteredCustomers" :key="customer.customerId">
+              <td><input type="radio" :value="customer" v-model="selectedCustomer" /></td>
+              <td>{{ customer.customerName }}</td>
+              <td>{{ customer.customerAddress }}</td>
             </tr>
           </tbody>
         </table>
         <div class="pagination">
-          <button @click="previousPage" :disabled="currentPage === 0">이전</button>
+          <button @click="fetchCustomers(currentPage - 1)" :disabled="currentPage === 0">이전</button>
           <span>{{ currentPage + 1 }} / {{ totalPages }}</span>
-          <button @click="nextPage" :disabled="currentPage >= totalPages - 1">다음</button>
+          <button @click="fetchCustomers(currentPage + 1)" :disabled="currentPage >= totalPages - 1">다음</button>
         </div>
         <div class="button-group">
           <button @click="confirmSelection" class="confirm-btn">선택 완료</button>
@@ -40,69 +38,50 @@
   export default {
     data() {
       return {
-        selectedUser: null,
+        selectedCustomer: null,
         searchTerm: '',
-        users: [],
-        filteredUsers: [],
+        customers: [],
+        filteredCustomers: [],
         currentPage: 0,
-        pageSize: 5,
+        totalPages: 1,
       };
     },
-    computed: {
-      paginatedUsers() {
-        const start = this.currentPage * this.pageSize;
-        return this.filteredUsers.slice(start, start + this.pageSize);
-      },
-      totalPages() {
-        return Math.ceil(this.filteredUsers.length / this.pageSize);
-      },
-    },
     async mounted() {
-      await this.fetchUsers();
+      await this.fetchCustomers();
     },
     methods: {
-      async fetchUsers() {
+      async fetchCustomers(page = 0) {
         try {
-          const response = await apiService.fetchUserList();
-          console.log('API Response:', response.data);
+          const response = await apiService.fetchCustomerList(page, 5); // 페이지 크기를 5로 설정
+          console.log('API Response:', response.data.content); // 데이터 확인용
   
-          if (response.data && response.data.data && response.data.data.items) {
-            this.users = response.data.data.items;
-            this.filteredUsers = this.users;
+          if (response.data && response.data.content) {
+            this.customers = response.data.content;
+            this.filteredCustomers = this.customers;
+            this.totalPages = response.data.totalPages;
+            this.currentPage = page;
           } else {
-            console.error('API 응답에 직원 목록이 없습니다.');
+            console.error('API 응답에 고객사 목록이 없습니다.');
           }
         } catch (error) {
-          console.error('직원 목록을 불러오는 중 오류 발생:', error);
+          console.error('고객사 목록을 불러오는 중 오류 발생:', error);
         }
       },
-      filterUsers() {
+      filterCustomers() {
         const term = this.searchTerm.toLowerCase();
-        this.filteredUsers = this.users.filter(user =>
-          user.name.toLowerCase().includes(term) ||
-          user.department.toLowerCase().includes(term) ||
-          user.email.toLowerCase().includes(term)
+        this.filteredCustomers = this.customers.filter(customer =>
+          (customer.customerName && customer.customerName.toLowerCase().includes(term)) ||
+          (customer.customerAddress && customer.customerAddress.toLowerCase().includes(term))
         );
-        this.currentPage = 0; // 검색 시 첫 페이지로 이동
       },
       confirmSelection() {
-        if (this.selectedUser) {
-          this.$emit('user-selected', this.selectedUser);
+        if (this.selectedCustomer) {
+          this.$emit('customer-selected', this.selectedCustomer);
           this.close();
         }
       },
       close() {
         this.$emit('close');
-      },
-      nextPage() {
-        if (this.currentPage < this.totalPages - 1) {
-          this.currentPage++;
-        }
-      },
-      previousPage() {
-        if (this.currentPage > 0) {
-          this.currentPage--;
-        }
       },
     },
   };
@@ -159,24 +138,24 @@
     box-sizing: border-box;
   }
   
-  .user-table {
+  .customer-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
   }
   
-  .user-table th, .user-table td {
+  .customer-table th, .customer-table td {
     padding: 12px;
     border: 1px solid #ddd;
     text-align: center;
   }
   
-  .user-table th {
+  .customer-table th {
     background-color: #f2f2f2;
     font-weight: bold;
   }
   
-  .user-table tr:hover {
+  .customer-table tr:hover {
     background-color: #f9f9f9;
   }
   

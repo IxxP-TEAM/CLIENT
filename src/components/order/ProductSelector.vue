@@ -12,13 +12,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="product in filteredProducts" :key="product.productId">
+            <tr v-for="product in paginatedProducts" :key="product.productId">
               <td><input type="checkbox" :value="product" v-model="selectedProducts" /></td>
               <td>{{ product.productName }}</td>
               <td>₩{{ product.productPrice.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>
+        <div class="pagination">
+          <button @click="previousPage" :disabled="currentPage === 0">이전</button>
+          <span>{{ currentPage + 1 }} / {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage >= totalPages - 1">다음</button>
+        </div>
         <div class="button-group">
           <button @click="confirmSelection" class="confirm-btn">선택 완료</button>
           <button @click="close" class="cancel-btn">취소</button>
@@ -40,7 +45,18 @@
         selectedProducts: [],
         searchTerm: '',
         filteredProducts: this.productOptions,
+        currentPage: 0,
+        pageSize: 5,
       };
+    },
+    computed: {
+      paginatedProducts() {
+        const start = this.currentPage * this.pageSize;
+        return this.filteredProducts.slice(start, start + this.pageSize);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredProducts.length / this.pageSize);
+      },
     },
     watch: {
       productOptions: {
@@ -56,6 +72,7 @@
         this.filteredProducts = this.productOptions.filter(product =>
           product.productName.toLowerCase().includes(term)
         );
+        this.currentPage = 0; // 검색 시 첫 페이지로 이동
       },
       confirmSelection() {
         this.$emit('confirm-selection', this.selectedProducts);
@@ -63,6 +80,16 @@
       },
       close() {
         this.$emit('close');
+      },
+      nextPage() {
+        if (this.currentPage < this.totalPages - 1) {
+          this.currentPage++;
+        }
+      },
+      previousPage() {
+        if (this.currentPage > 0) {
+          this.currentPage--;
+        }
       },
     },
   };
@@ -91,6 +118,16 @@
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* 스크롤바 숨기기 */
+  .modal-content::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .modal-content {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
   
   h2 {
@@ -128,6 +165,14 @@
   
   .product-table tr:hover {
     background-color: #f9f9f9;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
   }
   
   .button-group {

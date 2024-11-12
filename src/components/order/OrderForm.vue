@@ -3,21 +3,49 @@
     <div class="modal-content">
       <h2>{{ isEditMode ? '주문 수정' : '주문 등록' }}</h2>
       <form @submit.prevent="handleSubmit" class="grid-form">
+        
+        <!-- 고객사 선택 필드 -->
+        <div class="grid-item full-width icon-input">
+          <label for="customerField">고객사</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="customerField"
+              v-model="formData.customerName"
+              placeholder="고객사 검색"
+              class="form-control"
+              @focus="showCustomerSelector = true"
+              readonly
+            />
+            <i class="fas fa-search icon"></i> <!-- 돋보기 아이콘 -->
+          </div>
+        </div>
 
-        <!-- 고객 정보 -->
-        <div class="grid-item">
-          <label for="customerId">고객사 ID</label>
-          <input v-model="formData.customerId" type="text" id="customerId" required />
+        <!-- 담당자 선택 필드 -->
+        <div class="grid-item full-width icon-input">
+          <label for="userField">담당자</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="userField"
+              v-model="selectedUserName"
+              placeholder="담당자 검색"
+              class="form-control"
+              @focus="showUserSelector = true"
+              readonly
+            />
+            <i class="fas fa-search icon"></i> <!-- 돋보기 아이콘 -->
+          </div>
         </div>
 
         <!-- 주문 정보 -->
         <div class="grid-item">
           <label for="orderDate">주문일</label>
-          <input v-model="formData.orderDate" type="date" id="orderDate" required />
+          <input v-model="formData.orderDate" type="date" id="orderDate" class="form-control" required />
         </div>
         <div class="grid-item">
           <label for="orderStatus">주문 상태</label>
-          <select v-model="formData.orderStatus" id="orderStatus" required>
+          <select v-model="formData.orderStatus" id="orderStatus" class="form-control" required>
             <option value="대기">대기</option>
             <option value="완료">완료</option>
             <option value="취소">취소</option>
@@ -25,7 +53,7 @@
         </div>
         <div class="grid-item">
           <label for="paymentMethod">결제 방법</label>
-          <select v-model="formData.paymentMethod" id="paymentMethod" required>
+          <select v-model="formData.paymentMethod" id="paymentMethod" class="form-control" required>
             <option value="카드">카드</option>
             <option value="계좌이체">계좌 이체</option>
             <option value="현금">현금</option>
@@ -33,44 +61,49 @@
         </div>
         <div class="grid-item">
           <label for="paymentStatus">결제 상태</label>
-          <select v-model="formData.paymentStatus" id="paymentStatus" required>
+          <select v-model="formData.paymentStatus" id="paymentStatus" class="form-control" required>
             <option value="미결제">미결제</option>
             <option value="결제완료">결제 완료</option>
           </select>
         </div>
 
         <!-- 배송 정보 -->
-        <div class="grid-item">
+        <div class="grid-item full-width">
           <label for="shippingAddr">배송 주소</label>
-          <input v-model="formData.shippingAddr" type="text" id="shippingAddr" required />
+          <input v-model="formData.shippingAddr" type="text" id="shippingAddr" class="form-control" required />
         </div>
         <div class="grid-item">
           <label for="shippingSdate">배송 시작일</label>
-          <input v-model="formData.shippingSdate" type="date" id="shippingSdate" required />
+          <input v-model="formData.shippingSdate" type="date" id="shippingSdate" class="form-control" required />
         </div>
         <div class="grid-item">
           <label for="shippingStatus">배송 상태</label>
-          <select v-model="formData.shippingStatus" id="shippingStatus" required>
+          <select v-model="formData.shippingStatus" id="shippingStatus" class="form-control" required>
             <option value="미출발">미출발</option>
             <option value="배송중">배송중</option>
             <option value="배송완료">배송 완료</option>
           </select>
         </div>
-        
-        <!-- 사용자 선택 버튼 추가 -->
-        <div class="grid-item full-width">
-          <button type="button" @click="showUserSelector = true" class="select-user-btn">담당자 선택</button>
-          <input v-model="formData.userId" type="hidden" id="userId" required />
-          <p v-if="selectedUserName">담당자: {{ selectedUserName }}</p>
-        </div>        
 
-        <!-- 제품 선택 버튼 -->
-        <div class="grid-item full-width">
-          <button type="button" @click="openProductSelector" class="select-product-btn">제품 선택</button>
+        <!-- 제품 선택 필드 -->
+        <div class="grid-item full-width icon-input">
+          <label for="productField">제품 선택</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="productField"
+              :placeholder="productPlaceholder"
+              :title="selectedProductNames"
+              class="form-control"
+              @focus="openProductSelector"
+              readonly
+            />
+            <i class="fas fa-search icon"></i>
+          </div>
         </div>
 
         <!-- 선택된 제품 목록 표시 -->
-        <div v-if="formData.products.length" class="selected-products">
+        <div v-if="formData.products.length" class="selected-products full-width">
           <h3>선택된 제품</h3>
           <table class="product-table">
             <thead>
@@ -92,29 +125,19 @@
           </table>
         </div>
 
-        <!-- 제품 선택 모달 -->
-        <ProductSelector
-          v-if="showProductSelector"
-          :productOptions="productOptions"
-          @confirm-selection="addSelectedProducts"
-          @close="showProductSelector = false"
-        />
+        <!-- 제품, 사용자, 고객사 선택 모달 -->
+        <ProductSelector v-if="showProductSelector" :productOptions="productOptions" @confirm-selection="addSelectedProducts" @close="showProductSelector = false" />
+        <UserSelector v-if="showUserSelector" @user-selected="selectUser" @close="showUserSelector = false" />        
+        <CustomerSelector v-if="showCustomerSelector" @customer-selected="selectCustomer" @close="showCustomerSelector = false" />
 
-        <!-- 사용자 선택 모달 -->
-        <UserSelector
-          v-if="showUserSelector"
-          @user-selected="selectUser"
-          @close="showUserSelector = false"
-        />        
-
-        <!-- 주문 메모 -->
+        <!-- 주문 메모 필드  -->
         <div class="grid-item full-width">
           <label for="orderNote">주문 메모</label>
-          <textarea v-model="formData.orderNote" id="orderNote" rows="4"></textarea>
+          <textarea v-model="formData.orderNote" id="orderNote" class="form-control full-width" rows="4"></textarea>
         </div>
 
-        <!-- 버튼 그룹 -->
-        <div class="button-group">
+        <!-- 버튼 그룹  -->
+        <div class="button-group full-width">
           <button type="submit" class="submit-btn">{{ isEditMode ? '수정' : '등록' }}</button>
           <button type="button" @click="close" class="cancel-btn">취소</button>
         </div>
@@ -129,11 +152,13 @@ import apiService from '@/api/apiService';
 import VueJwtDecode from 'vue-jwt-decode';
 import ProductSelector from './ProductSelector.vue';
 import UserSelector from './UserSelector.vue';
+import CustomerSelector from './CustomerSelector.vue';
 
 export default {
   components: {
     ProductSelector,
-    UserSelector
+    UserSelector,
+    CustomerSelector
   },
   props: {
     orderData: {
@@ -150,6 +175,7 @@ export default {
       formData: { 
         userId: '', 
         customerId: '', 
+        customerName: '',  // 고객사 이름 추가
         orderDate: '', 
         orderStatus: '대기', 
         paymentMethod: '카드', 
@@ -158,12 +184,14 @@ export default {
         shippingSdate: '', 
         shippingStatus: '미출발', 
         products: [], 
-        orderNote: '' 
+        orderNote: '',
       },
       message: '',
       productOptions: [],
       showProductSelector: false,
       showUserSelector: false,
+      showCustomerSelector: false,
+      selectedUserName: ''
     };
   },
   mounted() {
@@ -175,13 +203,29 @@ export default {
       this.resetFormData();
     }
   },
-  methods: {
-    selectUser(user) {
-    // userIdx를 userId로 설정
-    this.formData.userId = user.userIdx;
-    this.selectedUserName = user.name;
-    this.showUserSelector = false; // 사용자 선택 모달 닫기
+  computed: {
+    selectedProductNames() {
+      return this.formData.products.map(product => product.productName).join(', ');
+    },
+    productPlaceholder() {
+      const names = this.formData.products.map(product => product.productName);
+      if (names.length > 2) {
+        return `${names.slice(0, 2).join(', ')}...`;
+      }
+      return names.join(', ');
+    }
   },
+  methods: {
+    selectCustomer(customer) {
+      this.formData.customerId = customer.customerId;
+      this.formData.customerName = customer.customerName || customer.name;  // 고객사 이름을 필드에 반영
+      this.showCustomerSelector = false;
+    },
+    selectUser(user) {
+      this.formData.userId = user.userIdx;
+      this.selectedUserName = user.name;
+      this.showUserSelector = false;
+    },
     async fetchProductOptions() {
       try {
         const response = await apiService.getProducts();
@@ -222,27 +266,6 @@ export default {
         }
       }
     },
-    calculateTotal() {
-      return this.formData.products.reduce((total, product) => {
-        const price = product.productPrice * product.quantity;
-        const discount = (price * product.discount) / 100;
-        const tax = (price - discount) * 0.1;
-        return total + price - discount + tax;
-      }, 0).toFixed(2);
-    },
-    calculateDiscount() {
-      return this.formData.products.reduce((total, product) => {
-        const price = product.productPrice * product.quantity;
-        return total + (price * product.discount) / 100;
-      }, 0).toFixed(2);
-    },
-    calculateTax() {
-      return this.formData.products.reduce((total, product) => {
-        const price = product.productPrice * product.quantity;
-        const discount = (price * product.discount) / 100;
-        return total + (price - discount) * 0.1;
-      }, 0).toFixed(2);
-    },
     async handleSubmit() {
       try {
         if (this.isEditMode) {
@@ -267,6 +290,7 @@ export default {
       this.formData = {
         userId: '',
         customerId: '',
+        customerName: '',
         orderDate: '',
         orderStatus: '대기',
         paymentMethod: '카드',
@@ -277,11 +301,11 @@ export default {
         products: [],
         orderNote: ''
       };
+      this.selectedUserName = '';
     },
   },
 };
 </script>
-
 
 <style scoped>
 .modal-overlay {
@@ -300,29 +324,32 @@ export default {
 .modal-content {
   background: white;
   padding: 25px;
-  border-radius: 10px;
+  border-radius: 15px;
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
-  overflow-x: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
 }
 
 .modal-content::-webkit-scrollbar {
-  width: 0;
-  background: transparent; /* 스크롤바 배경을 투명하게 */
+  display: none; /* Chrome, Safari, Opera */
 }
 
-.modal-content {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+h2 {
+  color: #2f3542;
+  font-size: 1.8em;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .grid-form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 15px;
 }
 
 .grid-item {
@@ -330,17 +357,43 @@ export default {
   flex-direction: column;
 }
 
+.form-control {
+  padding: 12px;
+  border: 1px solid #ced6e0;
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: #f1f2f6;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
 .full-width {
   grid-column: span 2;
 }
 
-input,
-select,
-textarea {
+.selected-products {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th,
+.product-table td {
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1em;
+  border: 1px solid #dfe6e9;
+  text-align: center;
+}
+
+.product-table th {
+  background-color: #f1f2f6;
+  font-weight: bold;
 }
 
 .table-input {
@@ -348,59 +401,22 @@ textarea {
   text-align: center;
 }
 
-.selected-products {
+.button-group {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
   margin-top: 20px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  width: 100%; 
-}
-
-.product-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.product-table th,
-.product-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-.product-table th {
-  background-color: #e0e7ff;
-  font-weight: bold;
-}
-
-.product-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.select-product-btn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%; /* 버튼 폭을 전체 넓이로 조정 */
-}
-
-.select-product-btn:hover {
-  background-color: #45a049;
 }
 
 .submit-btn {
   background-color: #3f72af;
   color: white;
   border: none;
-  border-radius: 5px;
-  width: 150px;
-  padding: 12px;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
@@ -411,41 +427,37 @@ textarea {
   background-color: #d9534f;
   color: white;
   border: none;
-  border-radius: 5px;
-  width: 150px;
-  padding: 12px;
+  border-radius: 8px;
+  padding: 12px 24px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .cancel-btn:hover {
   background-color: #c9302c;
 }
 
-.delete-btn {
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background-color: #c9302c;
-}
-
 .message {
   color: #3f72af;
-  margin-top: 15px;
+  font-size: 1.2em;
   text-align: center;
+  margin-top: 20px;
 }
 
-.select-user-btn {
-  background-color: #3f72af;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none;
+}
+
+.icon-input {
+  position: relative;
+}
+
+.input-wrapper {
+  position: relative;
 }
 </style>

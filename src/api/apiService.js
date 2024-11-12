@@ -15,10 +15,14 @@ export default {
     },
   
     // 고객사 목록 가져오기 요청
-    fetchCustomerList() {
+    fetchCustomerList2() {
       return api.get('/customer/all'); // 고객사 목록을 가져오는 API 엔드포인트 설정
     },
-  
+    // 고객사 목록 가져오기 요청
+    fetchCustomerList(page = 0, size = 5) {
+        return api.get(`/customer/all?page=${page}&size=${size}`); // 쿼리 파라미터로 페이지와 사이즈 전달
+    },
+    
     // 고객사 삭제 요청
     deleteCustomer(customerId) {
       return api.delete(`/customer/${customerId}`); // 고객사를 삭제하는 API 엔드포인트 설정
@@ -80,7 +84,7 @@ export default {
       return api.get('/products?sortBy=productType&direction=desc&page=0&size=10');
     },
     // 직원 목록 가져오기 요청
-    fetchUserList(page = 0, size = 10) {
+    fetchUserList(page = 0, size = 5) {
       return api.get(`/hr?page=${page}&size=${size}`);
     },    
     

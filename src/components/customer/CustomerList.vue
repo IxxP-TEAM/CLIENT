@@ -161,7 +161,7 @@ export default {
     },
     async fetchCustomers() {
       try {
-        const response = await apiService.fetchCustomerList({
+        const response = await apiService.fetchCustomerList2({
           page: this.currentPage - 1, // API가 0부터 시작하므로 -1 적용
           size: this.pageSize,
           sort: `customerName,${this.sortOrder}`
