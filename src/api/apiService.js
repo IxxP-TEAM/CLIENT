@@ -49,5 +49,14 @@ export default {
 
     updateUser(userData) {
       return api.patch(`/hr/${userData.userIdx}`, userData);
+    },
+    checkInStatus() {
+    return api.get('/attendance/status'); // 출근 여부 확인 API 엔드포인트
+    }, 
+    checkIn() {
+      return api.post('/attendance');
+    },
+    checkOut() {
+      return api.post('/attendance/leave-work');
     }
 };
