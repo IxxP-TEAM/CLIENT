@@ -1,24 +1,59 @@
 <template>
   <div class="customer-list">
     <h2>고객사 목록</h2>
+
+    <!-- 검색 및 필터 아이콘 -->
     <div class="header">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="검색"
-        @input="handleSearch"
-      />
-      <div class="right-controls">
-        <select id="sortOrder" v-model="sortOrder" @change="fetchCustomers" class="filter">
-          <option value="asc">오름차순</option>
-          <option value="desc">내림차순</option>
-        </select>
-        <button @click="openForm(false)">고객사 등록</button>
+      <div class="search-filter-container">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="검색"
+          @input="handleSearch"
+          class="search-input"
+        />
+
+        <!-- 필터 아이콘 버튼 -->
+        <button @click="toggleFilters" class="filter-icon-button">
+          <i class="fas fa-filter"></i>
+        </button>
       </div>
+
+      <!-- 고객사 등록 버튼 -->
+      <button @click="openForm(false)" class="register-button">
+        고객사 등록
+      </button>
     </div>
+
+    <!-- 필터 섹션 -->
+    <div v-if="showFilters" class="filters">
+      <!-- 거래 상태 필터 -->
+      <select
+        v-model="transactionStatusFilter"
+        @change="handleSearch"
+        class="filter"
+      >
+        <option value="">전체 거래 상태</option>
+        <option value="거래중">거래중</option>
+        <option value="거래중지">거래중지</option>
+      </select>
+
+      <!-- 정렬 필터 -->
+      <select
+        id="sortOrder"
+        v-model="sortOrder"
+        @change="fetchCustomers"
+        class="filter"
+      >
+        <option value="asc">오름차순</option>
+        <option value="desc">내림차순</option>
+      </select>
+    </div>
+
+    <!-- 고객사 목록 테이블 -->
     <div class="table-container">
       <table>
-        <thead> 
+        <thead>
           <tr>
             <th>번호</th>
             <th>고객사명</th>
@@ -33,25 +68,33 @@
           <tr
             v-for="(customer, index) in paginatedCustomers || []"
             :key="customer.customerId"
+            @click="viewCustomerDetails(customer)"
+            class="clickable-row"
           >
             <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
-            <td @click="viewCustomerDetails(customer)" class="clickable">{{ customer.customerName }}</td>
+            <td>{{ customer.customerName }}</td>
             <td>{{ customer.customerPhone }}</td>
             <td>{{ customer.customerPersonName }}</td>
             <td>{{ customer.customerPersonPhone }}</td>
             <td>
-              <span class="ellipsis">{{ truncatedAddress(customer.customerAddress) }}</span>
+              <span class="ellipsis">{{
+                truncatedAddress(customer.customerAddress)
+              }}</span>
             </td>
             <td>{{ customer.customerStatus }}</td>
-            <td class="action-cell">
-            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="pagination">
-      <button @click="prevPage" :disabled="currentPage === 1" class="pagination-arrow">&lt;</button>
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="pagination-arrow"
+      >
+        &lt;
+      </button>
       <span
         v-for="page in totalPages"
         :key="page"
@@ -61,7 +104,11 @@
       >
         {{ page }}
       </span>
-      <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-arrow">
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="pagination-arrow"
+      >
         &gt;
       </button>
     </div>
@@ -72,7 +119,7 @@
       :customerDetails="selectedCustomer"
       @close="closeCustomerDetailModal"
       @edit="openEditForm"
-    />    
+    />
 
     <!-- 고객사 등록/수정 모달 -->
     <CustomerForm
@@ -103,17 +150,18 @@ import CustomerForm from './CustomerForm.vue'
 import ConfirmModal from '../ConfirmModal.vue'
 import CustomerDetailModal from './CustomerDetailModal.vue'
 
-
 export default {
   components: { CustomerForm, ConfirmModal, CustomerDetailModal },
   data() {
     return {
       customers: [],
       searchQuery: '',
+      transactionStatusFilter: '', // 거래 상태 필터
       currentPage: 1,
       pageSize: 10,
       showForm: false,
       showCustomerDetailModal: false,
+      showFilters: false, // 필터 섹션 표시 여부
       dropdownIndex: null,
       dropdownStyle: {}, // 드롭다운 위치 스타일
       showDeleteModalFlag: false,
@@ -132,10 +180,15 @@ export default {
             customer.customerPersonName.includes(this.searchQuery)
         )
       }
+      if (this.transactionStatusFilter) {
+        filtered = filtered.filter(
+          customer => customer.customerStatus === this.transactionStatusFilter
+        )
+      }
       // 정렬을 적용
       return filtered.sort((a, b) => {
-        const nameA = a.customerName || ""
-        const nameB = b.customerName || ""
+        const nameA = a.customerName || ''
+        const nameB = b.customerName || ''
         if (this.sortOrder === 'asc') {
           return nameA.localeCompare(nameB, 'ko') // 한국어 정렬
         } else {
@@ -153,129 +206,73 @@ export default {
     },
   },
   methods: {
-    toggleSortOrder() {
-      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
-    },
-    truncatedAddress(address) {
-      return address.length > 20 ? address.substring(0, 20) + '...' : address;
+    toggleFilters() {
+      this.showFilters = !this.showFilters
     },
     async fetchCustomers() {
       try {
         const response = await apiService.fetchCustomerList2({
-          page: this.currentPage - 1, // API가 0부터 시작하므로 -1 적용
+          page: this.currentPage - 1,
           size: this.pageSize,
-          sort: `customerName,${this.sortOrder}`
-        });
-        
-        // API 응답 데이터에서 고객 목록과 페이지 정보를 설정
-        this.customers = response.data.content; // 현재 페이지의 고객 데이터
-        this.totalPages = response.data.totalPages; // 전체 페이지 수 설정
+          sort: `customerName,${this.sortOrder}`,
+        })
+
+        this.customers = response.data.content
+        this.totalPages = response.data.totalPages
       } catch (error) {
-        console.error('고객사 목록을 불러오는 중 오류 발생:', error);
+        console.error('고객사 목록을 불러오는 중 오류 발생:', error)
       }
     },
     handleSearch() {
-      this.currentPage = 1;
-      this.fetchCustomers();
+      this.currentPage = 1
+      this.fetchCustomers()
     },
     openForm(isEdit = false) {
-      this.isEditMode = isEdit;
-      this.showForm = true;
+      this.isEditMode = isEdit
+      this.showForm = true
       if (!isEdit) {
-        this.selectedCustomer = {}; // 등록 모드일 때 selectedCustomer 초기화
+        this.selectedCustomer = {}
       }
     },
     viewCustomerDetails(customer) {
-      this.selectedCustomer = customer;
-      this.showCustomerDetailModal = true;
+      this.selectedCustomer = customer
+      this.showCustomerDetailModal = true
     },
     closeCustomerDetailModal() {
-      this.showCustomerDetailModal = false;
+      this.showCustomerDetailModal = false
     },
     openEditForm(customer) {
-      this.selectedCustomer = customer;
-      this.isEditMode = true;
-      this.showForm = true;
-      this.showCustomerDetailModal = false;
+      this.selectedCustomer = customer
+      this.isEditMode = true
+      this.showForm = true
+      this.showCustomerDetailModal = false
     },
     closeForm() {
-      this.showForm = false;
-      this.selectedCustomer = null;
-    },
-    editCustomer(customer) {
-      this.selectedCustomer = { ...customer }; // 복사본 생성
-      this.openForm(true); // 수정 모드로 열기
-    },
-    toggleDropdown(index, event) {
-      if (this.dropdownIndex === index) {
-        this.dropdownIndex = null;
-      } else {
-        this.dropdownIndex = index;
-
-        const buttonRect = event.target.getBoundingClientRect();
-        const dropdownHeight = 80;
-        const spaceBelow = window.innerHeight - buttonRect.bottom;
-
-        this.dropdownStyle = {
-          position: 'fixed',
-          top:
-            spaceBelow > dropdownHeight
-              ? `${buttonRect.bottom + window.scrollY}px`
-              : `${buttonRect.top + window.scrollY - dropdownHeight}px`,
-          left: `${buttonRect.left}px`,
-          zIndex: 10,
-        };
-      }
-    },
-    showDeleteModal(customer) {
-      this.selectedCustomer = customer
-      this.showDeleteModalFlag = true
-    },
-    hideDeleteModal() {
-      this.showDeleteModalFlag = false
+      this.showForm = false
       this.selectedCustomer = null
     },
-    async confirmDelete() {
-      if (!this.selectedCustomer || !this.selectedCustomer.customerId) {
-        console.warn('선택된 고객사가 없습니다.')
-        return
-      }
-
-      try {
-        await apiService.deleteCustomer(this.selectedCustomer.customerId)
-        await this.fetchCustomers()
-        if (this.selectedCustomer) {
-          alert(
-            `${this.selectedCustomer.customerName} 고객사가 삭제되었습니다.`
-          )
-        }
-      } catch (error) {
-        console.error('고객사를 삭제하는 중 오류 발생:', error)
-        alert('삭제 중 오류가 발생했습니다.')
-      } finally {
-        this.hideDeleteModal()
-        this.selectedCustomer = null
-      }
+    truncatedAddress(address) {
+      return address.length > 20 ? address.substring(0, 20) + '...' : address
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage--;
-        this.fetchCustomers();
+        this.currentPage--
+        this.fetchCustomers()
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-        this.fetchCustomers();
+        this.currentPage++
+        this.fetchCustomers()
       }
     },
     setPage(page) {
-      this.currentPage = page;
-      this.fetchCustomers();
+      this.currentPage = page
+      this.fetchCustomers()
     },
   },
   mounted() {
-    this.fetchCustomers();
+    this.fetchCustomers()
   },
 }
 </script>
@@ -302,7 +299,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  gap: 10px; 
 }
 
 .header input[type='text'] {
@@ -446,5 +442,55 @@ th {
 .pagination-arrow:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.search-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search-input {
+  padding: 8px;
+  font-size: 16px;
+  width: 300px;
+}
+
+.filter-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.filter-icon-button .fas {
+  color: #4caf50;
+}
+
+.register-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3f72af;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clickable-row:hover {
+  background-color: #f4f4f4;
 }
 </style>

@@ -20,6 +20,7 @@
         <div v-if="isDropdownOpen === 'dropdown1'" class="dropdown-content">
           <router-link to="/customer-list">고객사 목록</router-link>
           <router-link to="/register-order">판매 등록 폼</router-link>
+          <router-link to="/order-list">판매 목록 폼</router-link>
         </div>
       </div>
 
