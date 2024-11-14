@@ -6,6 +6,7 @@ import CustomerList from '@/components/customer/CustomerList.vue'
 import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
+import OrderList from '@/components/order/OrderList.vue'
 
 
 const router = createRouter({
@@ -37,6 +38,14 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
+
+    //판매 목록
+    {
+      path: '/order-list',
+      name: 'OrderList',
+      component: OrderList,
+      meta: { requiresAuth: true },
+    },    
 
     {
       path:"/products",
