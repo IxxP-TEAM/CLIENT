@@ -5,6 +5,7 @@ import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
+import OrderList from '@/components/order/OrderList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,24 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
+<<<<<<< HEAD
+=======
+
+    //판매 목록
+    {
+      path: '/order-list',
+      name: 'OrderList',
+      component: OrderList,
+      meta: { requiresAuth: true },
+    },    
+
+    {
+      path:"/products",
+      name:'products',
+      component:ProductList,
+      // meta: { requiresAuth: true },
+    },  
+>>>>>>> 4ffc21faa4879a5b0ec963700cc1514ee30f2924
     //비밀번호 재설정(인증X)
     {
       path: '/resetPassword',
