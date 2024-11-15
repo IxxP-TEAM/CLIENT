@@ -8,7 +8,6 @@ import ResetPassword from '@/components/employee/ResetPassword.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -22,7 +21,7 @@ const router = createRouter({
       path: "/login",
       name: 'login',
       component: Login
-    },
+    },  
     //고객사 등록
     {
       path: '/register-customer',
