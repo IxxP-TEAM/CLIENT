@@ -1,13 +1,23 @@
 <script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
-import Sidebar from './components/Sidebar.vue'; 
+import Sidebar from './components/Sidebar.vue';
 
+const route = useRoute();
+const isLoginPage = computed(() => route.path === '/login');
+
+// 사이드바 표시 여부를 결정하는 computed property
+const showSidebar = computed(() => {
+  // 로그인 페이지일 때는 사이드바 표시하지 않음
+  return !isLoginPage.value;
+});
 </script>
 
 <template>
   <Header />
-  <Sidebar />
+  <Sidebar v-if="showSidebar" />
   <RouterView />
 </template>
 

@@ -1,8 +1,8 @@
 <template>
     <div class="login-container">
         <div class="logo-class">
-                <img class="logo" src="../assets/image.png">
-            </div>
+            <img class="logo" src="../assets/image.png">
+        </div>
         <form @submit.prevent="handleLogin">
             <input type="text" v-model="connId" placeholder="아이디" required />
             <input type="password" v-model="password" placeholder="비밀번호" required />
@@ -46,7 +46,6 @@ export default {
 </script>
 
 <style scoped>
-
 .login-container {
     display: flex;
     flex-direction: column;
@@ -127,6 +126,7 @@ button:hover {
 .find-pw {
     padding-top: 30px;
 }
+
 .find-pw span {
     font-weight: bold;
     cursor: pointer;
