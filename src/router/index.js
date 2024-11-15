@@ -7,6 +7,8 @@ import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
 import InventoryList from '@/components/inventory/InventoryList.vue'
 import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
+import OrderForm from '@/components/order/OrderForm.vue'
+import OrderList from '@/components/order/OrderList.vue'
 
 
 const router = createRouter({
@@ -39,6 +41,15 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     // 제품 목록
+
+    //판매 목록
+    {
+      path: '/order-list',
+      name: 'OrderList',
+      component: OrderList,
+      meta: { requiresAuth: true },
+    },    
+
     {
       path:"/products",
       name:'products',
@@ -58,13 +69,19 @@ const router = createRouter({
       component:InventoryList,
       // meta: { requiresAuth: true },
     },  
-    // 재고 목록
+    // 재고 이력 목록
     {
       path:"/inventory/history",
       name:'inventory/history',
       component:InventoryHistoryList,
       // meta: { requiresAuth: true },
     },  
+    {
+      path: '/register-order',
+      name: 'Registerorder',
+      component: OrderForm,
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
