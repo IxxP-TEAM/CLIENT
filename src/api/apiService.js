@@ -77,7 +77,6 @@ export default {
     return api.get(`/customer/${customerId}`);
   },
 
-<<<<<<< HEAD
     updateUser(userData) {
       return api.patch(`/hr/${userData.userIdx}`, userData);
     },
@@ -95,12 +94,10 @@ export default {
     createOrder(orderData) {
       return api.post('/orders/create', orderData);
     },
-=======
   // 여러 customerId에 대한 이름을 가져오는 함수
   fetchCustomerNames(customerIds) {
     return api.post('/customer/names', { customerIds });
   },
->>>>>>> 4ffc21faa4879a5b0ec963700cc1514ee30f2924
 
   checkDuplicateRegistrationNumber(registrationNumber) {
     return api.post('/customer/check-duplicate-registration-number', { registrationNumber });

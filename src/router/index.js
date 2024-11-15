@@ -3,6 +3,7 @@ import EmployeeList from '@/components/employee/EmployeeList.vue'
 import Login from '@/components/Login.vue'
 import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
+import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
@@ -36,8 +37,6 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
-<<<<<<< HEAD
-=======
 
     //판매 목록
     {
@@ -53,7 +52,6 @@ const router = createRouter({
       component:ProductList,
       // meta: { requiresAuth: true },
     },  
->>>>>>> 4ffc21faa4879a5b0ec963700cc1514ee30f2924
     //비밀번호 재설정(인증X)
     {
       path: '/resetPassword',
