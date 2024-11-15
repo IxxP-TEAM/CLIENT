@@ -8,18 +8,41 @@
     <!-- 로그인 정보 섹션 -->
     <div class="login-info">
       <p>로그인 사용자: {{ userName }}</p>
-      <p>관리자</p> <!-- 예시 텍스트 -->
+      <p class="target-role">{{ userRole === 'ROLE_ADMIN' ? '관리자' : '일반 사용자' }}</p>
     </div>
 
     <nav>
       <!-- 출근/퇴근 버튼 -->
       <div class="attendance-btn">
-        <button v-if="!isCheckIn" @click="openCheckInPopup">출근하기</button>
-        <button v-else @click="openCheckOutPopup">퇴근하기</button>
+        <button v-if="!isCheckIn" @click="openCheckInPopup" class="in-btn">출근하기</button>
+        <button v-else @click="openCheckOutPopup" class="out-btn">퇴근하기</button>
       </div>
 
-      <!-- 드롭 다운 -->
-      <div class="dropdown">
+      <!-- 관리자 메뉴 -->
+      <div v-if="userRole === 'ROLE_ADMIN'" class="dropdown">
+        <div class="dropdown-title" @click="toggleDropdown('dropdown2')">
+          인사관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown2" class="dropdown-content">
+          <router-link to="/empList">직원 목록</router-link>
+          <router-link to="/create-emp">직원 등록</router-link>
+          <router-link to="/leave">휴가 관리</router-link>
+          <router-link to="/late">지각/조퇴 관리</router-link>
+        </div>
+        <div class="dropdown-title" @click="toggleDropdown('dropdown3')">
+          급여관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown3" class="dropdown-content">
+          <router-link to="/att-create">급여 등록</router-link>
+          <router-link to="/att-list">급여 목록</router-link>
+          <router-link to="/att-specification">급여 명세서 관리</router-link>
+        </div>
+      </div>
+
+      <!-- 일반 사용자 메뉴 -->
+      <div v-if="userRole === 'ROLE_USER'" class="dropdown">
+        <!-- 드롭 다운 -->
+        <!-- <div class="dropdown"> -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown1')">
           영업 관리
         </div>
@@ -36,6 +59,7 @@
       <p>출근하시겠습니까?</p>
       <button @click="confirmCheckIn" class="confirm-btn">확인</button>
       <button @click="cancelCheckIn" class="cancel-btn">취소</button>
+      <p v-if="checkInError" class="error-message">출근하기 실패</p>
     </div>
   </div>
 
@@ -45,7 +69,7 @@
       <p>퇴근하시겠습니까?</p>
       <button @click="confirmCheckOut" class="confirm-btn">확인</button>
       <button @click="cancelCheckOut" class="cancel-btn">취소</button>
-      <p v-if="checkOutError" class="error-message">퇴근하기 실패: 서버 에러</p> <!-- 실패 메시지 -->
+      <p v-if="checkOutError" class="error-message">퇴근하기 실패</p>
     </div>
   </div>
 </template>
@@ -58,13 +82,18 @@ import { onMounted } from 'vue';
 import apiService from '@/api/apiService';
 
 const route = useRoute();
-const isDropdownOpen = ref(null); // 현재 열려 있는 드롭다운 메뉴 상태
-const userName = ref('')
+const userName = ref('');
+const userRole = ref('');
 const isCheckIn = ref(false);
 const showCheckInPopup = ref(false);
 const showCheckOutPopup = ref(false);
 const checkInError = ref(false);
 const checkOutError = ref(false);
+
+const isDropdownOpen = ref({
+  dropdown2: false, // 인사관리
+  dropdown3: false, // 급여관리
+});
 
 // 사이드바 표시 여부를 결정하는 computed property
 const showSidebar = computed(() => {
@@ -73,7 +102,7 @@ const showSidebar = computed(() => {
 
 // 드롭다운 토글 함수
 const toggleDropdown = (dropdown) => {
-  isDropdownOpen.value = isDropdownOpen.value === dropdown ? null : dropdown;
+  isDropdownOpen.value[dropdown] = !isDropdownOpen.value[dropdown];
 };
 
 // 로그인한 사용자 이름 가져오는 함수
@@ -82,6 +111,7 @@ const getUserNameFromToken = () => {
   if (token) {
     const decodedToken = VueJwtDecode.decode(token);
     userName.value = decodedToken.username;
+    userRole.value = decodedToken.role;
     console.log(userName.value);
   }
 };
@@ -231,7 +261,21 @@ onMounted(() => {
 }
 
 .attendance-btn {
-  margin-top: 20px;
+  /* margin-top: 13px; */
+  margin-bottom: 20px;
+  margin-left: 60px;
+  align-items: center;
+  align-content: center;
+}
+
+.in-btn {
+  width: 100px;
+  height: 30px;
+}
+
+.out-btn {
+  width: 100px;
+  height: 30px;
 }
 
 .popup {
@@ -281,5 +325,9 @@ onMounted(() => {
   padding: 8px 15px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.target-role {
+  font-weight: bold;
 }
 </style>
