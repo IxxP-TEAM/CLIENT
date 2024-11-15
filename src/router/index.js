@@ -5,6 +5,8 @@ import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
 import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
+import InventoryList from '@/components/inventory/InventoryList.vue'
+import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
 
 
 const router = createRouter({
@@ -36,7 +38,7 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
-
+    // 제품 목록
     {
       path:"/products",
       name:'products',
@@ -48,7 +50,21 @@ const router = createRouter({
       path: '/resetPassword',
       name: ResetPassword,
       component: ResetPassword
-    }
+    },
+    // 재고 목록
+    {
+      path:"/inventory",
+      name:'inventory',
+      component:InventoryList,
+      // meta: { requiresAuth: true },
+    },  
+    // 재고 목록
+    {
+      path:"/inventory/history",
+      name:'inventory/history',
+      component:InventoryHistoryList,
+      // meta: { requiresAuth: true },
+    },  
   ],
 })
 

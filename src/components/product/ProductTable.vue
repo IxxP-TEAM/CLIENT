@@ -7,16 +7,18 @@
         <th>번호</th>
         <th>제품 이름</th>
         <th>제품 종류</th>
+        <th>제품 가격</th>
         <th>임계 재고 수량</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(product, index) in products" :key="product.productId">
         <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>
-        <td @click="$emit('update', product)" :class="{ sorted: sortedColumn === 'name' }" style="cursor: pointer;">
+        <td @click="$emit('update', product)" style="cursor: pointer;">
           {{ product.productName }}
         </td>
-        <td :class="{ sorted: sortedColumn === 'type' }">{{ product.productType }}</td>
+        <td>{{ product.productType }}</td>
+        <td>{{ product.productPrice }}</td>
         <td>
           {{ product.safetyStockQuantity }}
           <span 

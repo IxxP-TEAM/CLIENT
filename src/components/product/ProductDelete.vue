@@ -1,24 +1,30 @@
 <!-- src/components/ProductDelete.vue -->
 <template>
-    <div class="modal">
+    <div class="modal-overlay">
       <div class="modal-content">
         <p>정말로 {{ productName }}을(를) 삭제하시겠습니까?</p>
+        <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
+        <div class="button-group">
         <button class="button-a" @click="$emit('confirm')">삭제</button>
         <button @click="$emit('close')">취소</button>
+      </div>
       </div>
     </div>
   </template>
   
   <script setup>
-  import { defineProps } from 'vue'
+  import { defineProps, computed } from 'vue'
+
+  const computedErrorMessage = computed(() => props.errorMessage);
   
-  const props = defineProps({// eslint-disable-line no-unused-vars
+  const props = defineProps({
     productName: String,
+    errorMessage: String
   })
   </script>
   
   <style scoped>
-  .modal {
+  .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -35,6 +41,12 @@
     padding: 20px;
     border-radius: 5px;
     text-align: center;
+  }
+  .button-group {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽으로 정렬 */
+    gap: 10px; /* 두 버튼 사이 간격 */
+    margin-top: 20px;
   }
   .button-a{
   padding: 10px 20px;
@@ -53,6 +65,11 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  }
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
   }
   </style>
   

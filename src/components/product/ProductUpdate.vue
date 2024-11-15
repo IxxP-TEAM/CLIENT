@@ -14,6 +14,8 @@
           
           <label for="safetyStockQuantity">임계 재고 수량:</label>
           <input v-model="safetyStockQuantity" min="0" id="safetyStockQuantity" type="number" required /><br>
+          <label for="productPrice">제품 가격:</label>
+          <input v-model="productPrice" min="0" id="productPrice" type="number" required/><br>
           
           <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
 
@@ -45,6 +47,7 @@
   const productName = ref('')
   const productType = ref('')
   const safetyStockQuantity = ref(0)
+  const productPrice = ref(0)
   const computedErrorMessage = computed(() => props.errorMessage);
   
   // 제품 정보 초기화
@@ -55,6 +58,7 @@
         productName.value = newProduct.productName
         productType.value = newProduct.productType
         safetyStockQuantity.value = newProduct.safetyStockQuantity
+        productPrice.value = newProduct.productPrice
       }
     },
     { immediate: true }
@@ -66,6 +70,7 @@
     productName: productName.value,
     productType: productType.value,
     safetyStockQuantity: safetyStockQuantity.value,
+    productPrice: productPrice.value
   };
 
   try {
@@ -88,6 +93,7 @@
     productName.value = ''
     productType.value = ''
     safetyStockQuantity.value = 0
+    productPrice.value = 0
   }
   </script>
   
