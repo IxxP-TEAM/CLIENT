@@ -128,23 +128,6 @@ export default {
     return api.get(`/customer/${customerId}`);
   },
 
-    updateUser(userData) {
-      return api.patch(`/hr/${userData.userIdx}`, userData);
-    },
-    checkInStatus() {
-    return api.get('/attendance/status'); // 출근 여부 확인 API 엔드포인트
-    }, 
-    checkIn() {
-      return api.post('/attendance');
-    },
-    checkOut() {
-      return api.post('/attendance/leave-work');
-    },
-  
-    // 주문 생성 요청
-    createOrder(orderData) {
-      return api.post('/orders/create', orderData);
-    },
   // 여러 customerId에 대한 이름을 가져오는 함수
   fetchCustomerNames(customerIds) {
     return api.post('/customer/names', { customerIds });
@@ -166,7 +149,7 @@ export default {
 
 
   // 주문 목록 가져오기 요청 (페이지 매개변수 포함)
-  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc")  {
+  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc") {
     return api.get('/orders/all', {
       params: {
         page,
@@ -201,7 +184,29 @@ export default {
   fetchUserList(page = 0, size = 10) {
     return api.get(`/hr?page=${page}&size=${size}`);
   },
+  //전체 매출조회
+  allSalesHistoty(page = 0, size = 10) {
+    return api.get(`sales/all?page=${page}&size=${size}`);
+  },
 
+  //고객사별 총주문금액
+  getTotalSalesByCustomer() {
+    return api.get('/sales/total-by-customer');
+  },
+
+  //사원별 총주문금액 
+  getTotalSalesBySalesperson() {
+    return api.get('/sales/total-by-salesperson')
+  },
+  // 월별 매출 통계 API 호출
+  getMonthlySalesStatistics(dateRange) {
+    return api.post("/sales/monthly-statistics", dateRange);
+  },
+  
+  getDailySalesStatistics(dateRange) {
+    return api.post("/sales/daily-statistics", dateRange);
+  },
+  
   // 휴가 목록 가져오기
   fetchLeaveList(page = 0, size = 10) {
     return api.get(`/leave?page=${page}&size=${size}`);
@@ -226,5 +231,4 @@ export default {
   logout() {
     return api.post(`/users/logout`);
   }
-
 };

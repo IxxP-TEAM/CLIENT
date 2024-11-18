@@ -65,6 +65,9 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="paginatedCustomers.length === 0">
+              <td colspan="5">고객사가 존재하지 않습니다.</td>
+            </tr>
           <tr
             v-for="(customer, index) in paginatedCustomers || []"
             :key="customer.customerId"
