@@ -8,7 +8,7 @@
         <input type="text" v-model="email" placeholder="이메일" required />
       </div>
       <div class="button-container">
-        <button @click="sendResetCode">인증 코드 발송</button>
+        <button @click="sendVerificationCode">인증 코드 발송</button>
       </div>
     </div>
 
@@ -31,6 +31,8 @@
 
 <script>
 import apiService from '@/api/apiService';
+import router from '@/router';
+
 
 export default {
   data() {
@@ -46,8 +48,7 @@ export default {
   },
   methods: {
     // 인증 코드 발송
-    async sendResetCode() {
-      console.log('Email:', this.email);
+    async sendVerificationCode() {
       if (!this.email) {
         this.errorMessage = '이메일을 입력해주세요.';
         this.successMessage = '';
@@ -55,16 +56,26 @@ export default {
       }
 
       try {
-        const response = await apiService.sendResetPassword(this.email);  // 이메일만 전송
-        console.log('Response:', response);
+        // 실제 인증 코드 발송 API 호출 (가정)
+        await apiService.sendResetPassword(this.email); // 실제 API 호출 사용
+
+        // 인증코드 발송 성공 후 알림창 띄우기
+        alert("전송되었습니다!");
+
+        // 인증 코드 발송 완료 후 상태 변경
         this.isCodeSent = true;
-        this.successMessage = '인증 코드가 발송되었습니다.';
-        this.errorMessage = ''; // 이전 오류 메시지를 초기화
+        this.errorMessage = ''; // 오류 메시지 초기화
       } catch (error) {
-        this.errorMessage = '아이디를 확인하고 다시 시도해주세요.';
+        this.errorMessage = '인증 코드 발송에 실패했습니다.';
         this.successMessage = '';
         console.error(error);
       }
+    },
+
+    // 비밀번호 유효성 검사
+    isPasswordValid(password) {
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$/;
+      return passwordRegex.test(password);
     },
 
     // 인증 코드 검증 후 비밀번호 재설정
@@ -75,13 +86,22 @@ export default {
         return;
       }
 
+      if (!this.isPasswordValid(this.newPassword)) {
+        this.errorMessage = '비밀번호는 영어, 숫자, 특수문자를 포함한 최소 8자리여야 합니다.';
+        this.successMessage = '';
+        return;
+      }
+
       try {
         // 이메일, 인증 코드, 새 비밀번호를 함께 서버로 전송
         const response = await apiService.resetPassword(this.email, this.code, this.newPassword);
         console.log('Response:', response);
         this.isPasswordReset = true;
         this.successMessage = '비밀번호가 성공적으로 변경되었습니다.';
-        this.errorMessage = ''; // 이전 오류 메시지를 초기화
+        this.errorMessage = '';
+
+        alert("비밀번호가 성공적으로 변경되었습니다. \n로그인을 진행해주세요!");
+        router.push('/login');
       } catch (error) {
         this.errorMessage = '인증 코드가 유효하지 않거나, 비밀번호 재설정에 실패했습니다.';
         this.successMessage = '';
@@ -153,8 +173,10 @@ button {
   padding: 10px 20px;
   width: 200px;
   margin-top: 50px;
-  background-color: #fff;
+  background-color: #3F72AF;
+  color: white;
   border-radius: 20px;
+  border: none;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
@@ -162,6 +184,7 @@ button {
 
 button:hover {
   background-color: #3F72AF;
+  color: white;
 }
 
 .error {
