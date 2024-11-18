@@ -59,17 +59,7 @@
           <router-link to="/totalsalesby-salesperson">사원별 매출</router-link>
           <router-link to="/monthlysales-statistics">기간별 매출</router-link>
         </div>
-        
-        <!-- 재고 관리 -->
-        <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
-          재고관리
-        </div>
-        <div v-if="isDropdownOpen.dropdown4" class="dropdown-content">
-          <router-link to="/products">제품 목록</router-link>
-          <router-link to="/inventory">재고 목록</router-link>
-          <router-link to="/inventory/history">재고 이력 목록</router-link>
-        </div>
-
+      
         <!-- 재고 관리 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
           재고관리
