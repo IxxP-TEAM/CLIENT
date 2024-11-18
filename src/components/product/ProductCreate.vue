@@ -15,6 +15,9 @@
         
         <label for="safetyStockQuantity">임계 재고 수량:</label>
         <input v-model="safetyStockQuantity" min="0" id="safetyStockQuantity" type="number" required /><br>
+
+        <label for="productName">제품 가격:</label>
+        <input v-model="productPrice" min="0" id="productPrice" type="number" required /><br>
         
         <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
         
@@ -40,6 +43,7 @@ const emits = defineEmits(['close', 'submit'])
 const productName = ref('')
 const productType = ref('')
 const safetyStockQuantity = ref(0)
+const productPrice = ref(0)
 const computedErrorMessage = computed(() => props.errorMessage);
 
 function closeModal() {
@@ -51,14 +55,17 @@ function submitForm() {
   emits('submit', {
     productName: productName.value,
     productType: productType.value,
-    safetyStockQuantity: safetyStockQuantity.value
+    safetyStockQuantity: safetyStockQuantity.value,
+    productPrice: productPrice.value
   })
+  resetForm()
 }
 
 function resetForm() {
   productName.value = ''
   productType.value = ''
   safetyStockQuantity.value = 0
+  productPrice.value = 0
 }
 </script>
 
@@ -103,16 +110,6 @@ function resetForm() {
 .modal-form {
   display: flex;
   flex-direction: column;
-}
-.close-button {
-  background-color: transparent;
-  color: #007BFF;
-  border: none;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  margin-top: 17px;
 }
 .button-group {
   display: flex;

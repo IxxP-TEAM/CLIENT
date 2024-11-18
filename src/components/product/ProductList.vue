@@ -34,10 +34,8 @@
       :currentPage="currentPage"
       :itemsPerPage="itemsPerPage"
       :isDeleteMode="isDeleteMode"
-      :sortedColumn="sortedColumn"
       @delete="openDeleteModal"
       @update="openUpdateModal"
-      @sort="sortByColumn"
     />
 
     
@@ -66,6 +64,7 @@
     <ProductDelete
       v-if="isDeleteModalVisible"
       :productName="selectedProduct?.productName"
+      :errorMessage="errorMessage"
       @confirm="confirmDeleteProduct"
       @close="closeDeleteModal"
     />
@@ -120,7 +119,7 @@ function goToPage(page) {
   }
 }
 
-// 검색
+// 정렬
 function triggerSort() {
   if (searchQuery.value) {
     triggerSearch(); // 검색어가 있을 경우 검색 결과를 정렬
@@ -192,6 +191,14 @@ async function confirmDeleteProduct() {
     isDeleteMode.value = false
   } catch (error) {
     console.error('제품 삭제 중 오류가 발생했습니다:', error)
+    if (error.response && error.response.data && error.response.data.code === 'PRODUCT-004') {
+      errorMessage.value = error.response.data.message; // 서버에서 받은 메시지를 설정
+      isDeleteModalVisible.value = true;
+    }
+    else {
+      errorMessage.value = '제품 수정 중 오류가 발생했습니다.';
+      isDeleteModalVisible.value = true; // 일반 오류 시에도 모달 유지
+    }
   }
 }
 
@@ -210,6 +217,7 @@ async function triggerSearch() {
     totalPages.value = response.data.data.totalPages; // 페이지 수 저장
   } catch (error) {
     console.error('제품 검색 중 오류가 발생했습니다:', error);
+    
   }
 }
 
@@ -262,13 +270,17 @@ async function updateProduct(updatedData) {
     await fetchProducts();
     closeUpdateModal(); // 성공적으로 업데이트된 경우에만 모달을 닫음
   } catch (error) {
-    console.error('제품 수정 중 오류가 발생했습니다:', error.response);
+    console.error('제품 수정 중 오류가 발생했습니다1:', error.response);
 
     // 서버에서 오류 메시지를 받아서 표시
     if (error.response && error.response.data && error.response.data.code === 'PRODUCT-001') {
       errorMessage.value = error.response.data.message; // 서버에서 받은 메시지를 설정
       isUpdateModalVisible.value = true; // 모달을 닫지 않고 유지
-    } else {
+    } else if (error.response && error.response.data && error.response.data.code === 'PRODUCT-004') {
+      errorMessage.value = error.response.data.message; // 서버에서 받은 메시지를 설정
+      isUpdateModalVisible.value = true;
+    }
+    else {
       errorMessage.value = '제품 수정 중 오류가 발생했습니다.';
       isUpdateModalVisible.value = true; // 일반 오류 시에도 모달 유지
     }

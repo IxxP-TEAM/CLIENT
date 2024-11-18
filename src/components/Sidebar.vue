@@ -69,6 +69,16 @@
           <router-link to="/inventory">재고 목록</router-link>
           <router-link to="/inventory/history">재고 이력 목록</router-link>
         </div>
+
+        <!-- 재고 관리 -->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
+          재고관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown4" class="dropdown-content">
+          <router-link to="/products">제품 목록</router-link>
+          <router-link to="/inventory">재고 목록</router-link>
+          <router-link to="/inventory/history">재고 이력 목록</router-link>
+        </div>
       </div>
     </nav>
   </aside>
@@ -109,11 +119,13 @@ const checkInError = ref(false);
 const checkOutError = ref(false);
 
 const isDropdownOpen = ref({
+
   dropdown1: false, // 영업관리
   dropdown2: false, // 인사관리
   dropdown3: false, // 급여관리
   dropdown4: false, // 제품 관리
   dropdown5: false, // 매출 개요
+  
 });
 
 // 사이드바 표시 여부를 결정하는 computed property
