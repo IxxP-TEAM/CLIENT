@@ -28,7 +28,6 @@ import { defineProps, defineEmits } from 'vue';
   function openActionModal(actionType) {
       // 각 기능별 모달을 여는 로직 추가
       emit('open-action-modal', actionType);
-    console.log(actionType + " 모달 열기"); // 필요한 경우 추가 로직
   }
   </script>
   
