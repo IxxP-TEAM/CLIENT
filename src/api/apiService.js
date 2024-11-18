@@ -220,6 +220,11 @@ export default {
   // 휴가 거절
   refusalLeave(leaveId, data) {
     return api.patch(`/leave/refusal/${leaveId}`, data);
+  },
+  
+  //로그아웃
+  logout() {
+    return api.post(`/users/logout`);
   }
 
 };
