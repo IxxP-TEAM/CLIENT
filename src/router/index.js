@@ -9,6 +9,7 @@ import InventoryList from '@/components/inventory/InventoryList.vue'
 import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
+import Leave from '@/components/leave/LeaveList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -81,6 +82,12 @@ const router = createRouter({
       component: OrderForm,
       meta: { requiresAuth: true },
     },
+    {
+      path: '/leave',
+      name: "Leave",
+      component: Leave,
+      meta: { requiresAuth: true},
+    }
   ],
 })
 
