@@ -2,6 +2,12 @@
 <template>
     <div class="leave-list">
         <h2>휴가 리스트</h2>
+        <div class="filter-options">
+            <select v-model="selectedLeaveType" @change="handleLeavePage">
+                <option value="">전체 휴가</option>
+                <option v-for="leavetype in leaveTypes" :key="leavetype" :value="leavetype">{{ leavetype }}</option>
+            </select>
+        </div>
         <div class="table-container">
             <table>
                 <thead>
@@ -14,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="leave in leaves" :key="leave.leaveId" @click="viewLeaveDetails(leave)">
+                    <tr v-for="leave in filteredLeaves" :key="leave.leaveId" @click="viewLeaveDetails(leave)">
                         <td>{{ leave.leaveId }}</td>
                         <td>{{ leave.username }}</td>
                         <td>
@@ -31,11 +37,9 @@
         <div class="pagination">
             <button class="pagination-arrow" :disabled="currentPage === 0" @click="handlePageChange(currentPage - 1)">
                 < </button>
-
-                    <!-- 페이지 번호들 반복 출력 -->
                     <span v-for="page in totalPages" :key="page" :class="{
-                        'pagination-page': true,   // 기본 스타일
-                        'active': page === currentPage + 1   // 현재 페이지에 active 클래스 추가
+                        'pagination-page': true,
+                        'active': page === currentPage + 1
                     }" @click="handlePageChange(page - 1)">
                         {{ page }}
                     </span>
@@ -62,19 +66,30 @@ export default {
             totalPages: 0,
             leaves: [],
             showLeaveDetailModal: false,
-            selectLeave: null
+            selectLeave: null,
+            selectedLeaveType: '',
+            leaveTypes: ['반차', '반반차', '여름휴가', '겨울휴가', '경조휴가', '병가', '휴무'],
         };
+    },
+    computed: {
+        filteredLeaves() {
+            if (this.selectedLeaveType) {
+                return this.leaves.filter(leave => leave.leaveType === this.selectedLeaveType);
+            }
+            return this.leaves;
+        }
     },
     methods: {
         async fetchLeaves() {
+            console.log('selectedLeaveType:', this.selectedLeaveType);
             try {
                 const response = await apiService.fetchLeaveList(
                     this.currentPage,
-                    this.pageSize
+                    this.pageSize,
+                    // this.selectedLeaveType
                 );
 
                 this.leaves = [...response.data.data.items];
-
                 this.totalElements = response.data.data.totalElements;
                 this.totalPages = response.data.data.totalPages;
                 this.$nextTick(() => {
@@ -89,6 +104,9 @@ export default {
                 this.currentPage = page;
                 this.fetchLeaves();
             }
+        },
+        handleLeavePage() {
+            this.currentPage = 0;
         },
         getStatusClass(status) {
             switch (status) {
@@ -145,6 +163,12 @@ export default {
     margin-left: 140px;
     height: calc(100vh - 50px);
     overflow-y: auto;
+}
+
+.filter-options {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .table-container {
