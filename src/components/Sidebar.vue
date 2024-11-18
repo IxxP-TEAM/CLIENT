@@ -41,15 +41,33 @@
 
       <!-- 일반 사용자 메뉴 -->
       <div v-if="userRole === 'ROLE_USER'" class="dropdown">
-        <!-- 드롭 다운 -->
-        <!-- <div class="dropdown"> -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown1')">
           영업 관리
         </div>
-        <div v-if="isDropdownOpen === 'dropdown1'" class="dropdown-content">
+        <div v-if="isDropdownOpen.dropdown1" class="dropdown-content">
           <router-link to="/customer-list">고객사 목록</router-link>
-          <router-link to="/register-order">판매 등록 폼</router-link>
-          <router-link to="/order-list">판매 목록 폼</router-link>
+          <router-link to="/order-list">판매 목록</router-link>
+        </div>
+
+        <!--판매 개요 메뉴-->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown5')">
+          판매 개요
+        </div>
+        <div v-if="isDropdownOpen.dropdown5" class="dropdown-content">
+          <router-link to="/sales-history">판매 이력</router-link>
+          <router-link to="/sales-customer">고객사별 매출</router-link>
+          <router-link to="/order-list">사원별 매출</router-link>
+          <router-link to="/order-list">기간별 매출</router-link>
+        </div>
+        
+        <!-- 재고 관리 -->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
+          재고관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown4" class="dropdown-content">
+          <router-link to="/products">제품 목록</router-link>
+          <router-link to="/inventory">재고 목록</router-link>
+          <router-link to="/inventory/history">재고 이력 목록</router-link>
         </div>
       </div>
     </nav>
@@ -91,8 +109,11 @@ const checkInError = ref(false);
 const checkOutError = ref(false);
 
 const isDropdownOpen = ref({
+  dropdown1: false, // 영업관리
   dropdown2: false, // 인사관리
   dropdown3: false, // 급여관리
+  dropdown4: false, // 제품 관리
+  dropdown5: false, // 매출 개요
 });
 
 // 사이드바 표시 여부를 결정하는 computed property
@@ -149,7 +170,7 @@ const confirmCheckIn = async () => {
     } else {
       checkInError.value = true; // 출근 실패 시 오류 메시지 표시
     }
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     checkInError.value = true; // 서버 에러로 실패 시 오류 메시지 표시
   }
 };
@@ -169,7 +190,7 @@ const confirmCheckOut = async () => {
     } else {
       checkOutError.value = true; // 퇴근 실패 시 오류 메시지 표시
     }
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     checkOutError.value = true; // 서버 에러로 실패 시 오류 메시지 표시
   }
 };

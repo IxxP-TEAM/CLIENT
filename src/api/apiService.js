@@ -77,23 +77,6 @@ export default {
     return api.get(`/customer/${customerId}`);
   },
 
-    updateUser(userData) {
-      return api.patch(`/hr/${userData.userIdx}`, userData);
-    },
-    checkInStatus() {
-    return api.get('/attendance/status'); // 출근 여부 확인 API 엔드포인트
-    }, 
-    checkIn() {
-      return api.post('/attendance');
-    },
-    checkOut() {
-      return api.post('/attendance/leave-work');
-    },
-  
-    // 주문 생성 요청
-    createOrder(orderData) {
-      return api.post('/orders/create', orderData);
-    },
   // 여러 customerId에 대한 이름을 가져오는 함수
   fetchCustomerNames(customerIds) {
     return api.post('/customer/names', { customerIds });
@@ -158,5 +141,10 @@ export default {
   fetchUserList(page = 0, size = 5) {
     return api.get(`/hr?page=${page}&size=${size}`);
   },
+
+  //전체 매출조회
+  allSalesHistoty(page =0 , size = 10){
+    return api.get(`sales/all?page=${page}&size=${size}`);
+  }
 
 };

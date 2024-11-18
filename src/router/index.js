@@ -7,6 +7,8 @@ import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
+import SalesHistory from '@/components/sales/SalesHistory.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +23,7 @@ const router = createRouter({
       path: "/login",
       name: 'login',
       component: Login
-    },  
+    },
     //고객사 등록
     {
       path: '/register-customer',
@@ -63,6 +65,11 @@ const router = createRouter({
       name: 'Registerorder',
       component: OrderForm,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/sales-history',
+      name: 'SalesHistory',
+      component: SalesHistory,
     },
   ],
 })
