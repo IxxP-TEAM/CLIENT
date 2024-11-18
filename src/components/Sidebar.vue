@@ -55,9 +55,9 @@
         </div>
         <div v-if="isDropdownOpen.dropdown5" class="dropdown-content">
           <router-link to="/sales-history">판매 이력</router-link>
-          <router-link to="/sales-customer">고객사별 매출</router-link>
-          <router-link to="/order-list">사원별 매출</router-link>
-          <router-link to="/order-list">기간별 매출</router-link>
+          <router-link to="/customer-history">고객사별 매출</router-link>
+          <router-link to="/totalsalesby-salesperson">사원별 매출</router-link>
+          <router-link to="/monthlysales-statistics">기간별 매출</router-link>
         </div>
         
         <!-- 재고 관리 -->

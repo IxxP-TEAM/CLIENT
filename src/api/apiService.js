@@ -106,7 +106,7 @@ export default {
   },
 
   // 주문 목록 가져오기 요청 (페이지 매개변수 포함)
-  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc")  {
+  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc") {
     return api.get('/orders/all', {
       params: {
         page,
@@ -143,8 +143,25 @@ export default {
   },
 
   //전체 매출조회
-  allSalesHistoty(page =0 , size = 10){
+  allSalesHistoty(page = 0, size = 10) {
     return api.get(`sales/all?page=${page}&size=${size}`);
-  }
+  },
 
+  //고객사별 총주문금액
+  getTotalSalesByCustomer() {
+    return api.get('/sales/total-by-customer');
+  },
+
+  //사원별 총주문금액 
+  getTotalSalesBySalesperson() {
+    return api.get('/sales/total-by-salesperson')
+  },
+  // 월별 매출 통계 API 호출
+  getMonthlySalesStatistics(dateRange) {
+    return api.post("/sales/monthly-statistics", dateRange);
+  },
+  
+  getDailySalesStatistics(dateRange) {
+    return api.post("/sales/daily-statistics", dateRange);
+  },
 };

@@ -8,7 +8,9 @@ import ResetPassword from '@/components/employee/ResetPassword.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
 import SalesHistory from '@/components/sales/SalesHistory.vue'
-
+import CustomerHistory from '@/components/sales/CustomerHistory.vue'
+import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.vue'
+import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,9 +73,23 @@ const router = createRouter({
       name: 'SalesHistory',
       component: SalesHistory,
     },
+    {
+      path: '/customer-history',
+      name: 'CustomerHistory',
+      component: CustomerHistory, 
+    },
+    {
+      path: '/totalsalesby-salesperson',
+      name: 'TotalSalesBySalesperson',
+      component: TotalSalesBySalesperson, 
+    },
+    {
+      path: '/monthlysales-statistics',
+      name: 'MonthlySalesStatistics',
+      component: MonthlySalesStatistics, 
+    }
   ],
 })
-
 
 // 인증 가드 설정
 router.beforeEach((to, from, next) => {
