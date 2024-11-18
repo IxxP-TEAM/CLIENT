@@ -46,10 +46,20 @@
         <div class="dropdown-title" @click="toggleDropdown('dropdown1')">
           영업 관리
         </div>
-        <div v-if="isDropdownOpen === 'dropdown1'" class="dropdown-content">
+        <div v-if="isDropdownOpen.dropdown1" class="dropdown-content">
           <router-link to="/customer-list">고객사 목록</router-link>
           <router-link to="/register-order">판매 등록 폼</router-link>
           <router-link to="/order-list">판매 목록 폼</router-link>
+        </div>
+
+        <!-- 재고 관리 -->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
+          재고관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown4" class="dropdown-content">
+          <router-link to="/products">제품 목록</router-link>
+          <router-link to="/inventory">재고 목록</router-link>
+          <router-link to="/inventory/history">재고 이력 목록</router-link>
         </div>
       </div>
     </nav>
@@ -91,8 +101,10 @@ const checkInError = ref(false);
 const checkOutError = ref(false);
 
 const isDropdownOpen = ref({
+  dropdown1: false,
   dropdown2: false, // 인사관리
   dropdown3: false, // 급여관리
+  dropdown4: false, // 제품 관리
 });
 
 // 사이드바 표시 여부를 결정하는 computed property
@@ -149,7 +161,7 @@ const confirmCheckIn = async () => {
     } else {
       checkInError.value = true; // 출근 실패 시 오류 메시지 표시
     }
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     checkInError.value = true; // 서버 에러로 실패 시 오류 메시지 표시
   }
 };
@@ -169,7 +181,7 @@ const confirmCheckOut = async () => {
     } else {
       checkOutError.value = true; // 퇴근 실패 시 오류 메시지 표시
     }
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     checkOutError.value = true; // 서버 에러로 실패 시 오류 메시지 표시
   }
 };

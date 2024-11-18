@@ -155,8 +155,13 @@ export default {
   },
 
   // 직원 목록 가져오기 요청
-  fetchUserList(page = 0, size = 5) {
+  fetchUserList(page = 0, size = 10) {
     return api.get(`/hr?page=${page}&size=${size}`);
   },
+
+  // 휴가 목록 가져오기
+  fetchLeaveList(page = 0, size = 10) {
+    return api.get(`/leave?page=${page}&size=${size}`);
+  }
 
 };
