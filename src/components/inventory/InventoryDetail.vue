@@ -5,7 +5,9 @@
       
       <!-- 데이터가 있는 경우 최대 10개 항목을 보여주고 나머지는 스크롤 -->
       <ul v-if="limitedInventoryDetails.length > 0" class="inventory-list">
-        <li v-for="(item, index) in limitedInventoryDetails" :key="index">
+        <li v-for="(item, index) in limitedInventoryDetails" :key="index"
+        @click="selectExpiration(item)" 
+          style="cursor: pointer;">
           유통기한: {{ item.expirationDate }} | 재고 수량: {{ item.currentQuantity }}
         </li>
       </ul>
@@ -27,13 +29,17 @@ const props = defineProps({
   isOpen: Boolean,
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close','select-expiration'])
 
 // 처음 10개 항목만 반환하는 계산 속성
 const limitedInventoryDetails = computed(() => props.inventoryDetails)
 
 function closeModal() {
   emit('close')
+}
+
+function selectExpiration(item) {
+  emit("select-expiration", item.expirationDate); // 유통기한 전달
 }
 </script>
 

@@ -10,8 +10,6 @@
           placeholder="제품 이름을 입력하세요"
         />
         <button @click="triggerSearch">검색</button>
-      </div>
-      <div class="sort-group">
         <select v-model="selectedSort" @change="triggerSort">
           <option value="" disabled hidden>정렬 기준을 선택하세요</option>
           <option value="productName">이름순</option>
@@ -52,8 +50,8 @@ const currentPage = ref(1)
 const itemsPerPage = ref(10)
 const searchQuery = ref('')
 const totalPages = ref(1)
-const selectedSort = ref('changeDate')
-const sortDirection = ref('asc')
+const selectedSort = ref('')
+const sortDirection = ref('')
 
 async function fetchInventoryHistoryList(isSearch = false) {
   try {
@@ -61,7 +59,7 @@ async function fetchInventoryHistoryList(isSearch = false) {
       currentPage.value - 1,
       itemsPerPage.value,
       selectedSort.value || 'changeDate',
-      sortDirection.value || 'asc',
+      sortDirection.value || 'desc',
       isSearch ? searchQuery.value : '',
     )
     inventoryHistoryItems.value = response.data.data.elements

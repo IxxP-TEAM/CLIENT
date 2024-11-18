@@ -48,12 +48,12 @@ const router = createRouter({
       component: OrderList,
       meta: { requiresAuth: true },
     },    
-
+    // 제품 목록
     {
       path:"/products",
       name:'products',
       component:ProductList,
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
     },  
     //비밀번호 재설정(인증X)
     {
@@ -66,14 +66,14 @@ const router = createRouter({
       path:"/inventory",
       name:'inventory',
       component:InventoryList,
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
     },  
     // 재고 이력 목록
     {
       path:"/inventory/history",
       name:'inventory/history',
       component:InventoryHistoryList,
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
     },  
     {
       path: '/register-order',

@@ -8,6 +8,8 @@
             type="text"
             id="productName"
             v-model="adjustmentData.productName"
+            @click="openProductSelector"
+            readonly
             required
           />
   
@@ -24,6 +26,7 @@
           id="expirationDate"
           v-model="adjustmentData.expirationDate"
           :min="minExpirationDate"
+          readonly
           required
         />
           <label for="adjustment">조정 사유</label>
@@ -42,6 +45,24 @@
             </button>
           </div>
         </form>
+        <!-- 제품 선택 모달 -->
+      <InventoryProductSelector
+        v-if="showProductSelector"
+        :productOptions="productOptions"
+        @confirm-selection="selectProduct"
+        @close="closeProductSelector"
+      />
+
+      <InventoryDetail
+  v-if="isModalOpen"
+  :inventoryDetails="inventoryDetails"
+  :productName="selectedProductName"
+  :isOpen="isModalOpen"
+  @close="isModalOpen = false"
+  @select-expiration="handleExpirationSelection"
+/>
+
+      
       </div>
     </div>
   </template>
@@ -49,7 +70,9 @@
   <script setup>
   import { ref, defineProps, defineEmits, computed } from 'vue'
   import apiService from '@/api/apiService'
-  
+  import InventoryProductSelector from '@/components/inventory/InventoryProductSelector.vue';
+import InventoryDetail from '@/components/inventory/InventoryDetail.vue';
+
 
   
   const props = defineProps({
@@ -75,7 +98,89 @@
       console.error("출고 데이터 등록 중 오류 발생:", error);
       emit('error', error.response?.data?.message || "출고 데이터를 등록하는 데 오류가 발생했습니다.");
     }
+};
+
+// 제품 선택 모달 상태
+const showProductSelector = ref(false) // 모달 열림 여부
+  const productOptions = ref([]) // 제품 목록
+
+
+const products = ref([]); // 제품 목록 데이터
+const totalPages = ref(0); // 총 페이지 수
+const currentPage = ref(1); // 현재 페이지
+const itemsPerPage = 10; // 페이지당 항목 수
+const selectedSort = ref('productId'); // 정렬 기준 (기본값: productId)
+const sortDirection = ref('asc'); // 정렬 방향 (기본값: 오름차순)
+
+  const isModalOpen = ref(false)
+  const inventoryDetails = ref([])
+  const selectedProductName = ref('')
+
+
+// 제품 선택 모달 닫기
+const closeProductSelector = () => {
+  showProductSelector.value = false
+}
+// // 선택한 제품 처리
+// const selectProduct = product => {
+//   adjustmentData.value.productName = product.productName // 선택된 제품 이름 반영
+//   closeProductSelector() // 모달 닫기
+// }
+
+// 데이터 조회
+async function fetchProducts() {
+  try {
+    const response = await apiService.getProductList(
+      currentPage.value - 1,        // 백엔드는 0부터 시작하므로 1을 뺌
+      itemsPerPage,
+      selectedSort.value || 'productId',  // 정렬 기준
+      sortDirection.value || 'asc'       // 정렬 방향
+    );
+
+    const fetchedProducts = response.data.data.elements; // 제품 리스트 가져오기
+    products.value = fetchedProducts; // 전체 제품 리스트 저장
+    productOptions.value = fetchedProducts; // 모달에서 사용할 옵션 데이터 설정
+    totalPages.value = response.data.data.totalPages; // 전체 페이지 수 저장
+  } catch (error) {
+    console.error('제품 목록을 불러오는 중 오류가 발생했습니다:', error);
+  }
+}
+
+// 제품 선택 모달 열기
+const openProductSelector = async () => {
+  await fetchProducts(); // 제품 목록 불러오기
+  showProductSelector.value = true; // 모달 열기
   };
+
+ const selectProduct = async (product) => {
+  adjustmentData.value.productName = product.productName; // 선택된 제품 이름 반영
+
+  // 제품 상세 정보 불러오기
+  try {
+    await fetchAndOpenDetail(product); // 상세 정보 가져오기 및 모달 열기
+  } catch (error) {
+    console.error("상세 정보를 불러오는 중 오류 발생:", error);
+  }
+
+  closeProductSelector(); // 선택 모달 닫기
+};
+
+const fetchAndOpenDetail = async (product) => {
+  try {
+    const response = await apiService.getInventoriesByProductId(product.productId);
+    inventoryDetails.value = response.data.data; // 상세 정보 설정
+    selectedProductName.value = product.productName; // 선택된 제품 이름 설정
+    isModalOpen.value = true; // 모달 열기
+  } catch (error) {
+    console.error("상세 재고 정보를 가져오는 중 오류 발생:", error);
+  }
+  };
+
+  function handleExpirationSelection(expirationDate) {
+  adjustmentData.value.expirationDate = expirationDate; // 유통기한 설정
+  isModalOpen.value = false; // 상세 모달 닫기
+}
+
   </script>
   
   <style scoped>

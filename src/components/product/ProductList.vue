@@ -119,7 +119,7 @@ function goToPage(page) {
   }
 }
 
-// 검색
+// 정렬
 function triggerSort() {
   if (searchQuery.value) {
     triggerSearch(); // 검색어가 있을 경우 검색 결과를 정렬

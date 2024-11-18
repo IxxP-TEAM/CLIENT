@@ -164,14 +164,6 @@ export default {
     return api.post(`/hr/reset-pw`, { email, code, newPassword });
   },
 
-  updateUser(userData) {
-    return api.patch(`/hr/${userData.userIdx}`, userData);
-  },
-
-  // 주문 생성 요청
-  createOrder(orderData) {
-    return api.post('/orders/create', orderData);
-  },
 
   // 주문 목록 가져오기 요청 (페이지 매개변수 포함)
   fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc")  {
