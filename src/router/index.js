@@ -5,6 +5,8 @@ import CustomerForm from '@/components/customer/CustomerForm.vue'
 import CustomerList from '@/components/customer/CustomerList.vue'
 import ProductList from '@/components/product/ProductList.vue'
 import ResetPassword from '@/components/employee/ResetPassword.vue'
+import InventoryList from '@/components/inventory/InventoryList.vue'
+import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
 
@@ -37,6 +39,7 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
+    // 제품 목록
 
     //판매 목록
     {
@@ -45,12 +48,12 @@ const router = createRouter({
       component: OrderList,
       meta: { requiresAuth: true },
     },    
-
+    // 제품 목록
     {
       path:"/products",
       name:'products',
       component:ProductList,
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
     },  
     //비밀번호 재설정(인증X)
     {
@@ -58,6 +61,20 @@ const router = createRouter({
       name: ResetPassword,
       component: ResetPassword
     },
+    // 재고 목록
+    {
+      path:"/inventory",
+      name:'inventory',
+      component:InventoryList,
+      meta: { requiresAuth: true },
+    },  
+    // 재고 이력 목록
+    {
+      path:"/inventory/history",
+      name:'inventory/history',
+      component:InventoryHistoryList,
+      meta: { requiresAuth: true },
+    },  
     {
       path: '/register-order',
       name: 'Registerorder',
