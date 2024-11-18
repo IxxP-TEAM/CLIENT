@@ -162,6 +162,21 @@ export default {
   // 휴가 목록 가져오기
   fetchLeaveList(page = 0, size = 10) {
     return api.get(`/leave?page=${page}&size=${size}`);
+  },
+  
+  // 휴가 상세 정보 조회
+  fetchLeaveDetails(leaveId) {
+    return api.get(`/leave/${leaveId}`);
+  },
+
+  // 휴가 승인
+  approvalLeave(leaveId) {
+    return api.patch(`/leave/approval/${leaveId}`);
+  },
+
+  // 휴가 거절
+  refusalLeave(leaveId, data) {
+    return api.patch(`/leave/refusal/${leaveId}`, data);
   }
 
 };

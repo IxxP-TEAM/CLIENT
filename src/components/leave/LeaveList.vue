@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="leave in leaves" :key="leave.leaveId">
+                    <tr v-for="leave in leaves" :key="leave.leaveId" @click="viewLeaveDetails(leave)">
                         <td>{{ leave.leaveId }}</td>
                         <td>{{ leave.username }}</td>
                         <td>
@@ -44,19 +44,25 @@
                         class="pagination-arrow">
                         > </button>
         </div>
+        <LeaveDetailModal v-if="showLeaveDetailModal" :leaveDetails="selectedLeave" @close="closeLeaveDetailModal"
+            @update-details="fetchLeaveDetails" />
     </div>
 </template>
 <script>
 import apiService from '@/api/apiService'
+import LeaveDetailModal from './LeaveDetailModal.vue'
 
 export default {
+    components: { LeaveDetailModal },
     data() {
         return {
             currentPage: 0,
             pageSize: 10,
             totalElements: 0,
             totalPages: 0,
-            leaves: []
+            leaves: [],
+            showLeaveDetailModal: false,
+            selectLeave: null
         };
     },
     methods: {
@@ -113,6 +119,18 @@ export default {
             }
             return 'default-leave';
         },
+        async viewLeaveDetails(leave) {
+            try {
+                const response = await apiService.fetchLeaveDetails(leave.leaveId);
+                this.selectedLeave = response.data.data;
+                this.showLeaveDetailModal = true;
+            } catch (error) {
+                console.error('휴가 세부 정보를 불러오는 데 실패했습니다.', error);
+            }
+        },
+        closeLeaveDetailModal() {
+            this.showLeaveDetailModal = false;
+        }
     },
     mounted() {
         this.fetchLeaves();
