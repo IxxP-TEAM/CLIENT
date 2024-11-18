@@ -24,7 +24,7 @@
           인사관리
         </div>
         <div v-if="isDropdownOpen.dropdown2" class="dropdown-content">
-          <router-link to="/empList">직원 목록</router-link>
+          <router-link to="/empList" @click="setActiveSubMenu('employee-list')">직원 목록</router-link>
           <router-link to="/create-emp">직원 등록</router-link>
           <router-link to="/leave">휴가 관리</router-link>
           <router-link to="/late">지각/조퇴 관리</router-link>
@@ -112,9 +112,29 @@ const showSidebar = computed(() => {
   return route.path !== '/login';
 });
 
+const activeMenu = ref('');
+const activeSubMenu = ref('');
+
+// 메뉴 클릭 시 activeMenu 업데이트
+const setActiveMenu = (menu) => {
+  activeMenu.value = menu;
+};
+
+const setActiveSubMenu = (subMenu) => {
+  activeSubMenu.value = subMenu;
+};
+
+
 // 드롭다운 토글 함수
 const toggleDropdown = (dropdown) => {
-  isDropdownOpen.value[dropdown] = !isDropdownOpen.value[dropdown];
+  // isDropdownOpen.value[dropdown] = !isDropdownOpen.value[dropdown];
+  if (activeMenu.value === dropdown) {
+    // 이미 활성화된 메뉴 클릭 시 비활성화
+    activeMenu.value = '';
+  } else {
+    isDropdownOpen.value[dropdown] = !isDropdownOpen.value[dropdown];
+    setActiveMenu(dropdown); // 클릭한 메뉴 활성화
+  }
 };
 
 // 로그인한 사용자 이름 가져오는 함수
@@ -253,6 +273,12 @@ onMounted(() => {
   border-radius: 4px;
 }
 
+/* 호버 효과 고정 */
+.dropdown-title.active {
+  background-color: #ddd;
+  border-radius: 4px;
+}
+
 .dropdown-content {
   display: flex;
   flex-direction: column;
@@ -265,6 +291,16 @@ onMounted(() => {
   text-decoration: none;
   font-size: 13px;
   font-weight: normal;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-content a.router-link-active {
+  background-color: #ddd;
+  /* 원하는 색상으로 변경 */
+  /* color: white; */
+  /* 텍스트 색상 변경 */
+  border-radius: 4px;
+
 }
 
 .dropdown-content a:hover {
