@@ -14,6 +14,7 @@ import CustomerHistory from '@/components/sales/CustomerHistory.vue'
 import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.vue'
 import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vue'
 import Leave from '@/components/leave/LeaveList.vue'
+import BoardList from '@/components/board/BoardList.vue'
 
 
 const router = createRouter({
@@ -122,6 +123,12 @@ const router = createRouter({
       name: "Leave",
       component: Leave,
       meta: { requiresAuth: true},
+    },
+    {
+      path: '/board-list/:type',
+      name:'BoardList',
+      component: BoardList,
+      props:true,
     },
   ],
 })

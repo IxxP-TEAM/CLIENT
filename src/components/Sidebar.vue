@@ -48,6 +48,16 @@
           <router-link to="/customer-list">고객사 목록</router-link>
           <router-link to="/order-list">주문 목록</router-link>
         </div>
+        
+        <!-- 게시판 -->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown6')">
+          게시판
+        </div>
+        <div v-if="isDropdownOpen.dropdown6" class="dropdown-content">
+        <router-link :to="{ name: 'BoardList', params: { type: 'NOTICE' } }">공지게시판</router-link>
+        <router-link :to="{ name: 'BoardList', params: { type: 'FREE' } }">자유게시판</router-link>
+        <router-link :to="{ name: 'BoardList', params: { type: 'ANONYMOUS' } }">익명게시판</router-link>
+        </div>
 
         <!--판매 개요 메뉴-->
         <div class="dropdown-title" @click="toggleDropdown('dropdown5')">
@@ -59,6 +69,7 @@
           <router-link to="/totalsalesby-salesperson">사원별 매출</router-link>
           <router-link to="/monthlysales-statistics">기간별 매출</router-link>
         </div>
+        
       
         <!-- 재고 관리 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
@@ -115,6 +126,7 @@ const isDropdownOpen = ref({
   dropdown3: false, // 급여관리
   dropdown4: false, // 제품 관리
   dropdown5: false, // 매출 개요
+  dropdown6: false, // 게시판 
   
 });
 

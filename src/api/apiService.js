@@ -35,7 +35,9 @@ export default {
 
   // 제품 리스트
   getProductList(page, size, sortBy, direction) {
-    return api.get('/products', {params: {page,size,sortBy,direction,
+    return api.get('/products', {
+      params: {
+        page, size, sortBy, direction,
       },
     });
   },
@@ -58,14 +60,14 @@ export default {
   // 제품 검색 요청
   searchProducts(productName, page, size, sortBy, direction) {
     return api.get('/products/search', {
-      params: {productName,page,size,sortBy,direction,},
+      params: { productName, page, size, sortBy, direction, },
     });
   },
 
   // 재고 리스트
   fetchInventoryList(page, size, sortBy, direction, searchTerm = '') {
     return api.get('/inventory', {
-      params: {page,size,sortBy,direction,searchTerm,},
+      params: { page, size, sortBy, direction, searchTerm, },
     });
   },
   // 입고
@@ -95,7 +97,7 @@ export default {
   // 재고 이력 리스트
   fetchInventoryHistoryList(page, size, sortBy, direction, searchQuery = '') {
     return api.get('/inventory/history', {
-      params: {page,size,sortBy,direction,searchQuery,},
+      params: { page, size, sortBy, direction, searchQuery, },
     });
   },
 
@@ -231,6 +233,40 @@ export default {
   getTotalSalesByUserAndDate(payload) {
     return api.post("/sales/total-by-salesperson/date", payload, {
       headers: { "Content-Type": "application/json" },
+    });
+  },
+  // 게시판 목록 가져오기
+  fetchBoardList(page = 0, size = 10, searchQuery = '', sortOrder = 'asc') {
+    return api.get('/boards/list', {
+      params: {
+        page,
+        size,
+        sort: `title,${sortOrder}`, // 정렬 기준: 제목(title)
+        searchQuery, // 검색 쿼리 전달
+      },
+    });
+  },
+  // 게시글 삭제 요청
+  deleteBoard(boardId) {
+    return api.delete(`/boards/${boardId}`);
+  },
+  // 게시글 생성
+  createBoard(boardData) {
+    return api.post("/boards/create", boardData);
+  },
+  // 게시글 수정
+  updateBoard(boardId, updatedData) {
+    return api.patch(`/boards/${boardId}`, updatedData);
+  },
+  fetchBoardListByType(type, page = 0, size = 10, searchQuery = '', sortOrder = 'asc') {
+    return api.get('/boards/list', {
+      params: {
+        type, // 타입 전달
+        page,
+        size,
+        searchQuery,
+        sort: `title,${sortOrder}`, // 정렬 기준
+      },
     });
   },
 };
