@@ -104,7 +104,7 @@
             <td>{{ order.orderDate || '' }}</td>
             <td>{{ order.customerName || 'N/A' }}</td>
             <td>{{ order.orderStatus || '' }}</td>
-            <td>{{ (order.totalAmount || 0).toLocaleString() }} 원</td>
+            <td>{{formatCurrency(order.totalAmount || 0).toLocaleString() }}</td>
             <td>{{ order.paymentStatus || '' }}</td>
             <td>{{ order.shippingStatus || '' }}</td>
           </tr>
@@ -237,6 +237,12 @@ export default {
     },
   },
   methods: {
+    formatCurrency(value) {
+      return new Intl.NumberFormat('ko-KR', {
+        style: 'currency',
+        currency: 'KRW',
+      }).format(value)
+    },
     openOrderFormForEdit(order) {
       this.selectedOrder = order;      // 수정할 주문 정보 설정
       this.isEditMode = true;          // 수정 모드 활성화

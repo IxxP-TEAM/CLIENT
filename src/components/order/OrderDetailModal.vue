@@ -38,8 +38,8 @@
         <!-- 할인 및 세금 정보 카드 -->
         <section class="discount-tax">
           <p><strong>총 금액:</strong> ₩{{ order.totalAmount ? order.totalAmount.toLocaleString() : '0' }}</p>
-          <p><strong>할인 금액:</strong> ₩{{ order.discountAmount ? order.discountAmount.toLocaleString() : '0' }}</p>
-          <p><strong>세금 금액:</strong> ₩{{ order.taxAmount ? order.taxAmount.toLocaleString() : '0' }}</p>
+          <p><strong>총 할인액:</strong> ₩{{ order.discountAmount ? order.discountAmount.toLocaleString() : '0' }}</p>
+          <p><strong>총 세금액:</strong> ₩{{ order.taxAmount ? order.taxAmount.toLocaleString() : '0' }}</p>
         </section>
 
         <!-- 주문 메모 -->

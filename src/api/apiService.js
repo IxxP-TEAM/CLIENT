@@ -35,12 +35,7 @@ export default {
 
   // 제품 리스트
   getProductList(page, size, sortBy, direction) {
-    return api.get('/products', {
-      params: {
-        page,
-        size,
-        sortBy,
-        direction,
+    return api.get('/products', {params: {page,size,sortBy,direction,
       },
     });
   },
@@ -63,26 +58,14 @@ export default {
   // 제품 검색 요청
   searchProducts(productName, page, size, sortBy, direction) {
     return api.get('/products/search', {
-      params: {
-        productName,
-        page,
-        size,
-        sortBy,
-        direction,
-      },
+      params: {productName,page,size,sortBy,direction,},
     });
   },
 
   // 재고 리스트
   fetchInventoryList(page, size, sortBy, direction, searchTerm = '') {
     return api.get('/inventory', {
-      params: {
-        page,
-        size,
-        sortBy,
-        direction,
-        searchTerm,
-      },
+      params: {page,size,sortBy,direction,searchTerm,},
     });
   },
   // 입고
@@ -91,60 +74,36 @@ export default {
   },
 
   // 출고
-  createOutbound(outboundData){
+  createOutbound(outboundData) {
     return api.post('/inventory/outbound', outboundData);
   },
 
   // 소모
-  createConsumption(consumptionData){
+  createConsumption(consumptionData) {
     return api.post('/inventory/consumption', consumptionData);
   },
   // 조정
-  createAdjustment(adjustmentData){
+  createAdjustment(adjustmentData) {
     return api.post('/inventory/adjustment', adjustmentData);
   },
-  
+
   // 재고 상세 보기
-  getInventoriesByProductId(productId){
+  getInventoriesByProductId(productId) {
     return api.get(`/inventory/${productId}`);
   },
 
   // 재고 이력 리스트
-  fetchInventoryHistoryList(page, size, sortBy, direction, searchQuery =''){
-    return api.get('/inventory/history',{
-      params: {
-        page,
-        size,
-        sortBy,
-        direction,
-        searchQuery,
-      },
+  fetchInventoryHistoryList(page, size, sortBy, direction, searchQuery = '') {
+    return api.get('/inventory/history', {
+      params: {page,size,sortBy,direction,searchQuery,},
     });
   },
-
 
   //고객사 세부 내역
   getCustomerDetails(customerId) {
     return api.get(`/customer/${customerId}`);
   },
 
-    updateUser(userData) {
-      return api.patch(`/hr/${userData.userIdx}`, userData);
-    },
-    checkInStatus() {
-    return api.get('/attendance/status'); // 출근 여부 확인 API 엔드포인트
-    }, 
-    checkIn() {
-      return api.post('/attendance');
-    },
-    checkOut() {
-      return api.post('/attendance/leave-work');
-    },
-  
-    // 주문 생성 요청
-    createOrder(orderData) {
-      return api.post('/orders/create', orderData);
-    },
   // 여러 customerId에 대한 이름을 가져오는 함수
   fetchCustomerNames(customerIds) {
     return api.post('/customer/names', { customerIds });
@@ -164,9 +123,13 @@ export default {
     return api.post(`/hr/reset-pw`, { email, code, newPassword });
   },
 
+  // 주문 생성 요청
+  createOrder(orderData) {
+    return api.post('/orders/create', orderData);
+  },
 
   // 주문 목록 가져오기 요청 (페이지 매개변수 포함)
-  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc")  {
+  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc") {
     return api.get('/orders/all', {
       params: {
         page,
@@ -201,12 +164,34 @@ export default {
   fetchUserList(page = 0, size = 10) {
     return api.get(`/hr?page=${page}&size=${size}`);
   },
+  //전체 매출조회
+  allSalesHistoty(page = 0, size = 10) {
+    return api.get(`sales/all?page=${page}&size=${size}`);
+  },
+
+  //고객사별 총주문금액
+  getTotalSalesByCustomer() {
+    return api.get('/sales/total-by-customer');
+  },
+
+  //사원별 총주문금액 
+  getTotalSalesBySalesperson() {
+    return api.get('/sales/total-by-salesperson')
+  },
+  // 월별 매출 통계 API 호출
+  getMonthlySalesStatistics(dateRange) {
+    return api.post("/sales/monthly-statistics", dateRange);
+  },
+
+  getDailySalesStatistics(dateRange) {
+    return api.post("/sales/daily-statistics", dateRange);
+  },
 
   // 휴가 목록 가져오기
   fetchLeaveList(page = 0, size = 10) {
     return api.get(`/leave?page=${page}&size=${size}`);
   },
-  
+
   // 휴가 상세 정보 조회
   fetchLeaveDetails(leaveId) {
     return api.get(`/leave/${leaveId}`);
@@ -221,10 +206,31 @@ export default {
   refusalLeave(leaveId, data) {
     return api.patch(`/leave/refusal/${leaveId}`, data);
   },
-  
+
   //로그아웃
   logout() {
     return api.post(`/users/logout`);
-  }
+  },
 
+  //상위 고객
+  getTopCustomersBySales() {
+    return api.get(`/sales/top-customers`);
+  },
+
+  //상위 사원
+  getTopSalespersonsBySales() {
+    return api.get(`/sales/top-salespersons`);
+  },
+  //기간별 고객사 매출
+  getTotalSalesByCustomerAndDate(payload) {
+    return api.post("/sales/total-by-customer/date", payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
+  //기간별 사원 매출
+  getTotalSalesByUserAndDate(payload) {
+    return api.post("/sales/total-by-salesperson/date", payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
 };

@@ -32,7 +32,7 @@ export default {
             try {
                 const response = await login(this.connId, this.password);
                 console.log('로그인 성공:', response);
-                this.$router.push('/empList');
+                this.$router.push('/home');
             } catch (error) {
                 this.errorMessage = '로그인 실패. 다시 시도하세요.';
                 console.error(error);

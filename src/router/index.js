@@ -9,11 +9,26 @@ import InventoryList from '@/components/inventory/InventoryList.vue'
 import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
+import SalesHistory from '@/components/sales/SalesHistory.vue'
+import CustomerHistory from '@/components/sales/CustomerHistory.vue'
+import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.vue'
+import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vue'
 import Leave from '@/components/leave/LeaveList.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      redirect: '/home', 
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: () => import('@/components/Home.vue'),
+      meta: { requiresAuth: true },
+    },
     {
       path: "/empList",
       name: 'empList',
@@ -24,7 +39,7 @@ const router = createRouter({
       path: "/login",
       name: 'login',
       component: Login
-    },  
+    },
     //고객사 등록
     {
       path: '/register-customer',
@@ -83,14 +98,33 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/sales-history',
+      name: 'SalesHistory',
+      component: SalesHistory,
+    },
+    {
+      path: '/customer-history',
+      name: 'CustomerHistory',
+      component: CustomerHistory, 
+    },
+    {
+      path: '/totalsalesby-salesperson',
+      name: 'TotalSalesBySalesperson',
+      component: TotalSalesBySalesperson, 
+    },
+    {
+      path: '/monthlysales-statistics',
+      name: 'MonthlySalesStatistics',
+      component: MonthlySalesStatistics, 
+    },
+    {
       path: '/leave',
       name: "Leave",
       component: Leave,
       meta: { requiresAuth: true},
-    }
+    },
   ],
 })
-
 
 // 인증 가드 설정
 router.beforeEach((to, from, next) => {
