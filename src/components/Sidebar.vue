@@ -5,20 +5,17 @@
       <img src="/src/assets/logo.png" alt="IXXP ERP Logo" />
     </div>
 
-    <!-- 로그인 정보 섹션 -->
     <div class="login-info">
       <p>로그인 사용자: {{ userName }}</p>
       <p class="target-role">{{ userRole === 'ROLE_ADMIN' ? '관리자' : '일반 사용자' }}</p>
     </div>
 
     <nav>
-      <!-- 출근/퇴근 버튼 -->
       <div class="attendance-btn">
         <button v-if="!isCheckIn" @click="openCheckInPopup" class="in-btn">출근하기</button>
         <button v-else @click="openCheckOutPopup" class="out-btn">퇴근하기</button>
       </div>
 
-      <!-- 관리자 메뉴 -->
       <div v-if="userRole === 'ROLE_ADMIN'" class="dropdown">
         <div class="dropdown-title" @click="toggleDropdown('dropdown2')">
           인사관리
@@ -39,10 +36,7 @@
         </div>
       </div>
 
-      <!-- 일반 사용자 메뉴 -->
       <div v-if="userRole === 'ROLE_USER'" class="dropdown">
-        <!-- 드롭 다운 -->
-        <!-- <div class="dropdown"> -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown1')">
           영업 관리
         </div>
@@ -52,7 +46,6 @@
           <router-link to="/order-list">판매 목록 폼</router-link>
         </div>
 
-        <!-- 재고 관리 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
           재고관리
         </div>
@@ -64,6 +57,7 @@
       </div>
     </nav>
   </aside>
+
   <div v-show="showCheckInPopup" class="popup">
     <div class="popup-content">
       <p>출근하시겠습니까?</p>
@@ -73,7 +67,6 @@
     </div>
   </div>
 
-  <!-- 퇴근 확인 팝업 -->
   <div v-show="showCheckOutPopup" class="popup">
     <div class="popup-content">
       <p>퇴근하시겠습니까?</p>
@@ -82,6 +75,15 @@
       <p v-if="checkOutError" class="error-message">퇴근하기 실패</p>
     </div>
   </div>
+
+  <div v-if="checkInMessage" class="check-in-message">
+    {{ checkInMessage }}
+  </div>
+
+  <div v-if="checkOutMessage" class="check-out-message">
+    {{ checkOutMessage }}
+  </div>
+
 </template>
 
 <script setup>
@@ -99,15 +101,16 @@ const showCheckInPopup = ref(false);
 const showCheckOutPopup = ref(false);
 const checkInError = ref(false);
 const checkOutError = ref(false);
+const checkInMessage = ref('');
+const checkOutMessage = ref('');
 
 const isDropdownOpen = ref({
   dropdown1: false,
-  dropdown2: false, // 인사관리
-  dropdown3: false, // 급여관리
-  dropdown4: false, // 제품 관리
+  dropdown2: false,
+  dropdown3: false,
+  dropdown4: false,
 });
 
-// 사이드바 표시 여부를 결정하는 computed property
 const showSidebar = computed(() => {
   return route.path !== '/login';
 });
@@ -115,7 +118,6 @@ const showSidebar = computed(() => {
 const activeMenu = ref('');
 const activeSubMenu = ref('');
 
-// 메뉴 클릭 시 activeMenu 업데이트
 const setActiveMenu = (menu) => {
   activeMenu.value = menu;
 };
@@ -125,19 +127,15 @@ const setActiveSubMenu = (subMenu) => {
 };
 
 
-// 드롭다운 토글 함수
 const toggleDropdown = (dropdown) => {
-  // isDropdownOpen.value[dropdown] = !isDropdownOpen.value[dropdown];
   if (activeMenu.value === dropdown) {
-    // 이미 활성화된 메뉴 클릭 시 비활성화
     activeMenu.value = '';
   } else {
     isDropdownOpen.value[dropdown] = !isDropdownOpen.value[dropdown];
-    setActiveMenu(dropdown); // 클릭한 메뉴 활성화
+    setActiveMenu(dropdown);
   }
 };
 
-// 로그인한 사용자 이름 가져오는 함수
 const getUserNameFromToken = () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -148,7 +146,6 @@ const getUserNameFromToken = () => {
   }
 };
 
-// 출근 상태 체크 API 호출
 const checkInStatus = async () => {
   try {
     const response = await apiService.checkInStatus();
@@ -159,56 +156,64 @@ const checkInStatus = async () => {
   }
 };
 
-// 출근 확인 팝업 열기
 const openCheckInPopup = () => {
   showCheckInPopup.value = true;
   checkInError.value = false;
 };
 
-// 퇴근 확인 팝업 열기
 const openCheckOutPopup = () => {
   showCheckOutPopup.value = true;
   checkOutError.value = false;
 };
 
-// 출근 확인 버튼 클릭 시 처리
+const displayMessage = (messageType, message) => {
+  if (messageType === 'checkIn') {
+    checkInMessage.value = message;
+    setTimeout(() => (checkInMessage.value = ''), 3000);
+    checkOutMessage.value = message;
+    setTimeout(() => (checkOutMessage.value = ''), 3000);
+  }
+};
+
 const confirmCheckIn = async () => {
   try {
-    const response = await apiService.checkIn(); // 출근 처리 API 호출
+    const response = await apiService.checkIn();
     if (response.data.data.status === 'ACTIVE') {
-      isCheckIn.value = true; // 출근 성공
-      showCheckInPopup.value = false; // 팝업 닫기
+      isCheckIn.value = true;
+      showCheckInPopup.value = false;
+      const currentTime = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+      displayMessage('checkIn', `출근 완료 (${currentTime})`);
     } else {
-      checkInError.value = true; // 출근 실패 시 오류 메시지 표시
+      checkInError.value = true;
     }
   } catch (error) { // eslint-disable-line no-unused-vars
-    checkInError.value = true; // 서버 에러로 실패 시 오류 메시지 표시
+    checkInError.value = true;
   }
 };
 
-// 출근 취소 버튼 클릭 시 처리
+
 const cancelCheckIn = () => {
-  showCheckInPopup.value = false; // 팝업 닫기
+  showCheckInPopup.value = false;
 };
 
-// 퇴근 확인 버튼 클릭 시 처리
 const confirmCheckOut = async () => {
   try {
-    const response = await apiService.checkOut(); // 퇴근 처리 API 호출
+    const response = await apiService.checkOut();
     if (response.data.data.status === 'INACTIVE') {
-      isCheckIn.value = false; // 퇴근 성공
-      showCheckOutPopup.value = false; // 팝업 닫기
+      isCheckIn.value = false;
+      showCheckOutPopup.value = false;
+      const currentTime = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+      displayMessage('checkOut', `퇴근 완료 (${currentTime})`);
     } else {
-      checkOutError.value = true; // 퇴근 실패 시 오류 메시지 표시
+      checkOutError.value = true;
     }
   } catch (error) { // eslint-disable-line no-unused-vars
-    checkOutError.value = true; // 서버 에러로 실패 시 오류 메시지 표시
+    checkOutError.value = true;
   }
 };
 
-// 퇴근 취소 버튼 클릭 시 처리
 const cancelCheckOut = () => {
-  showCheckOutPopup.value = false; // 팝업 닫기
+  showCheckOutPopup.value = false;
 };
 
 onMounted(() => {
@@ -296,9 +301,6 @@ onMounted(() => {
 
 .dropdown-content a.router-link-active {
   background-color: #ddd;
-  /* 원하는 색상으로 변경 */
-  /* color: white; */
-  /* 텍스트 색상 변경 */
   border-radius: 4px;
 
 }
@@ -309,7 +311,6 @@ onMounted(() => {
 }
 
 .attendance-btn {
-  /* margin-top: 13px; */
   margin-bottom: 20px;
   margin-left: 60px;
   align-items: center;
@@ -377,5 +378,20 @@ onMounted(() => {
 
 .target-role {
   font-weight: bold;
+}
+
+.check-in-message,
+.check-out-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #3F72AF;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  z-index: 1000;
 }
 </style>
