@@ -41,7 +41,7 @@
               <td>{{ history.customerId || 'N/A' }}</td>
               <td>{{ history.userId || 'N/A' }}</td>
               <td>{{ history.salesDate || 'N/A' }}</td>
-              <td>{{ history.salesAmount || 0 }}</td>
+              <td>{{ formatCurrency(history.salesAmount || 0) }}</td>
             </tr>
           </tbody>
         </table>
@@ -156,6 +156,12 @@ export default {
       this.pageNumber = 1 // 검색 시 첫 페이지로 이동
       this.applyFilter()
     },
+    formatCurrency(value) {
+        return new Intl.NumberFormat("ko-KR", {
+          style: "currency",
+          currency: "KRW",
+        }).format(value);
+      },
   },
   computed: {
     totalPages() {

@@ -46,7 +46,7 @@
         </div>
         <div v-if="isDropdownOpen.dropdown1" class="dropdown-content">
           <router-link to="/customer-list">고객사 목록</router-link>
-          <router-link to="/order-list">판매 목록</router-link>
+          <router-link to="/order-list">주문 목록</router-link>
         </div>
 
         <!--판매 개요 메뉴-->
