@@ -45,8 +45,6 @@
           <router-link to="/order-list">주문 목록</router-link>
         </div>
 
-<<<<<<< HEAD
-=======
         <!--판매 개요 메뉴-->
         <div class="dropdown-title" @click="toggleDropdown('dropdown5')">
           판매 개요
@@ -57,9 +55,8 @@
           <router-link to="/totalsalesby-salesperson">사원별 매출</router-link>
           <router-link to="/monthlysales-statistics">기간별 매출</router-link>
         </div>
-      
+
         <!-- 재고 관리 -->
->>>>>>> 4e5a3d5725fbf373f19ab3059b28702c41c60d01
         <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
           재고관리
         </div>
@@ -119,20 +116,17 @@ const checkInMessage = ref('');
 const checkOutMessage = ref('');
 
 const isDropdownOpen = ref({
-<<<<<<< HEAD
   dropdown1: false,
   dropdown2: false,
   dropdown3: false,
   dropdown4: false,
-=======
 
   dropdown1: false, // 영업관리
   dropdown2: false, // 인사관리
   dropdown3: false, // 급여관리
   dropdown4: false, // 제품 관리
   dropdown5: false, // 매출 개요
-  
->>>>>>> 4e5a3d5725fbf373f19ab3059b28702c41c60d01
+
 });
 
 const showSidebar = computed(() => {
