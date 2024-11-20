@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div>
     <div class="user-list">
@@ -30,7 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in paginatedUsers" :key="user.userIdx" @click="fetchUserDetails(user.userIdx)">
+            <tr v-for="user in filteredUsers" :key="user.userIdx" @click="fetchUserDetails(user.userIdx)">
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.department }}</td>
@@ -42,13 +43,20 @@
         </table>
       </div>
 
+      <!-- Pagination -->
       <div class="pagination">
-        <button @click="prevPage" :disabled="currentPage === 0">&lt;</button>
-        <span v-for="page in totalPages" :key="page" @click="setPage(page - 1)"
-          :class="{ active: currentPage === page - 1 }">
-          {{ page }}
-        </span>
-        <button @click="nextPage" :disabled="currentPage >= totalPages - 1">&gt;</button>
+        <button class="pagination-arrow" :disabled="currentPage === 0" @click="handlePageChange(currentPage - 1)">
+          < </button>
+            <span v-for="page in totalPages" :key="page" :class="{
+              'pagination-page': true,
+              'active': page === currentPage + 1
+            }" @click="handlePageChange(page - 1)">
+              {{ page }}
+            </span>
+
+            <button @click="handlePageChange(currentPage + 1)" :disabled="currentPage >= totalPages - 1"
+              class="pagination-arrow">
+              > </button>
       </div>
     </div>
   </div>
@@ -58,6 +66,7 @@
 import api from '@/api/api.js';
 import EmployeeModal from '../employee/EmployeeModal.vue';
 import EmployeeDetailModal from '../employee/EmployeeDetailModal.vue'
+import apiService from '@/api/apiService';
 
 export default {
   components: {
@@ -94,13 +103,7 @@ export default {
           user.department === this.selectedDepartment
         );
       }
-
       return result;
-    },
-    paginatedUsers() {
-      const start = this.currentPage * this.pageSize;
-      const end = start + this.pageSize;
-      return this.filteredUsers.slice(start, end);
     },
   },
   methods: {
@@ -116,13 +119,21 @@ export default {
     },
     async fetchUsers() {
       try {
-        const response = await api.get('/hr');
-        const result = response.data;
-        this.users = result.data.items;
-        this.totalElements = result.data.totalElements;
-        this.totalPages = result.data.totalPages;
+        const response = await apiService.fetchUserList(
+          this.currentPage,
+          this.pageSize,
+        );
+        this.users = [...response.data.data.items];
+        this.totalElements = response.data.data.totalElements;
+        this.totalPages = response.data.data.totalPages;
       } catch (error) {
         console.error("직원 목록을 가져오는 데 오류가 발생했습니다.", error);
+      }
+    },
+    handlePageChange(page) {
+      if (page >= 0 && page < this.totalPages) {
+        this.currentPage = page;
+        this.fetchUsers();
       }
     },
     async fetchUserDetails(userIdx) {
@@ -130,7 +141,6 @@ export default {
         const response = await api.get(`/hr/${userIdx}`);
         this.selectedUser = response.data.data;
         this.isDetailModalVisible = true;
-        console.log("userdetail", response);
       } catch (error) {
         console.error("직원 상세 정보를 가져오는 데 오류가 발생했습니다.", error);
       }
@@ -140,19 +150,6 @@ export default {
     },
     handleDepartmentChange() {
       this.currentPage = 0;
-    },
-    prevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage -= 1;
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages - 1) {
-        this.currentPage += 1;
-      }
-    },
-    setPage(page) {
-      this.currentPage = page;
     },
   },
   mounted() {
@@ -234,22 +231,55 @@ th {
 }
 
 .pagination {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
 }
 
-.pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-
-.pagination span {
-  margin: 0 5px;
-  cursor: pointer;
-}
-
-.pagination .active {
+.pagination span.current-page {
   font-weight: bold;
-  color: #3F72AF;
+  text-decoration: underline;
+}
+
+.pagination-page {
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.3s ease;
+}
+
+.pagination-page:hover {
+  color: #1d4f7a;
+}
+
+.pagination-page.active {
+  color: #3f72af;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.pagination-arrow {
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #3f72af;
+  border: 1px solid #3f72af;
+  background-color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-arrow:hover {
+  background-color: #3f72af;
+  color: white;
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

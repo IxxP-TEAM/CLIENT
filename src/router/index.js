@@ -16,6 +16,9 @@ import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vu
 import Leave from '@/components/leave/LeaveList.vue'
 import BoardList from '@/components/board/BoardList.vue'
 import BoardDetail from '@/components/board/BoardDetail.vue'
+import MyLeaveList from '@/components/leave/MyLeaveList.vue'
+import MyAttList from '@/components/attendence/MyAttList.vue'
+
 
 
 const router = createRouter({
@@ -137,7 +140,18 @@ const router = createRouter({
       component: BoardDetail,
       props: true,
     },
-
+    {
+      path: '/my-leave',
+      name: "myLeave",
+      component: MyLeaveList,
+      meta: {requiresAuth: true},
+    },
+    {
+      path: '/my-att',
+      name: "myAtt",
+      component: MyAttList,
+      meta: {requiresAuth: true},
+    },
   ],
 })
 

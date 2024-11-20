@@ -194,9 +194,19 @@ export default {
     return api.get(`/leave?page=${page}&size=${size}`);
   },
 
+  // 내가 신청한 휴가 목록 가져오기
+  fetchMyLeaveList(page = 0, size = 10) {
+    return api.get(`/leave/myLeave?page=${page}&size=${size}`);
+  },
+
   // 휴가 상세 정보 조회
   fetchLeaveDetails(leaveId) {
     return api.get(`/leave/${leaveId}`);
+  },
+
+  // 휴가 신청
+  createLeave(formData) {
+    return api.post(`/leave` ,formData);
   },
 
   // 휴가 승인
@@ -213,6 +223,13 @@ export default {
   logout() {
     return api.post(`/users/logout`);
   },
+
+  checkIn() {
+      return api.post('/attendance');
+    },
+  checkOut() {
+      return api.post('/attendance/leave-work');
+    },
 
   //상위 고객
   getTopCustomersBySales() {
@@ -235,6 +252,7 @@ export default {
       headers: { "Content-Type": "application/json" },
     });
   },
+
   // 게시판 목록 가져오기
   fetchBoardList(page = 0, size = 10, searchQuery = '', sortOrder = 'asc') {
     return api.get('/boards/list', {
@@ -286,6 +304,9 @@ uploadImage(formData) {
 //조회수 증가
 incrementViewCount(boardId){
   return api.post(`/boards/${boardId}/view`);
-}
+},
+  getMyAttList(userId, year, month) {
+    return api.get(`/attendance/${userId}/monthly?year=${year}&month=${month}`);
+  }
 
 };
