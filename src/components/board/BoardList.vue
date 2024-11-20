@@ -36,17 +36,18 @@
         </thead>
         <tbody>
           <!-- 데이터가 없을 경우 -->
-          <tr v-if="paginatedBoards.length === 0">
-            <td colspan="6"></td>
+          <tr v-if="boards.length === 0">
+            <td colspan="5">게시글이 없습니다.</td>
           </tr>
 
           <!-- 데이터가 있을 경우 -->
           <tr
-            v-for="(board, index) in paginatedBoards"
+            v-for="(board, index) in boards"
             :key="board.boardId"
             class="clickable-row"
+            @click="viewBoardDetail(board.boardId)"
           >
-            <td>{{ index + 1 }}</td>
+            <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
             <td>{{ board.title }}</td>
             <td>{{ board.writerName }}</td>
             <td>{{ board.viewCount }}</td>
@@ -93,8 +94,8 @@
     />
   </div>
 </template>
-  
-  <script>
+
+<script>
 import apiService from '@/api/apiService'
 import BoardForm from './BoardForm.vue'
 
@@ -110,79 +111,39 @@ export default {
     return {
       boards: [],
       searchQuery: '',
-      sortOrder: 'asc', // 오름차순 기본값
+      sortOrder: 'asc', // 기본값: 오름차순
       currentPage: 1,
       pageSize: 10,
+      totalPages: 1,
       showForm: false,
       selectedBoard: null,
       isEditMode: false,
     }
-  },
-  computed: {
-    boardTypeLabel() {
-      switch (this.type) {
-        case 'NOTICE':
-          return '공지게시판'
-        case 'FREE':
-          return '자유게시판'
-        case 'ANONYMOUS':
-          return '익명게시판'
-        default:
-          return '게시판'
-      }
-    },
-    filteredBoards() {
-      let filtered = this.boards || []
-      if (this.searchQuery) {
-        filtered = filtered.filter(board =>
-          board.title.includes(this.searchQuery)
-        )
-      }
-      filtered = filtered.filter(board => board.type === this.type) // type에 맞는 데이터만 필터
-      return filtered.sort((a, b) => {
-        if (this.sortOrder === 'asc')
-          return a.title.localeCompare(b.title, 'ko')
-        return b.title.localeCompare(a.title, 'ko')
-      })
-    },
-
-    totalPages() {
-      return Math.ceil(this.filteredBoards.length / this.pageSize)
-    },
-    paginatedBoards() {
-      const start = (this.currentPage - 1) * this.pageSize
-      const end = start + this.pageSize
-      return this.filteredBoards.slice(start, end)
-    },
-  },
-  watch: {
-    // 'type'가 변경될 때마다 데이터 다시 불러오기
-    type(newType) {
-      this.fetchBoards()
-    },
-    searchQuery() {
-      this.currentPage = 1 // 검색 시 첫 페이지로 리셋
-      this.fetchBoards()
-    },
   },
   methods: {
     async fetchBoards() {
       try {
         const response = await apiService.fetchBoardListByType(
           this.type,
-          this.currentPage - 1,
+          this.currentPage - 1, // 서버는 0부터 시작
           this.pageSize,
           this.searchQuery,
           this.sortOrder
         )
-        this.boards = response.data.data.content || [] // 데이터 content 할당
+
+        // API 응답 데이터 처리
+        const data = response.data.data
+        this.boards = data.content || []
+        this.totalPages = data.totalPages || 1
+        this.currentPage = data.number + 1 // API는 0부터 시작하므로 +1
       } catch (error) {
-        console.error('게시글 목록을 불러오는 중 오류 발생:', error)
+        console.error('게시글 목록 불러오기 실패:', error)
         this.boards = []
+        this.totalPages = 1
       }
     },
     handleSearch() {
-      this.currentPage = 1 // 검색 시 첫 페이지로 리셋
+      this.currentPage = 1 // 검색 시 첫 페이지로 이동
       this.fetchBoards()
     },
     prevPage() {
@@ -198,35 +159,29 @@ export default {
       }
     },
     setPage(page) {
-      this.currentPage = page
-      this.fetchBoards()
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page
+        this.fetchBoards()
+      }
+    },
+    async viewBoardDetail(boardId) {
+      try {
+        // 조회수 증가 API 호출
+        await apiService.incrementViewCount(boardId)
+        // 게시글 상세 페이지로 이동
+        this.$router.push({ name: 'BoardDetail', params: { id: boardId } })
+      } catch (error) {
+        console.error('조회수 증가 실패:', error)
+      }
     },
     openForm(isEdit = false) {
       this.isEditMode = isEdit
       this.showForm = true
       this.selectedBoard = isEdit ? this.selectedBoard : {}
     },
-    openEditForm(board) {
-      this.selectedBoard = board
-      this.isEditMode = true
-      this.showForm = true
-    },
     closeForm() {
       this.showForm = false
       this.selectedBoard = null
-    },
-    confirmDelete(board) {
-      if (confirm(`정말로 "${board.title}" 게시글을 삭제하시겠습니까?`)) {
-        this.deleteBoard(board.boardId)
-      }
-    },
-    async deleteBoard(boardId) {
-      try {
-        await apiService.deleteBoard(boardId)
-        this.fetchBoards()
-      } catch (error) {
-        console.error('게시글 삭제 실패:', error)
-      }
     },
     formatDate(date) {
       return new Date(date).toLocaleDateString()
@@ -235,15 +190,16 @@ export default {
   mounted() {
     this.fetchBoards()
   },
-  beforeRouteUpdate(to, from, next) {
-    // 라우터 변경 시 데이터 새로 고침
-    this.fetchBoards()
-    next()
+  watch: {
+    type(newType) {
+      this.fetchBoards()
+    },
   },
 }
 </script>
+
   
-  <style scoped>
+<style scoped>
 .board-list {
   padding-top: 70px;
   width: 1180px;
@@ -372,7 +328,7 @@ export default {
 
 .table-container table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* 테두리 병합 */
   margin-bottom: 20px;
 }
 
@@ -380,12 +336,20 @@ export default {
 .table-container td {
   padding: 12px;
   text-align: left;
-  border: 1px solid #ddd;
 }
 
 .table-container th {
   background-color: #f4f4f4;
   font-weight: bold;
+}
+
+/* 각 행의 아래쪽에만 줄 표시 */
+.table-container tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.table-container tr:last-child {
+  border-bottom: 1px solid #ddd;
 }
 
 /* 페이지네이션 스타일 */
@@ -435,5 +399,13 @@ export default {
 .pagination-arrow:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.clickable-row {
+  cursor: pointer; /* 마우스 커서를 손 모양으로 변경 */
+  transition: background-color 0.3s ease; /* 배경색 변경에 부드러운 전환 효과 추가 */
+}
+
+.clickable-row:hover {
+  background-color: #f4f4f4; /* 마우스 hover 시 배경 색상 */
 }
 </style>

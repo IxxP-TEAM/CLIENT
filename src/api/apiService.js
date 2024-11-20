@@ -258,6 +258,7 @@ export default {
   updateBoard(boardId, updatedData) {
     return api.patch(`/boards/${boardId}`, updatedData);
   },
+  //게시판 타입별
   fetchBoardListByType(type, page = 0, size = 10, searchQuery = '', sortOrder = 'asc') {
     return api.get('/boards/list', {
       params: {
@@ -269,4 +270,22 @@ export default {
       },
     });
   },
+  // 게시판 세부사항
+  getBoardDetail(boardId) {
+    return api.get(`/boards/${boardId}`);
+  },
+
+  //S3이미지 업로드
+uploadImage(formData) {
+  return api.post('/images/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // 헤더 설정 확인
+    },
+  });
+},
+//조회수 증가
+incrementViewCount(boardId){
+  return api.post(`/boards/${boardId}/view`);
+}
+
 };

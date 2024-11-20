@@ -8,6 +8,8 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import "@vueup/vue-quill/dist/vue-quill.snow.css"; 
+import "quill/dist/quill.snow.css"; 
 import { Chart, registerables } from 'chart.js'; 
 Chart.register(...registerables);
 

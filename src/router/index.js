@@ -15,6 +15,7 @@ import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.
 import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vue'
 import Leave from '@/components/leave/LeaveList.vue'
 import BoardList from '@/components/board/BoardList.vue'
+import BoardDetail from '@/components/board/BoardDetail.vue'
 
 
 const router = createRouter({
@@ -130,6 +131,13 @@ const router = createRouter({
       component: BoardList,
       props:true,
     },
+    {
+      path: '/board-detail/:id',
+      name: "BoardDetail",
+      component: BoardDetail,
+      props: true,
+    },
+
   ],
 })
 
