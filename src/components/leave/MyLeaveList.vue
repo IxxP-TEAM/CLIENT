@@ -8,6 +8,9 @@
                 <option v-for="leavetype in leaveTypes" :key="leavetype" :value="leavetype">{{ leavetype }}</option>
             </select>
         </div>
+        <button @click="openForm(false)" class="leave-button">
+            휴가 신청
+        </button>
         <div class="table-container">
             <table>
                 <thead>
@@ -48,14 +51,18 @@
                         > </button>
         </div>
         <MyLeaveDetailModal v-if="showLeaveDetailModal" :leaveDetails="selectedLeave" @close="closeLeaveDetailModal" />
+        <!-- 휴가 신청 폼 -->
+        <MyLeaveForm v-if="showForm" :isEditMode="false" :initialData="formData" @submit="handleSubmit"
+            @close="closeForm" />
     </div>
 </template>
 <script>
 import apiService from '@/api/apiService'
 import MyLeaveDetailModal from './MyLeaveDetailModal.vue';
+import MyLeaveForm from './MyLeaveForm.vue';
 
 export default {
-    components: { MyLeaveDetailModal },
+    components: { MyLeaveDetailModal, MyLeaveForm },
     data() {
         return {
             currentPage: 0,
@@ -67,6 +74,7 @@ export default {
             selectLeave: null,
             selectedLeaveType: '',
             leaveTypes: ['반차', '반반차', '여름휴가', '겨울휴가', '경조휴가', '병가', '휴무'],
+            showForm: false,
         };
     },
     computed: {
@@ -147,7 +155,15 @@ export default {
         },
         closeLeaveDetailModal() {
             this.showLeaveDetailModal = false;
-        }
+        },
+        openForm() {
+            this.showForm = true;
+            console.log(this.showForm);
+        },
+        closeForm() {
+            this.showForm = false
+            this.selectLeave = null
+        },
     },
     mounted() {
         this.fetchLeaves();
@@ -162,6 +178,15 @@ export default {
     margin-left: 140px;
     height: calc(100vh - 50px);
     overflow-y: auto;
+}
+
+.myleave-list::-webkit-scrollbar {
+    display: none;
+}
+
+.myleave-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .filter-options {
@@ -308,5 +333,15 @@ th {
 .pagination-arrow:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.leave-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3f72af;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 </style>

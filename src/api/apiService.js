@@ -202,6 +202,11 @@ export default {
     return api.get(`/leave/${leaveId}`);
   },
 
+  // 휴가 신청
+  createLeave(formData) {
+    return api.post(`/leave` ,formData);
+  },
+
   // 휴가 승인
   approvalLeave(leaveId) {
     return api.patch(`/leave/approval/${leaveId}`);
