@@ -222,6 +222,13 @@ export default {
     return api.post(`/users/logout`);
   },
 
+  checkIn() {
+      return api.post('/attendance');
+    },
+  checkOut() {
+      return api.post('/attendance/leave-work');
+    },
+
   //상위 고객
   getTopCustomersBySales() {
     return api.get(`/sales/top-customers`);
@@ -243,4 +250,7 @@ export default {
       headers: { "Content-Type": "application/json" },
     });
   },
+  getMyAttList(userId, year, month) {
+    return api.get(`/attendance/${userId}/monthly?year=${year}&month=${month}`);
+  }
 };
