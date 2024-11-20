@@ -37,6 +37,13 @@
       </div>
 
       <div v-if="userRole === 'ROLE_USER'" class="dropdown">
+        <div class="dropdown-title" @click="toggleDropdown('dropdown6')">
+          근태 관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown6" class="dropdown-content">
+          <router-link to="/my-leave">휴가 관리</router-link>
+          <router-link to="/att-list">출퇴근 관리</router-link>
+        </div>
         <div class="dropdown-title" @click="toggleDropdown('dropdown1')">
           영업 관리
         </div>
@@ -126,6 +133,7 @@ const isDropdownOpen = ref({
   dropdown3: false, // 급여관리
   dropdown4: false, // 제품 관리
   dropdown5: false, // 매출 개요
+  dropdown6: false, // 근태 관리
 
 });
 
