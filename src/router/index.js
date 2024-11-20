@@ -15,6 +15,7 @@ import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.
 import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vue'
 import Leave from '@/components/leave/LeaveList.vue'
 import MyLeaveList from '@/components/leave/MyLeaveList.vue'
+import MyAttList from '@/components/attendence/MyAttList.vue'
 
 
 const router = createRouter({
@@ -128,6 +129,12 @@ const router = createRouter({
       path: '/my-leave',
       name: "myLeave",
       component: MyLeaveList,
+      meta: {requiresAuth: true},
+    },
+    {
+      path: '/my-att',
+      name: "myAtt",
+      component: MyAttList,
       meta: {requiresAuth: true},
     }
   ],
