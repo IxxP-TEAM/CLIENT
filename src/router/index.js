@@ -14,8 +14,11 @@ import CustomerHistory from '@/components/sales/CustomerHistory.vue'
 import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.vue'
 import MonthlySalesStatistics from '@/components/sales/MonthlySalesStatistics.vue'
 import Leave from '@/components/leave/LeaveList.vue'
+import BoardList from '@/components/board/BoardList.vue'
+import BoardDetail from '@/components/board/BoardDetail.vue'
 import MyLeaveList from '@/components/leave/MyLeaveList.vue'
 import MyAttList from '@/components/attendence/MyAttList.vue'
+
 
 
 const router = createRouter({
@@ -126,6 +129,18 @@ const router = createRouter({
       meta: { requiresAuth: true},
     },
     {
+      path: '/board-list/:type',
+      name:'BoardList',
+      component: BoardList,
+      props:true,
+    },
+    {
+      path: '/board-detail/:id',
+      name: "BoardDetail",
+      component: BoardDetail,
+      props: true,
+    },
+    {
       path: '/my-leave',
       name: "myLeave",
       component: MyLeaveList,
@@ -136,7 +151,7 @@ const router = createRouter({
       name: "myAtt",
       component: MyAttList,
       meta: {requiresAuth: true},
-    }
+    },
   ],
 })
 
