@@ -2,7 +2,7 @@
 <template>
   <aside v-if="showSidebar" class="sidebar">
     <div class="logo">
-      <img src="/src/assets/logo.png" alt="IXXP ERP Logo" />
+      <img src="/src/assets/logo.png" alt="IXXP ERP Logo"  @click="goToHome" style="cursor: pointer;" />
     </div>
 
     <div class="login-info">
@@ -44,11 +44,21 @@
           <router-link to="/my-att">출퇴근 조회</router-link>
         </div>
         <div class="dropdown-title" @click="toggleDropdown('dropdown1')">
-          영업 관리
+          영업/주문
         </div>
         <div v-if="isDropdownOpen.dropdown1" class="dropdown-content">
           <router-link to="/customer-list">고객사 목록</router-link>
           <router-link to="/order-list">주문 목록</router-link>
+        </div>
+        
+        <!-- 게시판 -->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown7')">
+          게시판
+        </div>
+        <div v-if="isDropdownOpen.dropdown7" class="dropdown-content">
+        <router-link :to="{ name: 'BoardList', params: { type: 'NOTICE' } }">공지게시판</router-link>
+        <router-link :to="{ name: 'BoardList', params: { type: 'FREE' } }">자유게시판</router-link>
+        <router-link :to="{ name: 'BoardList', params: { type: 'ANONYMOUS' } }">익명게시판</router-link>
         </div>
 
         <!--판매 개요 메뉴-->
@@ -105,7 +115,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import VueJwtDecode from 'vue-jwt-decode'
 import { onMounted } from 'vue';
 import apiService from '@/api/apiService';
@@ -120,17 +130,22 @@ const checkInError = ref(false);
 const checkOutError = ref(false);
 const checkInMessage = ref('');
 const checkOutMessage = ref('');
+const router = useRouter();
 
 const isDropdownOpen = ref({
   dropdown1: false,
   dropdown2: false,
   dropdown3: false,
   dropdown4: false,
-
   dropdown5: false, // 매출 개요
   dropdown6: false, // 근태 관리
+  dropdown7: false, // 게시판 
 
 });
+
+const goToHome = () => {
+  router.push({ name: 'home' }); // 라우터를 통해 Home으로 이동
+};
 
 const showSidebar = computed(() => {
   return route.path !== '/login';
@@ -243,6 +258,7 @@ onMounted(() => {
     checkInStatus();
   }
 });
+
 </script>
 
 <style scoped>
