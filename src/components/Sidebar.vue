@@ -24,13 +24,12 @@
           <router-link to="/empList" @click="setActiveSubMenu('employee-list')">직원 목록</router-link>
           <router-link to="/create-emp">직원 등록</router-link>
           <router-link to="/leave">휴가 관리</router-link>
-          <router-link to="/late">지각/조퇴 관리</router-link>
         </div>
         <div class="dropdown-title" @click="toggleDropdown('dropdown3')">
           급여관리
         </div>
         <div v-if="isDropdownOpen.dropdown3" class="dropdown-content">
-          <router-link to="/att-create">급여 등록</router-link>
+          <!-- <router-link to="/att-create">급여 등록</router-link> -->
           <router-link to="/att-list">급여 목록</router-link>
           <router-link to="/att-specification">급여 명세서 관리</router-link>
         </div>
