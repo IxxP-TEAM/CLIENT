@@ -197,7 +197,7 @@ async function confirmDeleteProduct() {
       isDeleteModalVisible.value = true;
     }
     else {
-      errorMessage.value = '제품 수정 중 오류가 발생했습니다.';
+      errorMessage.value = '제품 삭제할 수 없다.';
       isDeleteModalVisible.value = true; // 일반 오류 시에도 모달 유지
     }
   }

@@ -17,12 +17,6 @@
         </select>
         
       </div>
-        <!-- <input
-          v-model="searchQuery"
-          @input="handleSearch"
-          placeholder="생산 계획 검색"
-          class="search-bar"
-        /> -->
   
         <table class="production-table">
           <thead>

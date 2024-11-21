@@ -37,10 +37,7 @@ export default {
   getProductList(page, size, sortBy, direction) {
     return api.get('/products', {
       params: {
-        page,
-        size,
-        sortBy,
-        direction,
+        page, size, sortBy, direction,
       },
     });
   },
@@ -96,16 +93,16 @@ export default {
   },
 
   // 소모
-  createConsumption(consumptionData){
+  createConsumption(consumptionData) {
     return api.post(`/inventory/consumption`, consumptionData);
   },
   // 조정
-  createAdjustment(adjustmentData){
+  createAdjustment(adjustmentData) {
     return api.post(`/inventory/adjustment`, adjustmentData);
   },
   
   // 재고 상세 보기
-  getInventoriesByProductId(productId){
+  getInventoriesByProductId(productId) {
     return api.get(`/inventory/${productId}`);
   },
 
@@ -165,23 +162,6 @@ export default {
     return api.get(`/customer/${customerId}`);
   },
 
-    updateUser(userData) {
-      return api.patch(`/hr/${userData.userIdx}`, userData);
-    },
-    checkInStatus() {
-    return api.get('/attendance/status'); // 출근 여부 확인 API 엔드포인트
-    }, 
-    checkIn() {
-      return api.post('/attendance');
-    },
-    checkOut() {
-      return api.post('/attendance/leave-work');
-    },
-  
-    // 주문 생성 요청
-    createOrder(orderData) {
-      return api.post('/orders/create', orderData);
-    },
   // 여러 customerId에 대한 이름을 가져오는 함수
   fetchCustomerNames(customerIds) {
     return api.post('/customer/names', { customerIds });
@@ -201,9 +181,13 @@ export default {
     return api.post(`/hr/reset-pw`, { email, code, newPassword });
   },
 
+  // 주문 생성 요청
+  createOrder(orderData) {
+    return api.post('/orders/create', orderData);
+  },
 
   // 주문 목록 가져오기 요청 (페이지 매개변수 포함)
-  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc")  {
+  fetchOrderList(page = 0, size = 10, searchQuery = "", sortOrder = "asc") {
     return api.get('/orders/all', {
       params: {
         page,
@@ -235,8 +219,150 @@ export default {
   },
 
   // 직원 목록 가져오기 요청
-  fetchUserList(page = 0, size = 5) {
+  fetchUserList(page = 0, size = 10) {
     return api.get(`/hr?page=${page}&size=${size}`);
   },
+  //전체 매출조회
+  allSalesHistoty(page = 0, size = 10) {
+    return api.get(`sales/all?page=${page}&size=${size}`);
+  },
+
+  //고객사별 총주문금액
+  getTotalSalesByCustomer() {
+    return api.get('/sales/total-by-customer');
+  },
+
+  //사원별 총주문금액 
+  getTotalSalesBySalesperson() {
+    return api.get('/sales/total-by-salesperson')
+  },
+  // 월별 매출 통계 API 호출
+  getMonthlySalesStatistics(dateRange) {
+    return api.post("/sales/monthly-statistics", dateRange);
+  },
+
+  getDailySalesStatistics(dateRange) {
+    return api.post("/sales/daily-statistics", dateRange);
+  },
+
+  // 휴가 목록 가져오기
+  fetchLeaveList(page = 0, size = 10) {
+    return api.get(`/leave?page=${page}&size=${size}`);
+  },
+
+  // 내가 신청한 휴가 목록 가져오기
+  fetchMyLeaveList(page = 0, size = 10) {
+    return api.get(`/leave/myLeave?page=${page}&size=${size}`);
+  },
+
+  // 휴가 상세 정보 조회
+  fetchLeaveDetails(leaveId) {
+    return api.get(`/leave/${leaveId}`);
+  },
+
+  // 휴가 신청
+  createLeave(formData) {
+    return api.post(`/leave` ,formData);
+  },
+
+  // 휴가 승인
+  approvalLeave(leaveId) {
+    return api.patch(`/leave/approval/${leaveId}`);
+  },
+
+  // 휴가 거절
+  refusalLeave(leaveId, data) {
+    return api.patch(`/leave/refusal/${leaveId}`, data);
+  },
+
+  //로그아웃
+  logout() {
+    return api.post(`/users/logout`);
+  },
+
+  checkIn() {
+      return api.post('/attendance');
+    },
+  checkOut() {
+      return api.post('/attendance/leave-work');
+    },
+
+  //상위 고객
+  getTopCustomersBySales() {
+    return api.get(`/sales/top-customers`);
+  },
+
+  //상위 사원
+  getTopSalespersonsBySales() {
+    return api.get(`/sales/top-salespersons`);
+  },
+  //기간별 고객사 매출
+  getTotalSalesByCustomerAndDate(payload) {
+    return api.post("/sales/total-by-customer/date", payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
+  //기간별 사원 매출
+  getTotalSalesByUserAndDate(payload) {
+    return api.post("/sales/total-by-salesperson/date", payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
+
+  // 게시판 목록 가져오기
+  fetchBoardList(page = 0, size = 10, searchQuery = '', sortOrder = 'asc') {
+    return api.get('/boards/list', {
+      params: {
+        page,
+        size,
+        sort: `title,${sortOrder}`, // 정렬 기준: 제목(title)
+        searchQuery, // 검색 쿼리 전달
+      },
+    });
+  },
+  // 게시글 삭제 요청
+  deleteBoard(boardId) {
+    return api.delete(`/boards/${boardId}`);
+  },
+  // 게시글 생성
+  createBoard(boardData) {
+    return api.post("/boards/create", boardData);
+  },
+  // 게시글 수정
+  updateBoard(boardId, updatedData) {
+    return api.patch(`/boards/${boardId}`, updatedData);
+  },
+  //게시판 타입별
+  fetchBoardListByType(type, page = 0, size = 10, searchQuery = '', sortOrder = 'asc') {
+    return api.get('/boards/list', {
+      params: {
+        type, // 타입 전달
+        page,
+        size,
+        searchQuery,
+        sort: `title,${sortOrder}`, // 정렬 기준
+      },
+    });
+  },
+  // 게시판 세부사항
+  getBoardDetail(boardId) {
+    return api.get(`/boards/${boardId}`);
+  },
+
+  //S3이미지 업로드
+uploadImage(formData) {
+  return api.post('/images/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // 헤더 설정 확인
+    },
+  });
+},
+//조회수 증가
+incrementViewCount(boardId){
+  return api.post(`/boards/${boardId}/view`);
+},
+  getMyAttList(userId, year, month) {
+    return api.get(`/attendance/${userId}/monthly?year=${year}&month=${month}`);
+  }
 
 };

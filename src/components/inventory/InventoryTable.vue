@@ -63,9 +63,9 @@ const props = defineProps({// eslint-disable-line no-unused-vars
     font-weight: bold;
   }
   
-  span {
-    float: right;
-  }
+  .low-stock {
+  color: red; /* 재고 수량이 임계 수량 이하일 때 빨간색으로 표시 */
+}
   
   </style>
   
