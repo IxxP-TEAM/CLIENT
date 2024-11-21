@@ -107,9 +107,6 @@ export default {
                         } else if (item.checkOut === null && item.checkIn !== null) {
                             status = "근무 중";
                             statusClass = "green";
-                        } else {
-                            status = "휴가";
-                            statusClass = "gray";
                         }
 
                         return {

@@ -314,6 +314,9 @@ incrementViewCount(boardId){
   },
   getPayList() {
   return api.get(`/payroll/all`);
-  }
+  },
 
+  fetchPayDetails(payId) {
+    return api.get(`/payroll/${payId}`);
+  }
 };

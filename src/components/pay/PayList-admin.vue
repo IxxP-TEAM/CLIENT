@@ -42,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="pay in filteredPayData" :key="pay.payId">
+                    <tr v-for="pay in filteredPayData" :key="pay.payId" @click="viewPayDetails(pay)">
                         <td>{{ pay.payId }}</td>
                         <td>{{ pay.department }}</td>
                         <td>{{ pay.username }}</td>
@@ -52,10 +52,10 @@
                                 {{ pay.paymentStatus ? '지급' : '미지급' }}
                             </span>
                         </td>
-
                     </tr>
                 </tbody>
             </table>
+            <PayDetailModal v-if="showPayDetailModal" :payDetails="seletedPay" @close="closeDetailModal" />
         </div>
         <div class="pagination">
             <button class="pagination-arrow" :disabled="currentPage === 0" @click="handlePageChange(currentPage - 1)">
@@ -75,8 +75,12 @@
 </template>
 <script>
 import apiService from '@/api/apiService';
+import PayDetailModal from '../pay/PayDetailModal.vue';
 
 export default {
+    components: {
+        PayDetailModal,
+    },
     data() {
         return {
             payData: [],
@@ -87,6 +91,7 @@ export default {
             selectedStatus: '',
             departments: ['영업1팀', '영업2팀', '영업3팀', '인사1팀', '인사2팀', '인사3팀', '생산1팀', '생산2팀', '생산3팀'], // 부서 목록
             showFilters: false,
+            showPayDetailModal: false,
         };
     },
     computed: {
@@ -118,6 +123,11 @@ export default {
         }
     },
     methods: {
+        async openPayDetailModal(payId) {
+            const pay = this.payData.find(item => item.payId === payId);
+            this.payDetail = pay;
+            this.showPayDetailModal = true;
+        },
         toggleFilters() {
             this.showFilters = !this.showFilters
         },
@@ -133,6 +143,16 @@ export default {
                 console.error('급여 목록을 불러오는데 실패했습니다.', error);
             }
         },
+        async viewPayDetails(pay) {
+            try {
+                const response = await apiService.fetchPayDetails(pay.payId);
+                console.log(response);
+                this.seletedPay = response.data.data;
+                this.showPayDetailModal = true;
+            } catch (error) {
+                console.error('급여 세부 정보를 불러오는 데 실패했습니다', error);
+            }
+        },
         handlePageChange(page) {
             this.currentPage = page;
         },
@@ -140,6 +160,9 @@ export default {
             this.currentPage = 1
             this.fetchCustomers()
         },
+        closeDetailModal() {
+            this.showPayDetailModal = false;
+        }
     },
     mounted() {
         this.fetchPayData();
