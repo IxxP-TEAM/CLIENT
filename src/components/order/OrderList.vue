@@ -83,10 +83,10 @@
             <th>주문 번호</th>
             <th>주문일</th>
             <th>고객사명</th>
-            <th>상태</th>
             <th>총 금액</th>
-            <th>결제 상태</th>
-            <th>배송 상태</th>
+            <th>결제상태</th>
+            <th>배송상태</th>
+            <th>거래상태</th>
           </tr>
         </thead>
         <tbody>
@@ -102,12 +102,41 @@
             <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
             <td>{{ order.orderDate || '' }}</td>
             <td>{{ order.customerName || 'N/A' }}</td>
-            <td>{{ order.orderStatus || '' }}</td>
             <td>
               {{ formatCurrency(order.totalAmount || 0).toLocaleString() }}
             </td>
-            <td>{{ order.paymentStatus || '' }}</td>
-            <td>{{ order.shippingStatus || '' }}</td>
+            <td>
+              <span
+                class="status"
+                :class="{
+                  active: order.paymentStatus === '결제완료',
+                  inactive: order.paymentStatus === '미결제',
+                }"
+                >{{ order.paymentStatus }}</span
+              >
+            </td>
+            <td>
+              <span
+                class="status"
+                :class="{
+                  active: order.shippingStatus === '배송완료',
+                  inactive: order.shippingStatus === '미출발',
+                  middle: order.shippingStatus === '배송중',
+                }"
+                >{{ order.shippingStatus }}</span
+              >
+            </td>
+            <td>
+              <span
+                class="status"
+                :class="{
+                  active: order.orderStatus === '완료',
+                  middle: order.orderStatus === '대기',
+                  inactive: order.orderStatus === '취소',
+                }"
+                >{{ order.orderStatus }}</span
+              >
+            </td>
           </tr>
         </tbody>
       </table>
@@ -398,6 +427,8 @@ export default {
   padding: 8px;
   font-size: 16px;
   width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .right-controls {
@@ -554,7 +585,7 @@ th {
 .pagination-page {
   font-size: 16px;
   font-weight: bold;
-  color: #3f72af; /* 기본 색상 */
+  color: black; /* 기본 색상 */
   cursor: pointer;
   padding: 5px 10px;
   transition: color 0.3s ease, transform 0.2s ease;
@@ -568,10 +599,11 @@ th {
 .pagination-page.active {
   color: #3f72af; /* 현재 페이지 텍스트 강조 */
   font-size: 18px; /* 약간 더 큰 텍스트 */
+  text-decoration: underline;
 }
 
 .pagination-arrow {
-  font-size: 24px; /* 꺾쇠 크기 */
+  font-size: 18px;
   font-weight: bold;
   color: #3f72af;
   background: none;
@@ -587,7 +619,7 @@ th {
 }
 
 .pagination-arrow:disabled {
-  color: #b0b0b0; /* 비활성화 상태 */
+  color: #b0b0b0; /* 비활성화 시 색상 */
   cursor: not-allowed;
   transform: none;
 }
@@ -610,5 +642,26 @@ th {
 
 .jump-button:active {
   transform: translateY(2px);
+}
+
+.status {
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 10px;
+  display: inline;
+  text-align: center;
+}
+
+.status.active {
+  background-color: #3f72af;
+}
+
+.status.middle {
+  background-color: #4caf50; /* 녹색 */
+}
+
+.status.inactive {
+  background-color: #f44336; /* 빨간색 */
 }
 </style>
