@@ -3,77 +3,178 @@
   <div class="dashboard">
     <h2>홈 대시보드</h2>
 
+    <!-- 맨 위 요약 정보와 공지 게시판 -->
     <div class="grid-container">
-      <!-- 위젯 1: 상위 고객사 매출 -->
-      <div class="widget">
-        <h3>상위 고객사 매출</h3>
-        <canvas id="topCustomersChart"></canvas>
-        <ul>
-          <li v-for="(customer, index) in topCustomers" :key="index">
-            <span v-if="index === 0" class="medal gold">🥇</span>
-            <span v-else-if="index === 1" class="medal silver">🥈</span>
-            <span v-else-if="index === 2" class="medal bronze">🥉</span>
-            {{ customer.customerId }}: {{ formatCurrency(customer.totalSales) }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- 위젯 2: 상위 사원 매출 -->
-      <div class="widget">
-        <h3>상위 사원 매출</h3>
-        <canvas id="topSalespersonsChart"></canvas>
-        <ul>
-          <li v-for="(salesperson, index) in topSalespersons" :key="index">
-            <span v-if="index === 0" class="medal gold">🥇</span>
-            <span v-else-if="index === 1" class="medal silver">🥈</span>
-            <span v-else-if="index === 2" class="medal bronze">🥉</span>
-            {{ salesperson.userId }}:
-            {{ formatCurrency(salesperson.totalSales) }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- 위젯 3: 기간별 고객사 매출 -->
-      <div class="widget">
-        <h3>기간별 고객사 매출</h3>
-        <canvas id="customerSalesChart"></canvas>
-        <ul>
-          <li v-for="(customer, index) in customerSales" :key="index">
-            <span v-if="index === 0" class="medal gold">🥇</span>
-            <span v-else-if="index === 1" class="medal silver">🥈</span>
-            <span v-else-if="index === 2" class="medal bronze">🥉</span>
-            {{ customer.customerId }}: {{ formatCurrency(customer.totalSales) }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- 위젯 4: 기간별 사원 매출 -->
-      <div class="widget">
-        <h3>기간별 사원 매출</h3>
-        <canvas id="salespersonSalesChart"></canvas>
-        <ul>
-          <li v-for="(salesperson, index) in salespersonSales" :key="index">
-            <span v-if="index === 0" class="medal gold">🥇</span>
-            <span v-else-if="index === 1" class="medal silver">🥈</span>
-            <span v-else-if="index === 2" class="medal bronze">🥉</span>
-            {{ salesperson.userName }}:
-            {{ formatCurrency(salesperson.totalSales) }}
-          </li>
-        </ul>
-      </div>
-
-      <!-- 위젯 5: 월별 매출 통계 -->
-      <div class="widget large-widget">
-        <h3>월별 매출 통계</h3>
-        <canvas id="monthlySalesChart"></canvas>
-      </div>
-
-      <!-- 위젯 6: 요약 정보 -->
+      <!-- 위젯 1: 요약 정보 -->
       <div class="widget summary-widget">
         <h3>요약 정보</h3>
-        <p>총 매출: {{ formatCurrency(totalSales) }}</p>
-        <p>총 고객사: {{ totalCustomers }}</p>
-        <p>총 사원: {{ totalSalespersons }}</p>
+        <div class="summary-item">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>총 매출:</span>
+          {{ formatCurrency(totalSales) }}
+        </div>
+        <div class="summary-item">
+          <i class="fas fa-building"></i>
+          <span>총 고객사:</span>
+          {{ totalCustomers }}
+        </div>
+        <div class="summary-item">
+          <i class="fas fa-user-tie"></i>
+          <span>총 사원:</span>
+          {{ totalSalespersons }}
+        </div>
+      </div>
+
+      <!-- 위젯 2: 공지 게시판 -->
+      <div class="widget board-widget">
+        <h3 @click="goToBoardList">공지 게시판</h3>
+        <hr />
+        <ul class="notice-list">
+          <li
+            class="notice-item"
+            v-for="(board, index) in notices"
+            :key="index"
+            @click="goToBoardDetail(board.boardId)"
+          >
+            <i class="notice-item-icon fas fa-bullhorn"></i>
+            <span class="notice-item-title">{{ board.title }}</span>
+            <span class="notice-item-date">{{
+              new Date(board.createdAt).toLocaleDateString()
+            }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 나머지 위젯 -->
+    <div class="grid-container">
+      <!-- 위젯 3: 상위 고객사 매출 -->
+      <div class="widget top-customers-widget">
+        <h3>상위 고객사 매출</h3>
+        <hr />
+        <div class="chart-container">
+          <canvas id="topCustomersChart"></canvas>
+        </div>
+        <ul class="top-customers-list">
+          <li
+            class="top-customers-item"
+            v-for="(customer, index) in topCustomers"
+            :key="index"
+          >
+            <div class="customer-info">
+              <span v-if="index === 0" class="customer-medal gold">🥇</span>
+              <span v-else-if="index === 1" class="customer-medal silver"
+                >🥈</span
+              >
+              <span v-else-if="index === 2" class="customer-medal bronze"
+                >🥉</span
+              >
+              <span class="customer-name">{{ customer.customerId }}</span>
+            </div>
+            <span class="customer-sales">
+              {{ formatCurrency(customer.totalSales) }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 위젯 4: 상위 사원 매출 -->
+      <div class="widget top-salespersons-widget">
+        <h3>상위 사원 매출</h3>
+        <hr />
+        <div class="chart-container">
+          <canvas id="topSalespersonsChart"></canvas>
+        </div>
+        <ul class="top-salespersons-list">
+          <li
+            class="top-salespersons-item"
+            v-for="(salesperson, index) in topSalespersons"
+            :key="index"
+          >
+            <div class="salesperson-info">
+              <span v-if="index === 0" class="salesperson-medal gold">🥇</span>
+              <span v-else-if="index === 1" class="salesperson-medal silver"
+                >🥈</span
+              >
+              <span v-else-if="index === 2" class="salesperson-medal bronze"
+                >🥉</span
+              >
+              <span class="salesperson-name">{{ salesperson.userId }}</span>
+            </div>
+            <span class="salesperson-sales">
+              {{ formatCurrency(salesperson.totalSales) }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 위젯 5: 기간별 고객사 매출 -->
+      <div class="widget customer-sales-widget">
+        <h3>기간별 고객사 매출</h3>
+        <hr />
+        <div class="chart-container">
+          <canvas id="customerSalesChart"></canvas>
+        </div>
+        <ul class="customer-sales-list">
+          <li
+            class="customer-sales-item"
+            v-for="(customer, index) in customerSales"
+            :key="index"
+          >
+            <div class="customer-info">
+              <span v-if="index === 0" class="customer-medal gold">🥇</span>
+              <span v-else-if="index === 1" class="customer-medal silver"
+                >🥈</span
+              >
+              <span v-else-if="index === 2" class="customer-medal bronze"
+                >🥉</span
+              >
+              <span class="customer-name">{{ customer.customerId }}</span>
+            </div>
+            <span class="customer-sales">
+              {{ formatCurrency(customer.totalSales) }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 위젯 6: 기간별 사원 매출 -->
+      <div class="widget salesperson-sales-widget">
+        <h3>기간별 사원 매출</h3>
+        <hr />
+        <div class="chart-container">
+          <canvas id="salespersonSalesChart"></canvas>
+        </div>
+        <ul class="salesperson-sales-list">
+          <li
+            class="salesperson-sales-item"
+            v-for="(salesperson, index) in salespersonSales"
+            :key="index"
+          >
+            <div class="salesperson-info">
+              <span v-if="index === 0" class="salesperson-medal gold">🥇</span>
+              <span v-else-if="index === 1" class="salesperson-medal silver"
+                >🥈</span
+              >
+              <span v-else-if="index === 2" class="salesperson-medal bronze"
+                >🥉</span
+              >
+              <span class="salesperson-name">{{ salesperson.userName }}</span>
+            </div>
+            <span class="salesperson-sales">
+              {{ formatCurrency(salesperson.totalSales) }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 위젯 7: 월별 매출 통계 -->
+      <div class="widget monthly-sales-widget">
+        <h3>월별 매출 통계</h3>
+        <hr />
+        <div class="monthly-sales-chart">
+          <canvas id="monthlySalesChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -94,10 +195,21 @@ export default {
       totalSales: 0,
       totalCustomers: 0,
       totalSalespersons: 0,
+      notices: [], // 공지 데이터 저장
       charts: {}, // 모든 차트를 관리
     }
   },
   methods: {
+    goToBoardList() {
+      this.$router.push({ name: 'BoardList', params: { type: 'NOTICE' } })
+    },
+    goToBoardDetail(boardId) {
+      if (!boardId) {
+        console.error('boardId가 없습니다:', boardId)
+        return
+      }
+      this.$router.push({ name: 'BoardDetail', params: { id: boardId } })
+    },
     async fetchDashboardData() {
       try {
         // 데이터 초기화
@@ -109,6 +221,10 @@ export default {
         this.totalSales = 0
         this.totalCustomers = 0
         this.totalSalespersons = 0
+        this.notices = []
+
+        // 공지사항 데이터 가져오기
+        await this.fetchNotices()
 
         // 상위 고객사 매출
         const topCustomersResponse = await apiService.getTopCustomersBySales(5)
@@ -158,6 +274,18 @@ export default {
         this.renderCharts()
       } catch (error) {
         console.error('대시보드 데이터를 가져오는 중 오류 발생:', error)
+      }
+    },
+    async fetchNotices() {
+      try {
+        const response = await apiService.fetchBoardList(0, 10)
+        console.log('API 응답:', response) // 응답 데이터 확인
+        const noticesData = response?.data?.data?.content || [] // 응답 데이터에서 실제 공지 내용 추출
+        this.notices = Array.isArray(noticesData) ? noticesData.slice(0, 3) : []
+        console.log('공지사항:', this.notices) // 가공된 공지 데이터 확인
+      } catch (error) {
+        console.error('공지 데이터를 가져오는 중 오류 발생:', error)
+        this.notices = [] // 기본값 설정
       }
     },
     renderCharts() {
@@ -295,8 +423,55 @@ export default {
   grid-column: span 2;
 }
 
+/* 요약 정보 위젯 스타일 */
 .summary-widget {
-  grid-column: span 1;
+  background: linear-gradient(135deg, #f6f9fc, #ffffff);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+}
+
+.summary-widget h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #333;
+  padding: 10px 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 200px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.summary-item:hover {
+  transform: scale(1.05);
+}
+
+.summary-item i {
+  font-size: 20px;
+  color: #4a90e2;
+}
+
+.summary-item span {
+  font-weight: bold;
+  font-size: 18px;
+  color: #555;
 }
 
 .widget h3 {
@@ -316,7 +491,7 @@ export default {
 .widget li {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 8px 12px;
   border-radius: 4px;
   background-color: #fff;
@@ -348,6 +523,488 @@ export default {
 
 .widget li:nth-child(odd) {
   background-color: #f9f9f9;
+}
+
+.widget ul li {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.widget ul li:last-child {
+  border-bottom: none;
+}
+
+.widget ul li:hover {
+  background-color: #f0f8ff;
+  cursor: pointer;
+}
+h3[style] {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* 공지 게시판 위젯 스타일 */
+.board-widget {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  grid-column: span 2;
+}
+
+.board-widget h3 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.board-widget hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.notice-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notice-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.notice-item:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.02);
+}
+
+.notice-item-icon {
+  font-size: 24px;
+  color: #4a90e2;
+  margin-right: 15px;
+}
+
+.notice-item-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notice-item-date {
+  font-size: 12px;
+  color: #888;
+}
+
+/* 월별 매출 통계 위젯 스타일 */
+.monthly-sales-widget {
+  background: linear-gradient(135deg, #ffffff, #f0f8ff);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  grid-column: span 2;
+}
+
+/* 월별 매출 차트 스타일 */
+.monthly-sales-chart {
+  width: 100%;
+  height: 550px; /* 그래프 크기 키움 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.monthly-sales-widget h3 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.monthly-sales-widget hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.chart-container {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 툴팁 커스터마이징 (차트.js와 연결 가능) */
+.chart-tooltip {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* 호버 강조 효과 */
+.chart-container:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+/* 기간별 사원 매출 위젯 스타일 */
+.salesperson-sales-widget {
+  background: linear-gradient(135deg, #ffffff, #f0f8ff);
+  padding: 15px; /* 위젯의 전체 패딩 축소 */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 위젯 내 요소 간격 축소 */
+}
+
+.salesperson-sales-widget h3 {
+  font-size: 18px; /* 제목 크기 축소 */
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 5px; /* 제목 하단 여백 축소 */
+}
+
+.salesperson-sales-widget hr {
+  margin: 5px 0; /* 구분선 여백 축소 */
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* 리스트 스타일 */
+.salesperson-sales-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 리스트 항목 간격 축소 */
+}
+
+/* 사원 매출 카드 스타일 */
+.salesperson-sales-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px; /* 카드 패딩 축소 */
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 그림자 축소 */
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.salesperson-sales-item:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.02);
+}
+
+/* 메달 스타일 */
+.salesperson-medal {
+  font-size: 18px; /* 메달 크기 축소 */
+  margin-right: 10px; /* 메달과 이름 간격 축소 */
+}
+
+.salesperson-info {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 이름과 메달 간격 축소 */
+}
+
+.salesperson-name {
+  font-size: 14px; /* 이름 텍스트 크기 축소 */
+  font-weight: bold;
+  color: #333;
+}
+
+.salesperson-sales {
+  font-size: 14px; /* 매출 금액 텍스트 크기 축소 */
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+/* 기간별 고객사 매출 위젯 스타일 */
+.customer-sales-widget {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.customer-sales-widget h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  margin: 0 0 10px 0;
+}
+
+.customer-sales-widget hr {
+  margin: 5px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* 리스트 스타일 */
+.customer-sales-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 고객사 매출 항목 스타일 */
+.customer-sales-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.customer-sales-item:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.02);
+}
+
+/* 메달 스타일 */
+.customer-medal {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.customer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.customer-name {
+  flex-grow: 1; /* 이름 텍스트가 가능한 넓게 공간 사용 */
+  text-align: left; /* 왼쪽 정렬 */
+  margin-right: 10px; /* 이름과 가격 사이 간격 추가 */
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.customer-sales {
+  text-align: right; /* 오른쪽 정렬 */
+  font-size: 14px;
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+/* 상위 사원 매출 위젯 스타일 */
+.top-salespersons-widget {
+  background: linear-gradient(135deg, #ffffff, #f9f9fc);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-salespersons-widget h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  margin: 0 0 10px 0;
+}
+
+.top-salespersons-widget hr {
+  margin: 5px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* 리스트 스타일 */
+.top-salespersons-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 사원 매출 항목 스타일 */
+.top-salespersons-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.top-salespersons-item:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.02);
+}
+
+/* 메달 스타일 */
+.salesperson-medal {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.salesperson-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.salesperson-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.salesperson-sales {
+  font-size: 14px;
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+/* 상위 고객사 매출 위젯 스타일 */
+.top-customers-widget {
+  background: linear-gradient(135deg, #ffffff, #f9f9fc);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-customers-widget h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  margin: 0 0 10px 0;
+}
+
+.top-customers-widget hr {
+  margin: 5px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* 리스트 스타일 */
+.top-customers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 고객사 매출 항목 스타일 */
+.top-customers-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.top-customers-item:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.02);
+}
+
+/* 메달 스타일 */
+.customer-medal {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.customer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.customer-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.customer-sales {
+  font-size: 14px;
+  font-weight: bold;
+  color: #4a90e2;
 }
 </style>
   

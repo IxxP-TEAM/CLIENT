@@ -14,40 +14,42 @@
         />
 
         <!-- 필터 아이콘 버튼 -->
-        <button @click="toggleFilters" class="filter-icon-button">
-          <i class="fas fa-filter"></i>
+        <button @click="toggleFilters" class="jump-button">
+          <i class="fas fa-sliders-h"></i>
         </button>
       </div>
 
       <!-- 고객사 등록 버튼 -->
-      <button @click="openForm(false)" class="register-button">
-        고객사 등록
-      </button>
+      <button @click="openForm(false)" class="jump-button">고객사 등록</button>
     </div>
 
     <!-- 필터 섹션 -->
     <div v-if="showFilters" class="filters">
-      <!-- 거래 상태 필터 -->
-      <select
-        v-model="transactionStatusFilter"
-        @change="handleSearch"
-        class="filter"
-      >
-        <option value="">전체 거래 상태</option>
-        <option value="거래중">거래중</option>
-        <option value="거래중지">거래중지</option>
-      </select>
-
       <!-- 정렬 필터 -->
-      <select
-        id="sortOrder"
-        v-model="sortOrder"
-        @change="fetchCustomers"
-        class="filter"
-      >
-        <option value="asc">오름차순</option>
-        <option value="desc">내림차순</option>
-      </select>
+      <div class="filter-group">
+        <select
+          id="sortOrder"
+          v-model="sortOrder"
+          @change="fetchCustomers"
+          class="filter-select"
+        >
+          <option value="asc">고객사명⬆️</option>
+          <option value="desc">고객사명⬇️</option>
+        </select>
+      </div>
+      <!-- 거래 상태 필터 -->
+      <div class="filter-group">
+        <select
+          id="transactionStatusFilter"
+          v-model="transactionStatusFilter"
+          @change="handleSearch"
+          class="filter-select"
+        >
+          <option value="">거래상태</option>
+          <option value="거래중">거래중</option>
+          <option value="거래중지">거래중지</option>
+        </select>
+      </div>
     </div>
 
     <!-- 고객사 목록 테이블 -->
@@ -61,13 +63,13 @@
             <th>고객사 담당자</th>
             <th>고객사 담당자 연락처</th>
             <th>고객사 주소</th>
-            <th>고객사 거래상태</th>
+            <th>거래상태</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="paginatedCustomers.length === 0">
-              <td colspan="5">고객사가 존재하지 않습니다.</td>
-            </tr>
+            <td colspan="5">고객사가 존재하지 않습니다.</td>
+          </tr>
           <tr
             v-for="(customer, index) in paginatedCustomers || []"
             :key="customer.customerId"
@@ -84,12 +86,21 @@
                 truncatedAddress(customer.customerAddress)
               }}</span>
             </td>
-            <td>{{ customer.customerStatus }}</td>
+            <td>
+              <span
+                class="status"
+                :class="{
+                  active: customer.customerStatus === '거래중',
+                  inactive: customer.customerStatus === '거래중지',
+                }"
+              >
+                {{ customer.customerStatus }}
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
-
     <div class="pagination">
       <button
         @click="prevPage"
@@ -404,47 +415,57 @@ th {
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  gap: 10px;
+  gap: 5px; /* 버튼 간격 */
 }
 
 .pagination-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   font-size: 16px;
   font-weight: bold;
+  border-radius: 50%;
   cursor: pointer;
-  color: #000000;
-  transition: color 0.3s ease;
+  background-color: #ffffff;
+  color: #3f72af;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .pagination-page:hover {
-  color: #1d4f7a;
+  background-color: #3f72af;
+  color: white;
+  transform: translateY(-2px);
 }
 
 .pagination-page.active {
-  color: #3f72af;
-  font-weight: bold;
-  text-decoration: underline;
+  background-color: #3f72af;
+  color: white;
+  transform: scale(1.1);
+  cursor: default;
 }
 
 .pagination-arrow {
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  cursor: pointer;
   color: #3f72af;
-  border: 1px solid #3f72af;
-  background-color: white;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-arrow:hover {
-  background-color: #3f72af;
-  color: white;
+  color: #434190; /* 호버 시 색상 변화 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
 }
 
 .pagination-arrow:disabled {
-  opacity: 0.5;
+  color: #b0b0b0; /* 비활성화 시 색상 */
   cursor: not-allowed;
+  transform: none;
 }
 
 .search-filter-container {
@@ -478,14 +499,61 @@ th {
   border-radius: 5px;
   cursor: pointer;
 }
+/* 필터 섹션 스타일 */
 .filters {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 20px; /* 필터 간 간격 */
   padding: 10px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
+  background-color: #f9f9f9; /* 배경색 */
+  border: 1px solid #ddd; /* 경계선 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  margin-bottom: 20px; /* 목록과 간격 추가 */
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333; /* 텍스트 색상 */
+}
+
+.filter-select {
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-select:focus {
+  border-color: #3f72af;
+  box-shadow: 0 0 4px rgba(63, 114, 175, 0.5);
+  outline: none;
+}
+
+/* 필터 섹션 반응형 디자인 */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
 }
 
 .clickable-row {
@@ -495,5 +563,41 @@ th {
 
 .clickable-row:hover {
   background-color: #f4f4f4;
+}
+
+.jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
+}
+
+.status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.status.active {
+  background-color: #4caf50; /* 녹색 */
+}
+
+.status.inactive {
+  background-color: #f44336; /* 빨간색 */
 }
 </style>
