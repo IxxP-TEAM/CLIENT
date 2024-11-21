@@ -224,8 +224,8 @@ export default {
   },
   //전체 매출조회
   allSalesHistoty(page = 0, size = 10) {
-    return api.get(`sales/all?page=${page}&size=${size}`);
-  },
+    return api.get(`sales/all?page=${encodeURIComponent(page)}&size=${encodeURIComponent(size)}`);
+  },  
 
   //고객사별 총주문금액
   getTotalSalesByCustomer() {
