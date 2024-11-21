@@ -30,7 +30,7 @@
         </div>
         <div v-if="isDropdownOpen.dropdown3" class="dropdown-content">
           <!-- <router-link to="/att-create">급여 등록</router-link> -->
-          <router-link to="/att-list">급여 목록</router-link>
+          <router-link to="/pay-list-admin">급여 목록</router-link>
           <router-link to="/att-specification">급여 명세서 관리</router-link>
         </div>
       </div>

@@ -311,6 +311,9 @@ incrementViewCount(boardId){
 
   getMyPayList(startYearMonth, endYearMonth, page = 0, size = 10) {
     return api.get(`/payroll/filter?startYearMonth=${startYearMonth}&endYearMonth=${endYearMonth}&page=${page}&size=${size}`);
-}
+  },
+  getPayList() {
+  return api.get(`/payroll/all`);
+  }
 
 };

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <template>
     <div class="pay-list">
         <h2>급여 목록</h2>
@@ -20,35 +21,45 @@
         </div>
 
         <div class="table-container">
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
-                        <th>날짜</th>
-                        <th>기본급</th>
-                        <th>지급 총액</th>
+                        <th rowspan="2">날짜</th>
+                        <th colspan="2">기본급</th>
+                        <th rowspan="2">지급 총액</th>
                         <th>소득세</th>
                         <th>국민연금</th>
                         <th>건강보험</th>
                         <th>고용보험</th>
-                        <th>공제총액</th>
+                        <th rowspan="2">공제총액</th>
+                    </tr>
+                    <tr>
                         <th>야간수당</th>
                         <th>보너스</th>
                         <th>지방소득세</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-for="pay in payData" :key="pay.payId">
-                        <td>{{ pay.formattedMonth }}</td>
-                        <td>{{ pay.baseSalary }}</td>
-                        <td>{{ pay.overtimePay }}</td>
-                        <td>{{ pay.totalAmount }}</td>
+                <tbody v-for="pay in payData" :key="pay.payId">
+                    <tr>
+                        <td rowspan="2">{{ pay.formattedMonth }}</td>
+                        <td colspan="2">{{ pay.baseSalary }}</td>
+                        <td rowspan="2">{{ pay.totalAmount }}</td>
                         <td>{{ pay.incomeTax }}</td>
                         <td>{{ pay.nationalPension }}</td>
                         <td>{{ pay.healthInsurance }}</td>
                         <td>{{ pay.employmentInsurance }}</td>
-                        <td>{{ pay.deductionsTotal }}</td>
+                        <td rowspan="2">{{ pay.deductionsTotal }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ pay.overtimePay }}</td>
                         <td>{{ pay.bonus }}</td>
                         <td>{{ pay.localIncomeTax }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -115,9 +126,8 @@ export default {
                     const healthInsurance = parseNumber(item.healthInsurance);
                     const employmentInsurance = parseNumber(item.employmentInsurance);
                     const localIncomeTax = parseNumber(item.localIncomeTax);
-
-                    const deductionsTotal = (incomeTax + nationalPension + healthInsurance + employmentInsurance + localIncomeTax).toLocaleString();
-                    const totalAmount = baseSalary + overtimePay + bonus - deductionsTotal;
+                    const deductionsTotal = incomeTax + nationalPension + healthInsurance + employmentInsurance + localIncomeTax;
+                    const totalAmount = (baseSalary + overtimePay + bonus - deductionsTotal).toLocaleString();
 
                     return {
                         ...item,
@@ -179,6 +189,7 @@ export default {
 /* 테이블 스타일 */
 .table-container {
     overflow-x: auto;
+    border: 1px solid #ddd;
 }
 
 .table-container::-webkit-scrollbar {
@@ -193,7 +204,7 @@ export default {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 th,

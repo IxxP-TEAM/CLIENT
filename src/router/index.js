@@ -19,6 +19,7 @@ import BoardDetail from '@/components/board/BoardDetail.vue'
 import MyLeaveList from '@/components/leave/MyLeaveList.vue'
 import MyAttList from '@/components/attendence/MyAttList.vue'
 import PayListUser from '@/components/pay/PayList-user.vue'
+import PayListAdmin from '@/components/pay/PayList-admin.vue'
 
 
 
@@ -158,7 +159,13 @@ const router = createRouter({
       name: "payListUser",
       component: PayListUser,
       meta: {requiresAuth: true},
-    }
+    },
+    {
+      path:'/pay-list-admin',
+      name: "payListAdmin",
+      component: PayListAdmin,
+      meta: {requiresAuth: true},
+    },
   ],
 })
 
