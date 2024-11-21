@@ -21,7 +21,13 @@
             <td>{{ item.endDate }}</td>
             <td>{{ item.targetQuantity }}</td>
             <td>{{ item.resultQuantity }}</td>
-            <td>{{ item.productionStatus }}</td>
+            <td>
+              <span :class="['status', item.productionStatus === '진행중' ? 'active' : 'inactive']">
+                {{ item.productionStatus }}
+              </span>
+            </td> 
+          
+              
             <td>{{ item.userName }}</td>
           </tr>
         </tbody>
@@ -62,9 +68,6 @@
     font-weight: bold;
   }
   
-  span {
-    float: right;
-  }
   
   td {
     cursor: pointer;
@@ -74,5 +77,19 @@
     color: red;
     font-weight: bold;
   }
+  .status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.status.active {
+  background-color: #4caf50; /* 녹색 */
+}
+
+.status.inactive {
+  background-color: blue; /* 빨간색 */
+}
   </style>
   
