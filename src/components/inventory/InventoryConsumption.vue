@@ -9,6 +9,7 @@
             id="productName"
             v-model="consumptionData.productName"
             @click="openProductSelector"
+            readonly
             required
           />
   

@@ -21,7 +21,7 @@
           <td>{{ item.changeQuantity }}</td>
           <td>{{ item.changeDate }}</td>
           <td>{{ item.userName }}</td>
-          <td v-if="item.changeType === '조정'">{{ item.adjustment}}</td>
+          <td class="adjustment-column" v-if="item.changeType === '조정'">{{ item.adjustment}}</td>
           <td v-else></td>
           <td v-if="item.changeType === '입고'">{{ item.expirationDate || 'N/A' }}</td>
           <td v-else></td>
@@ -68,5 +68,19 @@ th {
 
 span {
   float: right;
+}
+/* 조정 사유 컬럼 스타일 */
+.adjustment-column {
+  max-width: 150px; /* 최대 너비 설정 */
+  overflow: hidden; /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis; /* 말줄임표 */
+  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+}
+
+/* 반응형 테이블 */
+@media (max-width: 768px) {
+  table {
+    font-size: 12px;
+  }
 }
 </style>

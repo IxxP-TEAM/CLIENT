@@ -191,7 +191,7 @@ export default {
     this.fetchBoards()
   },
   watch: {
-    type(newType) {
+    type(newType) {// eslint-disable-line no-unused-vars
       this.fetchBoards()
     },
   },

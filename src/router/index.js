@@ -9,6 +9,7 @@ import InventoryList from '@/components/inventory/InventoryList.vue'
 import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
+import ProductionList from '@/components/production/ProductionList.vue'
 import SalesHistory from '@/components/sales/SalesHistory.vue'
 import CustomerHistory from '@/components/sales/CustomerHistory.vue'
 import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.vue'
@@ -60,7 +61,6 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
-    // 제품 목록
 
     //판매 목록
     {
@@ -102,6 +102,13 @@ const router = createRouter({
       component: OrderForm,
       meta: { requiresAuth: true },
     },
+    // 생산 목록
+    {
+      path:"/production",
+      name:'production',
+      component:ProductionList,
+      meta: { requiresAuth: true },
+    },  
     {
       path: '/sales-history',
       name: 'SalesHistory',
