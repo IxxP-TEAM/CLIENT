@@ -363,6 +363,16 @@ incrementViewCount(boardId){
 },
   getMyAttList(userId, year, month) {
     return api.get(`/attendance/${userId}/monthly?year=${year}&month=${month}`);
-  }
+  },
 
+  getMyPayList(startYearMonth, endYearMonth, page = 0, size = 10) {
+    return api.get(`/payroll/filter?startYearMonth=${startYearMonth}&endYearMonth=${endYearMonth}&page=${page}&size=${size}`);
+  },
+  getPayList() {
+  return api.get(`/payroll/all`);
+  },
+
+  fetchPayDetails(payId) {
+    return api.get(`/payroll/${payId}`);
+  }
 };
