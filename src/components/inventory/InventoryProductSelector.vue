@@ -15,6 +15,7 @@
           <thead>
             <tr>
               <th>제품명</th>
+              <th>제품종류</th>
             </tr>
           </thead>
           <tbody>
@@ -24,6 +25,7 @@
               @click="confirmSelection(product)"
             >
               <td>{{ product.productName }}</td>
+              <td>{{ product.productType }}</td>
             </tr>
           </tbody>
         </table>

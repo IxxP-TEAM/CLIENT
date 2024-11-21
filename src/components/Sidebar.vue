@@ -72,12 +72,13 @@
 
         <!-- 재고 관리 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
-          재고관리
+          재고 관리
         </div>
         <div v-if="isDropdownOpen.dropdown4" class="dropdown-content">
           <router-link to="/products">제품 목록</router-link>
           <router-link to="/inventory">재고 목록</router-link>
           <router-link to="/inventory/history">재고 이력 목록</router-link>
+          <router-link to="/production">생산 목록</router-link>
         </div>
 
         <!--급여 관리-->

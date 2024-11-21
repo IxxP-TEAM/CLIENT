@@ -9,6 +9,7 @@
             id="productName"
             v-model="outboundData.productName"
             @click="openProductSelector"
+            readonly
             required
           />
   

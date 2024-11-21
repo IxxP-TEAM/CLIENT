@@ -205,40 +205,42 @@ th {
 .pagination-page {
   font-size: 16px;
   font-weight: bold;
+  color: black; /* 기본 색상 */
   cursor: pointer;
-  color: #000000;
-  transition: color 0.3s ease;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-page:hover {
-  color: #1d4f7a;
+  color: #434190; /* 호버 시 색상 */
+  transform: scale(1.1); /* 살짝 커지는 효과 */
 }
 
 .pagination-page.active {
-  color: #3f72af;
-  font-weight: bold;
+  color: #3f72af; /* 현재 페이지 텍스트 강조 */
+  font-size: 18px; /* 약간 더 큰 텍스트 */
   text-decoration: underline;
 }
 
 .pagination-arrow {
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  cursor: pointer;
   color: #3f72af;
-  border: 1px solid #3f72af;
-  background-color: white;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-arrow:hover {
-  background-color: #3f72af;
-  color: white;
+  color: #434190; /* 호버 시 색상 변화 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
 }
 
 .pagination-arrow:disabled {
-  opacity: 0.5;
+  color: #b0b0b0; /* 비활성화 시 색상 */
   cursor: not-allowed;
+  transform: none;
 }
 </style>

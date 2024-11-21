@@ -1,171 +1,141 @@
 <template>
-    <div class="sales-history">
-      <h2>판매 이력</h2>
-  
-      <!-- 검색 및 필터 아이콘 -->
-      <div class="header">
-        <div class="search-filter-container">
-          <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="고객사 이름 또는 직원 이름 검색"
-            @input="handleSearch"
-            class="search-input"
-          />
-        </div>
-      </div>
-  
-      <!-- 테이블 -->
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>번호</th>
-              <th>고객사</th>
-              <th>직원</th>
-              <th>판매 날짜</th>
-              <th>판매 금액</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 데이터 없을 때 -->
-            <tr v-if="paginatedSalesHistories.length === 0">
-              <td colspan="5">판매 이력이 없습니다.</td>
-            </tr>
-            <!-- 데이터 있을 때 -->
-            <tr
-              v-for="(history, index) in paginatedSalesHistories"
-              :key="history.salesDate + index"
-            >
-              <td>{{ (pageNumber - 1) * pageSize + index + 1 }}</td>
-              <td>{{ history.customerId || 'N/A' }}</td>
-              <td>{{ history.userId || 'N/A' }}</td>
-              <td>{{ history.salesDate || 'N/A' }}</td>
-              <td>{{ formatCurrency(history.salesAmount || 0) }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <!-- 페이지네이션 -->
-      <div class="pagination">
-        <button
-          @click="prevPage"
-          :disabled="pageNumber === 1"
-          class="pagination-arrow"
-        >
-          &lt;
-        </button>
-        <span
-          v-for="page in totalPages"
-          :key="page"
-          @click="setPage(page)"
-          :class="{ active: pageNumber === page }"
-          class="pagination-page"
-        >
-          {{ page }}
-        </span>
-        <button
-          @click="nextPage"
-          :disabled="pageNumber === totalPages"
-          class="pagination-arrow"
-        >
-          &gt;
-        </button>
+  <div class="sales-history">
+    <h2>판매 이력</h2>
+
+    <div class="header">
+      <div class="search-filter-container">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="고객사 이름 또는 직원 이름 검색"
+          @input="handleSearch"
+          class="search-input"
+        />
       </div>
     </div>
-  </template>
-  
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>고객사</th>
+            <th>직원</th>
+            <th>판매 날짜</th>
+            <th>판매 금액</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 데이터가 없을 때 -->
+          <tr v-if="salesHistories && salesHistories.length === 0">
+            <td colspan="5">판매 이력이 없습니다.</td>
+          </tr>
+
+          <!-- 데이터가 있을 때 -->
+          <tr v-for="(history, index) in salesHistories" :key="index">
+            <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
+            <td>{{ history.customerId || 'N/A' }}</td>
+            <td>{{ history.userId || 'N/A' }}</td>
+            <td>{{ history.salesDate || 'N/A' }}</td>
+            <td>{{ formatCurrency(history.salesAmount || 0) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="pagination-arrow"
+      >
+        &lt;
+      </button>
+      <span
+        v-for="page in totalPages"
+        :key="page"
+        @click="setPage(page)"
+        :class="{ active: currentPage === page }"
+        class="pagination-page"
+      >
+        {{ page }}
+      </span>
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="pagination-arrow"
+      >
+        &gt;
+      </button>
+    </div>
+  </div>
+</template>
+
 <script>
 import apiservice from '@/api/apiService'
 
 export default {
   data() {
     return {
-      salesHistories: {
-        content: [], // 원본 데이터
-        totalPages: 0,
-      },
-      searchQuery: '', // 검색어
-      filteredSalesHistories: [], // 필터링된 데이터
-      paginatedSalesHistories: [], // 페이지네이션된 데이터
-      pageNumber: 1, // 현재 페이지
+      salesHistories: [], // 항상 배열로 초기화
+      currentPage: 1, // 현재 페이지
       pageSize: 10, // 페이지당 항목 수
+      totalPages: 1, // 전체 페이지 수
+      searchQuery: '', // 검색어
     }
   },
   created() {
-    this.fetchSalesHistory(this.pageNumber)
-  },
-  watch: {
-    // 검색어가 변경될 때 필터 적용
-    searchQuery() {
-      this.applyFilter()
-    },
-    // 페이지 번호가 변경될 때 페이지네이션 적용
-    pageNumber() {
-      this.applyPagination()
-    },
+    this.fetchSalesHistory()
   },
   methods: {
-    async fetchSalesHistory(page) {
+    async fetchSalesHistory() {
       try {
         const response = await apiservice.allSalesHistoty(
-          page - 1,
+          this.currentPage - 1,
           this.pageSize
         )
-        this.salesHistories = response.data.data // 데이터 로드
-        this.filteredSalesHistories = this.salesHistories.content // 초기 필터링
-        this.applyPagination()
+        console.log(
+          'API 요청 URL:',
+          `/sales/all?page=${this.currentPage - 1}&size=${this.pageSize}`
+        )
+        console.log('API 응답 데이터:', response.data)
+
+        this.salesHistories = response.data.data.content || []
+        this.totalPages = response.data.data.totalPages || 1
       } catch (error) {
         console.error('판매 이력을 가져오는 중 오류 발생:', error)
+        this.salesHistories = []
+        this.totalPages = 1
       }
     },
-    applyFilter() {
-      const query = this.searchQuery.toLowerCase()
-      this.filteredSalesHistories = this.salesHistories.content.filter(
-        history => {
-          const customerName = history.customerId?.toLowerCase() || ''
-          const userName = history.userId?.toLowerCase() || ''
-          return customerName.includes(query) || userName.includes(query)
-        }
-      )
-      this.applyPagination()
-    },
-    applyPagination() {
-      const start = (this.pageNumber - 1) * this.pageSize
-      const end = start + this.pageSize
-      this.paginatedSalesHistories = this.filteredSalesHistories.slice(
-        start,
-        end
-      )
+    handleSearch() {
+      this.currentPage = 1
+      this.fetchSalesHistory()
     },
     prevPage() {
-      if (this.pageNumber > 1) {
-        this.pageNumber--
+      if (this.currentPage > 1) {
+        this.currentPage--
+        this.fetchSalesHistory()
+        console.log('이전 페이지:', this.currentPage)
       }
     },
     nextPage() {
-      if (this.pageNumber < this.totalPages) {
-        this.pageNumber++
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++
+        this.fetchSalesHistory()
+        console.log('다음 페이지:', this.currentPage)
       }
     },
     setPage(page) {
-      this.pageNumber = page
-    },
-    handleSearch() {
-      this.pageNumber = 1 // 검색 시 첫 페이지로 이동
-      this.applyFilter()
+      this.currentPage = page
+      this.fetchSalesHistory()
+      console.log('현재 페이지 설정:', this.currentPage)
     },
     formatCurrency(value) {
-        return new Intl.NumberFormat("ko-KR", {
-          style: "currency",
-          currency: "KRW",
-        }).format(value);
-      },
-  },
-  computed: {
-    totalPages() {
-      return Math.ceil(this.filteredSalesHistories.length / this.pageSize)
+      return new Intl.NumberFormat('ko-KR', {
+        style: 'currency',
+        currency: 'KRW',
+      }).format(value)
     },
   },
 }
@@ -201,10 +171,6 @@ export default {
   overflow-x: auto;
 }
 
-.table-container::-webkit-scrollbar {
-  display: none;
-}
-
 table {
   width: 100%;
   border-collapse: collapse;
@@ -216,7 +182,6 @@ td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-  white-space: nowrap;
 }
 
 th {
@@ -224,72 +189,52 @@ th {
   font-weight: bold;
 }
 
-.clickable-row {
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.clickable-row:hover {
-  background-color: #f4f4f4;
-}
-
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  gap: 10px;
 }
 
 .pagination-page {
   font-size: 16px;
   font-weight: bold;
+  color: black; /* 기본 색상 */
   cursor: pointer;
-  color: #000000;
-  transition: color 0.3s ease;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-page:hover {
-  color: #1d4f7a;
+  color: #434190; /* 호버 시 색상 */
+  transform: scale(1.1); /* 살짝 커지는 효과 */
 }
 
 .pagination-page.active {
-  color: #3f72af;
-  font-weight: bold;
+  color: #3f72af; /* 현재 페이지 텍스트 강조 */
+  font-size: 18px; /* 약간 더 큰 텍스트 */
   text-decoration: underline;
 }
 
 .pagination-arrow {
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  cursor: pointer;
   color: #3f72af;
-  border: 1px solid #3f72af;
-  background-color: white;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-arrow:hover {
-  background-color: #3f72af;
-  color: white;
+  color: #434190; /* 호버 시 색상 변화 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
 }
 
 .pagination-arrow:disabled {
-  opacity: 0.5;
+  color: #b0b0b0; /* 비활성화 시 색상 */
   cursor: not-allowed;
-}
-
-.search-filter-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.search-input {
-  padding: 8px;
-  font-size: 16px;
-  width: 300px;
+  transform: none;
 }
 </style>
