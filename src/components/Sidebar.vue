@@ -2,7 +2,7 @@
 <template>
   <aside v-if="showSidebar" class="sidebar">
     <div class="logo">
-      <img src="/src/assets/logo.png" alt="IXXP ERP Logo"  @click="goToHome" style="cursor: pointer;" />
+      <img src="/src/assets/logo.png" alt="IXXP ERP Logo" @click="goToHome" style="cursor: pointer;" />
     </div>
 
     <div class="login-info">
@@ -50,15 +50,15 @@
           <router-link to="/customer-list">고객사 목록</router-link>
           <router-link to="/order-list">주문 목록</router-link>
         </div>
-        
+
         <!-- 게시판 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown7')">
           게시판
         </div>
         <div v-if="isDropdownOpen.dropdown7" class="dropdown-content">
-        <router-link :to="{ name: 'BoardList', params: { type: 'NOTICE' } }">공지게시판</router-link>
-        <router-link :to="{ name: 'BoardList', params: { type: 'FREE' } }">자유게시판</router-link>
-        <router-link :to="{ name: 'BoardList', params: { type: 'ANONYMOUS' } }">익명게시판</router-link>
+          <router-link :to="{ name: 'BoardList', params: { type: 'NOTICE' } }">공지게시판</router-link>
+          <router-link :to="{ name: 'BoardList', params: { type: 'FREE' } }">자유게시판</router-link>
+          <router-link :to="{ name: 'BoardList', params: { type: 'ANONYMOUS' } }">익명게시판</router-link>
         </div>
 
         <!--판매 개요 메뉴-->
@@ -80,6 +80,14 @@
           <router-link to="/products">제품 목록</router-link>
           <router-link to="/inventory">재고 목록</router-link>
           <router-link to="/inventory/history">재고 이력 목록</router-link>
+        </div>
+
+        <!--급여 관리-->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown8')">
+          급여관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown8" class="dropdown-content">
+          <router-link to="/pay-list-user">급여 목록</router-link>
         </div>
       </div>
     </nav>
@@ -140,6 +148,7 @@ const isDropdownOpen = ref({
   dropdown5: false, // 매출 개요
   dropdown6: false, // 근태 관리
   dropdown7: false, // 게시판 
+  dropdown8: false,
 
 });
 
