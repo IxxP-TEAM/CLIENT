@@ -119,7 +119,7 @@ function goToPage(page) {
   }
 }
 
-// 정렬
+
 function triggerSort() {
   if (searchQuery.value) {
     triggerSearch(); // 검색어가 있을 경우 검색 결과를 정렬
@@ -179,6 +179,7 @@ async function resetToInitialState() {
   currentPage.value = 1        // 첫 페이지로 이동
   selectedSort.value = '';          // 정렬 기준 초기화
   sortDirection.value = '';      // 정렬 방향을 기본 오름차순으로 초기화
+  products.value = []; // 상태 초기화
   await fetchProducts()        // 전체 제품 목록 새로 가져오기
 }
 
@@ -209,7 +210,7 @@ async function triggerSearch() {
       searchQuery.value,
       currentPage.value - 1,        // 현재 페이지 번호 (백엔드에서는 0부터 시작)
       itemsPerPage,
-      selectedSort.value || 'productId',   // 정렬 기준이 설정되지 않은 경우 기본값
+      selectedSort.value || 'productName',   // 정렬 기준이 설정되지 않은 경우 기본값
       sortDirection.value || 'asc'         // 정렬 방향이 설정되지 않은 경우 기본값
     );
     
@@ -227,10 +228,11 @@ async function fetchProducts() {
     const response = await apiService.getProductList(
       currentPage.value - 1,        // 백엔드는 0부터 시작하므로 1을 빼줌
       itemsPerPage,
-      selectedSort.value || 'productId',  // 정렬 기준이 설정되지 않은 경우 기본값 사용
+      selectedSort.value || 'productName',  // 정렬 기준이 설정되지 않은 경우 기본값 사용
       sortDirection.value || 'asc'          // 정렬 방향이 설정되지 않은 경우 기본값 사용
     );
 
+    console.log("API 응답 데이터:", response.data.data.elements); // 응답 데이터 확인
     products.value = response.data.data.elements; // 현재 페이지의 제품 리스트를 저장
     totalPages.value = response.data.data.totalPages; // 전체 페이지 수 저장
   } catch (error) {

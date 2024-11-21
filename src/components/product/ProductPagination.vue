@@ -1,4 +1,4 @@
-<!-- src/components/ProductPagination.vue -->
+<!-- src/components/inventoryPagination.vue -->
 <template>
   <div class="pagination">
     <button @click="$emit('go-to-page', 1)" :disabled="currentPage === 1">처음 페이지 이동</button>
