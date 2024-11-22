@@ -143,7 +143,7 @@ export default {
 .section-title {
   font-size: 22px;
   font-weight: bold;
-  color: #4caf50;
+  color: black;
   margin-bottom: 15px;
 }
 
