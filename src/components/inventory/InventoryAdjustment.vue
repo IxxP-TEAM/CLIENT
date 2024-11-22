@@ -39,8 +39,8 @@
           <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
   
           <div class="button-group">
-            <button type="submit">등록</button>
-            <button class="button-a" @click="$emit('close')" type="button">
+            <button class="jump-button" type="submit">등록</button>
+            <button class="jump-button" @click="$emit('close')" type="button" style="background-color: red; color: white; float: right;">
               닫기
             </button>
           </div>
@@ -266,5 +266,25 @@ const fetchAndOpenDetail = async (product) => {
     font-size: 14px;
     margin-top: 10px;
   }
+  .jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
+}
   </style>
   

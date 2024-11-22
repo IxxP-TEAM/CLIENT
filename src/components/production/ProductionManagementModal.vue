@@ -4,12 +4,12 @@
         <h3 class="modal-title">생산 관리</h3>
         <div class="button-group">
 
-          <button @click="openActionModal('생산')">생산 등록</button>
-          <button @click="openActionModal('완료')">생산 완료</button>
-          <button @click="openActionModal('분석')">생산 분석</button>
+          <button class="jump-button" @click="openActionModal('생산')">생산 등록</button>
+          <button class="jump-button" @click="openActionModal('완료')">생산 완료</button>
+          <button class="jump-button" @click="openActionModal('분석')">생산 분석</button>
 
     </div>
-        <button class="close-button" @click="$emit('close')">닫기</button>
+        <button class="jump-button" @click="$emit('close')" style="background-color: red; color: white; float: right;">닫기</button>
       </div>
     </div>
   </template>
@@ -97,5 +97,25 @@ button{
   cursor: pointer;
   float: inline-end;
   }
+  .jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
+}
   </style>
   
