@@ -2,21 +2,35 @@
   <div class="inventory-list">
     <h2 @click="resetToInitialState" style="cursor: pointer">재고 이력 목록</h2>
     <div class="header">
-      <div class="search-group">
+      <div class="search-filter-container">
         <input
           type="text"
           v-model="searchQuery"
           @keyup.enter="triggerSearch"
           placeholder="제품 이름을 입력하세요"
+          class="search-input"
         />
-        <button @click="triggerSearch">검색</button>
-        <select v-model="selectedSort" @change="triggerSort">
+        <button @click="triggerSearch" class="jump-button">검색</button>
+
+        <!-- 필터 아이콘 버튼 -->
+        <button @click="toggleFilters" class="jump-button">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+      </div>
+      </div>
+        <!-- 필터 섹션 -->
+    <div v-if="showFilters" class="filters">
+      <!-- 정렬 필터 -->
+      <div class="filter-group">
+        <select v-model="selectedSort" @change="triggerSort"  class="filter-select">
           <option value="" disabled hidden>정렬 기준을 선택하세요</option>
           <option value="productName">이름순</option>
           <option value="changeDate">변경일순</option>
           <option value="changeType">유형순</option>
         </select>
-        <select v-model="sortDirection" @change="triggerSort">
+        </div>
+        <div class="filter-group">
+        <select v-model="sortDirection" @change="triggerSort" class="filter-select">
           <option value="" disabled hidden>정렬 방향을 선택하세요</option>
           <option value="asc">오름차순</option>
           <option value="desc">내림차순</option>
@@ -52,6 +66,11 @@ const searchQuery = ref('')
 const totalPages = ref(1)
 const selectedSort = ref('')
 const sortDirection = ref('')
+const showFilters = ref(false)
+
+function toggleFilters() {
+  showFilters.value = !showFilters.value
+}
 
 async function fetchInventoryHistoryList(isSearch = false) {
   try {
@@ -132,20 +151,13 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 
-/* 검색 입력과 검색 버튼을 나란히 배치 */
-.search-group {
-  display: flex;
-  gap: 8px; /* 입력창과 버튼 간격 */
-}
-
-.search-group input[type='text'] {
+.header input[type='text'] {
   padding: 8px;
   font-size: 16px;
   width: 300px;
 }
 
 .header button,
-.search-group button,
 .inventory-list button {
   padding: 10px 20px;
   font-size: 16px;
@@ -155,15 +167,141 @@ onMounted(() => {
   border-radius: 5px;
   cursor: pointer;
 }
-select {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: 2px solid black;
 
-  border-radius: 5px;
-  cursor: pointer;
-}
 .table-container {
   overflow-x: auto;
+}
+.table-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.search-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search-input {
+  padding: 8px;
+  font-size: 16px;
+  width: 300px;
+}
+
+.filter-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.filter-icon-button .fas {
+  color: #4caf50;
+}
+
+
+/* 필터 섹션 스타일 */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 필터 간 간격 */
+  padding: 10px;
+  background-color: #f9f9f9; /* 배경색 */
+  border: 1px solid #ddd; /* 경계선 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  margin-bottom: 20px; /* 목록과 간격 추가 */
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333; /* 텍스트 색상 */
+}
+
+.filter-select {
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.filter-select:focus {
+  border-color: #3f72af;
+  box-shadow: 0 0 4px rgba(63, 114, 175, 0.5);
+  outline: none;
+}
+
+/* 필터 섹션 반응형 디자인 */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clickable-row:hover {
+  background-color: #f4f4f4;
+}
+
+.jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
+}
+
+.status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.status.active {
+  background-color: #4caf50; /* 녹색 */
+}
+
+.status.inactive {
+  background-color: #f44336; /* 빨간색 */
 }
 </style>

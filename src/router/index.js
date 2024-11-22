@@ -9,6 +9,7 @@ import InventoryList from '@/components/inventory/InventoryList.vue'
 import InventoryHistoryList from '@/components/inventory/InventoryHistoryList.vue'
 import OrderForm from '@/components/order/OrderForm.vue'
 import OrderList from '@/components/order/OrderList.vue'
+import ProductionList from '@/components/production/ProductionList.vue'
 import SalesHistory from '@/components/sales/SalesHistory.vue'
 import CustomerHistory from '@/components/sales/CustomerHistory.vue'
 import TotalSalesBySalesperson from '@/components/sales/TotalSalesBySalesperson.vue'
@@ -18,6 +19,8 @@ import BoardList from '@/components/board/BoardList.vue'
 import BoardDetail from '@/components/board/BoardDetail.vue'
 import MyLeaveList from '@/components/leave/MyLeaveList.vue'
 import MyAttList from '@/components/attendence/MyAttList.vue'
+import PayListUser from '@/components/pay/PayList-user.vue'
+import PayListAdmin from '@/components/pay/PayList-admin.vue'
 
 
 
@@ -60,7 +63,6 @@ const router = createRouter({
       component: CustomerList,
       meta: { requiresAuth: true },
     },
-    // 제품 목록
 
     //판매 목록
     {
@@ -102,6 +104,13 @@ const router = createRouter({
       component: OrderForm,
       meta: { requiresAuth: true },
     },
+    // 생산 목록
+    {
+      path:"/production",
+      name:'production',
+      component:ProductionList,
+      meta: { requiresAuth: true },
+    },  
     {
       path: '/sales-history',
       name: 'SalesHistory',
@@ -150,6 +159,18 @@ const router = createRouter({
       path: '/my-att',
       name: "myAtt",
       component: MyAttList,
+      meta: {requiresAuth: true},
+    },
+    {
+      path: '/pay-list-user',
+      name: "payListUser",
+      component: PayListUser,
+      meta: {requiresAuth: true},
+    },
+    {
+      path:'/pay-list-admin',
+      name: "payListAdmin",
+      component: PayListAdmin,
       meta: {requiresAuth: true},
     },
   ],

@@ -1,31 +1,42 @@
 <template>
     <div class="modal-overlay">
       <div class="modal-content">
-        <h3>제품 선택</h3>
-        <!-- 검색 입력 -->
+        <h3>생산 계획 선택</h3>
+        <!-- 검색 및 필터링 -->
+      <div class="search-group">
         <input
           v-model="searchQuery"
           @input="handleSearch"
-          placeholder="제품 검색"
+          placeholder="생산 계획 검색"
           class="search-bar"
         />
+        <select v-model="selectedStatus" @change="filterByStatus">
+          <option value="">진행 상태</option>
+          <option value="진행중">진행중</option>
+          <option value="완료">완료</option>
+        </select>
+        
+      </div>
   
-        <!-- 제품 목록 -->
-        <table class="product-table">
+        <table class="production-table">
           <thead>
             <tr>
-              <th>제품명</th>
-              <th>제품종류</th>
+              <th>생산할 제품</th>
+              <th>목표 수량</th>
+              <th>결과 수량</th>
+              <th>상태</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              v-for="product in paginatedProducts"
-              :key="product.productId"
-              @click="confirmSelection(product)"
+              v-for="production in paginatedProductions"
+              :key="production.productionId"
+              @click="confirmSelection(production)"
             >
-              <td>{{ product.productName }}</td>
-              <td>{{ product.productType }}</td>
+              <td>{{ production.productName }}</td>
+              <td>{{ production.targetQuantity }}</td>
+              <td>{{ production.resultQuantity }}</td>
+              <td>{{ production.productionStatus }}</td>
             </tr>
           </tbody>
         </table>
@@ -46,76 +57,85 @@
   
   <script setup>
   import { ref, computed } from "vue";
-  import ProductPagination from "@/components/product/ProductPagination.vue";
   import apiService from "@/api/apiService";
+  import ProductPagination from "@/components/product/ProductPagination.vue";
   
   const emit = defineEmits(["confirm-selection", "close"]);
   
-  const products = ref([]); // 전체 제품 데이터
-  const filteredProducts = ref([]); // 필터링된 제품 데이터
+  const productions = ref([]);
+  const filteredProductions = ref([]);
   const currentPage = ref(1);
   const itemsPerPage = 10;
   const searchQuery = ref("");
+  const selectedStatus = ref(""); // 선택된 상태 필터
   
-  // 총 페이지 수 계산
-  const totalPages = computed(() => {
-    return Math.ceil(filteredProducts.value.length / itemsPerPage);
-  });
-  
-  // 검색 핸들링
-  const handleSearch = () => {
-    const query = searchQuery.value.trim().toLowerCase();
-  
-    if (query === "") {
-      // 검색어가 비어 있을 경우 전체 데이터 사용
-      filteredProducts.value = products.value.slice();
-    } else {
-      // 검색어가 있을 경우 필터링
-      filteredProducts.value = products.value.filter((product) =>
-        product.productName.toLowerCase().includes(query)
-      );
+  const fetchProductionList = async () => {
+    try {
+      const response = await apiService.fetchProductionList(0, 1000); // 생산 계획 데이터 가져오기
+      productions.value = response.data.data.elements;
+      filteredProductions.value = productions.value.slice();
+      filterByStatus(); // 상태 필터링 적용
+      handleSearch();
+    } catch (error) {
+      console.error("생산 계획 목록을 불러오는 중 오류가 발생했습니다:", error);
     }
-  
-    // 페이지를 첫 번째로 초기화
-    currentPage.value = 1;
   };
   
-  // 페이지 데이터 계산
-  const paginatedProducts = computed(() => {
+  const totalPages = computed(() => {
+    return Math.ceil(filteredProductions.value.length / itemsPerPage);
+  });
+  
+  // 검색 처리
+const handleSearch = () => {
+  const query = searchQuery.value.trim().toLowerCase();
+  const statusFiltered = selectedStatus.value
+    ? productions.value.filter(
+        (production) => production.productionStatus === selectedStatus.value
+      )
+    : productions.value;
+
+  if (!query) {
+    filteredProductions.value = statusFiltered.slice();
+  } else {
+    filteredProductions.value = statusFiltered.filter((production) =>
+      production.productName.toLowerCase().includes(query)
+    );
+  }
+  currentPage.value = 1;
+};
+
+
+// 상태 필터링
+const filterByStatus = () => {
+  const status = selectedStatus.value;
+  if (!status) {
+    filteredProductions.value = productions.value.slice(); // 전체 표시
+  } else {
+    filteredProductions.value = productions.value.filter(
+      (production) => production.productionStatus === status
+    );
+  }
+  handleSearch(); // 검색 필터 적용
+};
+  
+  const paginatedProductions = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return filteredProducts.value.slice(start, end);
+    return filteredProductions.value.slice(start, end);
   });
   
-  // 전체 데이터 조회
-  const fetchProducts = async () => {
-    try {
-      const response = await apiService.getProductList(0, 1000); // 충분히 큰 데이터 가져오기
-      products.value = response.data.data.elements; // 전체 데이터 저장
-      filteredProducts.value = products.value.slice(); // 초기에는 전체 데이터 사용
-      handleSearch(); // 검색 초기화
-    } catch (error) {
-      console.error("제품 목록을 불러오는 중 오류가 발생했습니다:", error);
-    }
-  };
-  
-  // 페이지 이동
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page;
     }
   };
   
-  // 제품 선택 이벤트
-  const confirmSelection = (product) => {
-    emit("confirm-selection", product);
+  const confirmSelection = (production) => {
+    emit("confirm-selection", production);
   };
   
-  // 컴포넌트가 마운트될 때 전체 데이터 가져오기
-  fetchProducts();
+  fetchProductionList();
   </script>
-  
-  
   
   <style scoped>
 .modal-overlay {
@@ -167,29 +187,29 @@ h2 {
   box-sizing: border-box;
 }
 
-.product-table {
+.production-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
 
-.product-table th, .product-table td {
+.production-table th, .production-table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: center;
 }
 
-.product-table th {
+.production-table th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
 
-.product-table tr:hover {
+.production-table tr:hover {
   background-color: #f9f9f9;
   cursor: pointer;
 }
 
-.product-table tr.selected {
+.production-table tr.selected {
   background-color: #cce5ff; /* 선택된 행 색상 */
 }
 
@@ -242,8 +262,27 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+/* 검색 입력과 검색 버튼을 나란히 배치 */
+.search-group {
+    display: flex;
+    gap: 8px; /* 입력창과 버튼 간격 */
+  }
+  
+  .search-group input[type='text'] {
+    padding: 8px;
+    font-size: 16px;
+    width: 300px;
+  }
+select {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid black;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 
-.jump-button {
+  .jump-button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;

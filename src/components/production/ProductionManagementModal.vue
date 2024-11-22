@@ -1,13 +1,12 @@
 <template>
     <div v-if="isOpen" class="modal-overlay">
       <div class="modal-content">
-        <h3 class="modal-title">재고 관리</h3>
+        <h3 class="modal-title">생산 관리</h3>
         <div class="button-group">
 
-          <button class="jump-button" @click="openActionModal('입고')">입고</button>
-          <button class="jump-button" @click="openActionModal('출고')">출고</button>
-          <button class="jump-button" @click="openActionModal('소모')">소모</button>
-          <button class="jump-button" @click="openActionModal('조정')">조정</button>
+          <button class="jump-button" @click="openActionModal('생산')">생산 등록</button>
+          <button class="jump-button" @click="openActionModal('완료')">생산 완료</button>
+          <button class="jump-button" @click="openActionModal('분석')">생산 분석</button>
 
     </div>
         <button class="jump-button" @click="$emit('close')" style="background-color: red; color: white; float: right;">닫기</button>
@@ -98,7 +97,6 @@ button{
   cursor: pointer;
   float: inline-end;
   }
-
   .jump-button {
   padding: 10px 20px;
   border: none;
