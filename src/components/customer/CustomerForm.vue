@@ -12,7 +12,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-                <label for="customerName">고객사 이름 <span class="required">*</span></label>
+                <label for="customerName"
+                  >고객사 이름 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerName"
@@ -24,7 +26,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-phone icon"></i>
-                <label for="customerPhone">고객사 전화번호 <span class="required">*</span></label>
+                <label for="customerPhone"
+                  >고객사 전화번호 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerPhone"
@@ -48,7 +52,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-map-marker-alt icon"></i>
-                <label for="customerAddress">고객사 주소 <span class="required">*</span></label>
+                <label for="customerAddress"
+                  >고객사 주소 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerAddress"
@@ -60,7 +66,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-map-pin icon"></i>
-                <label for="customerAdddetail">고객사 상세주소 <span class="required">*</span></label>
+                <label for="customerAdddetail"
+                  >고객사 상세주소 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerAdddetail"
@@ -79,7 +87,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user icon"></i>
-                <label for="customerPersonName">담당자 이름 <span class="required">*</span></label>
+                <label for="customerPersonName"
+                  >담당자 이름 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerPersonName"
@@ -91,7 +101,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-mobile-alt icon"></i>
-                <label for="customerPersonPhone">담당자 전화번호 <span class="required">*</span></label>
+                <label for="customerPersonPhone"
+                  >담당자 전화번호 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerPersonPhone"
@@ -118,7 +130,9 @@
             <div class="input-field full-width">
               <div class="field-label">
                 <i class="fas fa-envelope icon"></i>
-                <label for="customerPersonEmail">담당자 이메일 <span class="required">*</span></label>
+                <label for="customerPersonEmail"
+                  >담당자 이메일 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerPersonEmail"
@@ -137,7 +151,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-id-card icon"></i>
-                <label for="registrationNumber">사업자등록번호 <span class="required">*</span></label>
+                <label for="registrationNumber"
+                  >사업자등록번호 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.registrationNumber"
@@ -154,7 +170,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-chart-line icon"></i>
-                <label for="customerStatus">고객사 상태 <span class="required">*</span></label>
+                <label for="customerStatus"
+                  >고객사 상태 <span class="required">*</span></label
+                >
               </div>
               <select
                 v-model="formData.customerStatus"
@@ -170,7 +188,9 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-calendar-alt icon"></i>
-                <label for="customerSdate">고객사 시작일 <span class="required">*</span></label>
+                <label for="customerSdate"
+                  >고객사 시작일 <span class="required">*</span></label
+                >
               </div>
               <input
                 v-model="formData.customerSdate"
@@ -198,8 +218,12 @@
 
         <!-- 버튼 -->
         <div class="button-group">
-          <button type="submit">{{ isEditMode ? '수정' : '등록' }}</button>
-          <button type="button" @click="close">취소</button>
+          <button type="submit" class="edit-button">
+            {{ isEditMode ? '수정' : '등록' }}
+          </button>
+          <button type="button" @click="close" class="close-button">
+            취소
+          </button>
         </div>
       </form>
     </div>
@@ -493,11 +517,10 @@ textarea {
   resize: none;
 }
 
-.button-group {
-  display: flex;
-  justify-content: center;
-  gap: 20px; /* 버튼 사이 간격 */
-  margin-top: 20px; /* 위로부터 간격 */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 4px;
 }
 
 /* 스크롤바를 숨기기 위한 스타일 */
@@ -505,24 +528,48 @@ textarea {
   display: none;
 }
 
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* 버튼 사이 간격 */
+  margin-top: 20px; /* 위로부터 간격 */
+}
+
 button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
+  background-color: #3f72af;
   color: white;
-  background: #3f72af;
-  transition: background 0.3s ease;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background: #2c5987;
+  background-color: #2c5987;
+  transform: translateY(-3px);
 }
 
-button[type="button"] {
-  background: gray;
+button:active {
+  background-color: #1e3f5f;
+  transform: translateY(0);
 }
 
-button[type="button"]:hover {
-  background: #555;
+.edit-button {
+  background-color: #3f72af;
+}
+
+.edit-button:hover {
+  background-color: #2c5987;
+}
+
+.close-button {
+  background-color: gray;
+}
+
+.close-button:hover {
+  background-color: #333;
 }
 </style>
