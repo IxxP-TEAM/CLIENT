@@ -59,47 +59,103 @@ export default {
 
   // 제품 검색 요청
   searchProducts(productName, page, size, sortBy, direction) {
-    return api.get('/products/search', {
-      params: { productName, page, size, sortBy, direction, },
+    return api.get(`/products/search`, {
+      params: {
+        productName,
+        page,
+        size,
+        sortBy,
+        direction,
+      },
     });
   },
 
   // 재고 리스트
   fetchInventoryList(page, size, sortBy, direction, searchTerm = '') {
-    return api.get('/inventory', {
-      params: { page, size, sortBy, direction, searchTerm, },
+    return api.get(`/inventory`, {
+      params: {
+        page,
+        size,
+        sortBy,
+        direction,
+        searchTerm,
+      },
     });
   },
   // 입고
   createInbound(inboundData) {
-    return api.post('/inventory/inbound', inboundData);
+    return api.post(`/inventory/inbound`, inboundData);
   },
 
   // 출고
-  createOutbound(outboundData) {
-    return api.post('/inventory/outbound', outboundData);
+  createOutbound(outboundData){
+    return api.post(`/inventory/outbound`, outboundData);
   },
 
   // 소모
   createConsumption(consumptionData) {
-    return api.post('/inventory/consumption', consumptionData);
+    return api.post(`/inventory/consumption`, consumptionData);
   },
   // 조정
   createAdjustment(adjustmentData) {
-    return api.post('/inventory/adjustment', adjustmentData);
+    return api.post(`/inventory/adjustment`, adjustmentData);
   },
-
+  
   // 재고 상세 보기
   getInventoriesByProductId(productId) {
     return api.get(`/inventory/${productId}`);
   },
 
   // 재고 이력 리스트
-  fetchInventoryHistoryList(page, size, sortBy, direction, searchQuery = '') {
-    return api.get('/inventory/history', {
-      params: { page, size, sortBy, direction, searchQuery, },
+  fetchInventoryHistoryList(page, size, sortBy, direction, searchQuery =''){
+    return api.get(`/inventory/history`,{
+      params: {
+        page,
+        size,
+        sortBy,
+        direction,
+        searchQuery,
+      },
     });
   },
+
+  // 생산 리스트
+  fetchProductionList(page, size, sortBy, sortDirection) {
+    return api.get(`/production`, {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDirection,
+      },
+    });
+  },
+
+  // 생산
+  createProduction(productionData) {
+    return api.post(`/production/create`, productionData);
+  },
+
+  // 생산 완료
+  submitProductionResult(productionId, resultData){
+    return api.patch(`/production/update/${productionId}`, resultData);
+  },
+
+  // 생산 분석 등록
+  submitProductionAnalysis(productionId, data) {
+    return api.post(`/production/analysis/${productionId}`, data);
+  },
+
+  // 생산상세보기
+  getProductionDetails(productionId) {
+    return api.get(`/production/${productionId}`);
+  },
+  
+  // 생산분석보기
+  fetchProductionAnalysis(productionId, data) {
+    return api.get(`/production/analysis/${productionId}`, data);
+  },
+
 
   //고객사 세부 내역
   getCustomerDetails(customerId) {
@@ -307,6 +363,16 @@ incrementViewCount(boardId){
 },
   getMyAttList(userId, year, month) {
     return api.get(`/attendance/${userId}/monthly?year=${year}&month=${month}`);
-  }
+  },
 
+  getMyPayList(startYearMonth, endYearMonth, page = 0, size = 10) {
+    return api.get(`/payroll/filter?startYearMonth=${startYearMonth}&endYearMonth=${endYearMonth}&page=${page}&size=${size}`);
+  },
+  getPayList() {
+  return api.get(`/payroll/all`);
+  },
+
+  fetchPayDetails(payId) {
+    return api.get(`/payroll/${payId}`);
+  }
 };

@@ -1,18 +1,19 @@
-<!-- src/components/ProductPagination.vue -->
+<!-- src/components/inventoryPagination.vue -->
 <template>
   <div class="pagination">
-    <button @click="$emit('go-to-page', 1)" :disabled="currentPage === 1">처음 페이지 이동</button>
-    <button @click="$emit('go-to-page', currentPage - 1)" :disabled="currentPage === 1">&lt;</button>
+    <!-- <button @click="$emit('go-to-page', 1)" :disabled="currentPage === 1">처음 페이지 이동</button> -->
+    <button @click="$emit('go-to-page', currentPage - 1)" :disabled="currentPage === 1" class="pagination-arrow">&lt;</button>
     <span
     v-for="page in visiblePages"
     :key="page"
     @click="$emit('go-to-page', page)"
     :class="{ active: currentPage === page }"
+    class="pagination-page"
   >
       {{ page }}
     </span>
-    <button @click="$emit('go-to-page', currentPage + 1)" :disabled="currentPage === totalPages">&gt;</button>
-    <button @click="$emit('go-to-page', totalPages)" :disabled="currentPage === totalPages">마지막 페이지 이동</button>
+    <button @click="$emit('go-to-page', currentPage + 1)" :disabled="currentPage === totalPages" class="pagination-arrow">&gt;</button>
+    <!-- <button @click="$emit('go-to-page', totalPages)" :disabled="currentPage === totalPages">마지막 페이지 이동</button> -->
   </div>
 </template>
 
@@ -27,8 +28,8 @@ const props = defineProps({
 
 const visiblePages = computed(() => {
 const pages = []
-const start = Math.max(1, props.currentPage - 2)
-const end = Math.min(props.totalPages, start + 4)
+const start = Math.max(1, props.currentPage - 4)
+const end = Math.min(props.totalPages, start + 9)
 
 for (let i = start; i <= end; i++) {
   pages.push(i)
@@ -40,25 +41,51 @@ return pages
 
 <style scoped>
 .pagination {
-  /* margin-top: 16px; */
   display: flex;
+  align-items: center;
   justify-content: center;
-  /* gap: 8px; */
+  margin-top: 20px;
+  gap: 10px;
 }
 
-.pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-.pagination span {
-margin: 0 5px;
-cursor: pointer;
+.pagination-page {
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.3s ease;
 }
 
-.pagination .active {
+.pagination-page:hover {
+  color: #1d4f7a;
+}
+
+.pagination-page.active {
+  color: #3f72af;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.pagination-arrow {
+  font-size: 18px;
   font-weight: bold;
   color: #3f72af;
-  /* background-color: #007bff; */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
+
+.pagination-arrow:hover {
+  color: #434190; /* 호버 시 색상 변화 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+}
+
+.pagination-arrow:disabled {
+  color: #b0b0b0; /* 비활성화 시 색상 */
+  cursor: not-allowed;
+  transform: none;
+}
+
 </style>

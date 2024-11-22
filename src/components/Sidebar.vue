@@ -2,7 +2,7 @@
 <template>
   <aside v-if="showSidebar" class="sidebar">
     <div class="logo">
-      <img src="/src/assets/logo.png" alt="IXXP ERP Logo"  @click="goToHome" style="cursor: pointer;" />
+      <img src="/src/assets/logo.png" alt="IXXP ERP Logo" @click="goToHome" style="cursor: pointer;" />
     </div>
 
     <div class="login-info">
@@ -22,20 +22,17 @@
         </div>
         <div v-if="isDropdownOpen.dropdown2" class="dropdown-content">
           <router-link to="/empList" @click="setActiveSubMenu('employee-list')">직원 목록</router-link>
-          <router-link to="/create-emp">직원 등록</router-link>
           <router-link to="/leave">휴가 관리</router-link>
-          <router-link to="/late">지각/조퇴 관리</router-link>
         </div>
         <div class="dropdown-title" @click="toggleDropdown('dropdown3')">
           급여관리
         </div>
         <div v-if="isDropdownOpen.dropdown3" class="dropdown-content">
-          <router-link to="/att-create">급여 등록</router-link>
-          <router-link to="/att-list">급여 목록</router-link>
-          <router-link to="/att-specification">급여 명세서 관리</router-link>
+          <!-- <router-link to="/att-create">급여 등록</router-link> -->
+          <router-link to="/pay-list-admin">급여 목록</router-link>
+          <router-link to="/pay-create">급여 등록</router-link>
         </div>
       </div>
-
       <div v-if="userRole === 'ROLE_USER'" class="dropdown">
         <div class="dropdown-title" @click="toggleDropdown('dropdown6')">
           근태 관리
@@ -51,15 +48,15 @@
           <router-link to="/customer-list">고객사 목록</router-link>
           <router-link to="/order-list">주문 목록</router-link>
         </div>
-        
+
         <!-- 게시판 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown7')">
           게시판
         </div>
         <div v-if="isDropdownOpen.dropdown7" class="dropdown-content">
-        <router-link :to="{ name: 'BoardList', params: { type: 'NOTICE' } }">공지게시판</router-link>
-        <router-link :to="{ name: 'BoardList', params: { type: 'FREE' } }">자유게시판</router-link>
-        <router-link :to="{ name: 'BoardList', params: { type: 'ANONYMOUS' } }">익명게시판</router-link>
+          <router-link :to="{ name: 'BoardList', params: { type: 'NOTICE' } }">공지게시판</router-link>
+          <router-link :to="{ name: 'BoardList', params: { type: 'FREE' } }">자유게시판</router-link>
+          <router-link :to="{ name: 'BoardList', params: { type: 'ANONYMOUS' } }">익명게시판</router-link>
         </div>
 
         <!--판매 개요 메뉴-->
@@ -75,12 +72,21 @@
 
         <!-- 재고 관리 -->
         <div class="dropdown-title" @click="toggleDropdown('dropdown4')">
-          재고관리
+          재고 관리
         </div>
         <div v-if="isDropdownOpen.dropdown4" class="dropdown-content">
           <router-link to="/products">제품 목록</router-link>
           <router-link to="/inventory">재고 목록</router-link>
           <router-link to="/inventory/history">재고 이력 목록</router-link>
+          <router-link to="/production">생산 목록</router-link>
+        </div>
+
+        <!--급여 관리-->
+        <div class="dropdown-title" @click="toggleDropdown('dropdown8')">
+          급여관리
+        </div>
+        <div v-if="isDropdownOpen.dropdown8" class="dropdown-content">
+          <router-link to="/pay-list-user">급여 목록</router-link>
         </div>
       </div>
     </nav>
@@ -141,6 +147,7 @@ const isDropdownOpen = ref({
   dropdown5: false, // 매출 개요
   dropdown6: false, // 근태 관리
   dropdown7: false, // 게시판 
+  dropdown8: false,
 
 });
 
