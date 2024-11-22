@@ -19,6 +19,8 @@ import BoardList from '@/components/board/BoardList.vue'
 import BoardDetail from '@/components/board/BoardDetail.vue'
 import MyLeaveList from '@/components/leave/MyLeaveList.vue'
 import MyAttList from '@/components/attendence/MyAttList.vue'
+import PayListUser from '@/components/pay/PayList-user.vue'
+import PayListAdmin from '@/components/pay/PayList-admin.vue'
 
 
 
@@ -157,6 +159,18 @@ const router = createRouter({
       path: '/my-att',
       name: "myAtt",
       component: MyAttList,
+      meta: {requiresAuth: true},
+    },
+    {
+      path: '/pay-list-user',
+      name: "payListUser",
+      component: PayListUser,
+      meta: {requiresAuth: true},
+    },
+    {
+      path:'/pay-list-admin',
+      name: "payListAdmin",
+      component: PayListAdmin,
       meta: {requiresAuth: true},
     },
   ],
