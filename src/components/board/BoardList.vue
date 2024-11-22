@@ -2,7 +2,7 @@
   <div class="board-list">
     <h2>게시글 목록</h2>
 
-    <!-- 검색 및 필터 -->
+    <!-- 검색 및 필터 아이콘 -->
     <div class="header">
       <div class="search-filter-container">
         <input
@@ -12,16 +12,56 @@
           @input="handleSearch"
           class="search-input"
         />
-        <select v-model="sortOrder" @change="fetchBoards" class="filter">
-          <option value="asc">오름차순</option>
-          <option value="desc">내림차순</option>
-        </select>
+        <button @click="toggleFilters" class="jump-button">
+          <i class="fas fa-sliders-h"></i>
+        </button>
       </div>
-      <button @click="openForm(false)" class="register-button">
-        게시글 등록
-      </button>
+
+      <!-- 게시글 등록 버튼 -->
+      <button @click="openForm(false)" class="jump-button">게시글 등록</button>
     </div>
 
+    <!-- 필터 섹션 -->
+    <div v-if="showFilters" class="filters">
+      <!-- 제목 정렬 -->
+      <div class="filter-group">
+        <select
+          id="titleSortOrder"
+          v-model="titleSortOrder"
+          @change="applyFilters"
+          class="filter-select"
+        >
+          <option value="asc">제목⬆️</option>
+          <option value="desc">제목⬇️</option>
+        </select>
+      </div>
+
+      <!-- 조회수 정렬 -->
+      <div class="filter-group">
+        <select
+          id="viewCountSortOrder"
+          v-model="viewCountSortOrder"
+          @change="applyFilters"
+          class="filter-select"
+        >
+          <option value="asc">조회수⬆️</option>
+          <option value="desc">조회수⬇️</option>
+        </select>
+      </div>
+
+      <!-- 작성자 정렬 -->
+      <div class="filter-group">
+        <select
+          id="writerSortOrder"
+          v-model="writerSortOrder"
+          @change="applyFilters"
+          class="filter-select"
+        >
+          <option value="asc">작성자⬆️</option>
+          <option value="desc">작성자⬇️</option>
+        </select>
+      </div>
+    </div>
     <!-- 게시글 목록 테이블 -->
     <div class="table-container">
       <table>
@@ -112,15 +152,24 @@ export default {
       boards: [],
       searchQuery: '',
       sortOrder: 'asc', // 기본값: 오름차순
+      writerFilter: '', // 작성자 필터 추가
       currentPage: 1,
       pageSize: 10,
       totalPages: 1,
+      showFilters: false, // 필터 섹션 숨기기 기본값
       showForm: false,
       selectedBoard: null,
       isEditMode: false,
+      titleSortOrder: 'desc',
+      viewCountSortOrder: 'desc',
+      writerSortOrder: 'desc',
+      createdAtSortOrder: 'desc',
     }
   },
   methods: {
+    toggleFilters() {
+      this.showFilters = !this.showFilters // 필터 섹션 표시/숨기기
+    },
     async fetchBoards() {
       try {
         const response = await apiService.fetchBoardListByType(
@@ -136,12 +185,54 @@ export default {
         this.boards = data.content || []
         this.totalPages = data.totalPages || 1
         this.currentPage = data.number + 1 // API는 0부터 시작하므로 +1
+        this.applyFilters()
+        this.applySearch()
+
+        this.boards.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
       } catch (error) {
         console.error('게시글 목록 불러오기 실패:', error)
         this.boards = []
         this.totalPages = 1
       }
     },
+    applyFilters() {
+      if (this.createdAtSortOrder) {
+        this.boards.sort((a, b) => {
+          const dateA = new Date(a.createdAt)
+          const dateB = new Date(b.createdAt)
+          return this.createdAtSortOrder === 'asc'
+            ? dateA - dateB
+            : dateB - dateA
+        })
+      }
+      // 정렬 조건에 따라 데이터 정렬
+      if (this.titleSortOrder) {
+        this.boards.sort((a, b) => {
+          return this.titleSortOrder === 'asc'
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title)
+        })
+      }
+
+      if (this.viewCountSortOrder) {
+        this.boards.sort((a, b) => {
+          return this.viewCountSortOrder === 'asc'
+            ? a.viewCount - b.viewCount
+            : b.viewCount - a.viewCount
+        })
+      }
+
+      if (this.writerSortOrder) {
+        this.boards.sort((a, b) => {
+          return this.writerSortOrder === 'asc'
+            ? a.writerName.localeCompare(b.writerName)
+            : b.writerName.localeCompare(a.writerName)
+        })
+      }
+    },
+
     handleSearch() {
       this.currentPage = 1 // 검색 시 첫 페이지로 이동
       this.fetchBoards()
@@ -156,6 +247,14 @@ export default {
       if (this.currentPage < this.totalPages) {
         this.currentPage++
         this.fetchBoards()
+      }
+    },
+    applySearch() {
+      if (this.searchQuery.trim()) {
+        const query = this.searchQuery.toLowerCase()
+        this.boards = this.boards.filter(board =>
+          board.title.toLowerCase().includes(query)
+        )
       }
     },
     setPage(page) {
@@ -208,7 +307,6 @@ export default {
   overflow-y: auto;
 }
 
-/* 스크롤바 숨기기 */
 .board-list::-webkit-scrollbar {
   display: none;
 }
@@ -222,20 +320,17 @@ export default {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  gap: 10px;
 }
 
 .header input[type='text'] {
   padding: 8px;
   font-size: 16px;
   width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 .right-controls {
   display: flex;
-  gap: 10px;
+  gap: 10px; /* 버튼과 필터 사이 간격 */
 }
 
 .right-controls select.filter {
@@ -255,38 +350,141 @@ export default {
   cursor: pointer;
 }
 
-/* 필터 토글 버튼 스타일 */
-.filter-toggle {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 15px;
+/* 테이블 스타일 */
+.table-container {
+  overflow-x: auto;
+}
+.table-container::-webkit-scrollbar {
+  display: none;
+}
+.table-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* 검색 및 필터 아이콘 스타일 */
-.search-filter-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+table {
+  width: 100%;
+  border-collapse: collapse;
   margin-bottom: 20px;
 }
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+.ellipsis {
+  display: inline-block;
+  max-width: 200px; /* 제한된 너비 설정 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+.action-cell {
+  position: relative;
+}
+.dropdown-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.dropdown-menu {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  z-index: 10;
+}
+.dropdown-menu button {
+  background: none;
+  border: none;
+  padding: 5px;
+  text-align: left;
+  cursor: pointer;
+}
+.dropdown-menu button:hover {
+  background-color: #f0f0f0;
+}
 
-.search-filter-left {
+/* 페이지네이션 스타일 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 5px; /* 버튼 간격 */
+}
+
+.pagination-page {
+  font-size: 16px;
+  font-weight: bold;
+  color: black; /* 기본 색상 */
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-page:hover {
+  color: #434190; /* 호버 시 색상 */
+  transform: scale(1.1); /* 살짝 커지는 효과 */
+}
+
+.pagination-page.active {
+  color: #3f72af; /* 현재 페이지 텍스트 강조 */
+  font-size: 18px; /* 약간 더 큰 텍스트 */
+  text-decoration: underline;
+}
+
+.pagination-arrow {
+  font-size: 18px;
+  font-weight: bold;
+  color: #3f72af;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-arrow:hover {
+  color: #434190; /* 호버 시 색상 변화 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+}
+
+.pagination-arrow:disabled {
+  color: #b0b0b0; /* 비활성화 시 색상 */
+  cursor: not-allowed;
+  transform: none;
+}
+
+.search-filter-container {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .search-input {
   padding: 8px;
   font-size: 16px;
   width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #ccc; /* 테두리 색상 */
+  border-radius: 5px; /* 둥글기 설정 */
+  outline: none; /* 클릭 시 기본 윤곽선 제거 */
+  transition: box-shadow 0.3s ease; /* 포커스 애니메이션 */
+}
+
+.search-input:focus {
+  border-color: #3f72af; /* 포커스 시 테두리 색상 */
+  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); /* 포커스 시 그림자 효과 */
 }
 
 .filter-icon-button {
@@ -300,17 +498,6 @@ export default {
   color: #4caf50;
 }
 
-/* 필터 섹션 스타일 */
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-}
-
 .register-button {
   padding: 10px 20px;
   font-size: 16px;
@@ -320,92 +507,107 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
-
-/* 테이블 스타일 */
-.table-container {
-  overflow-x: auto;
-}
-
-.table-container table {
-  width: 100%;
-  border-collapse: collapse; /* 테두리 병합 */
-  margin-bottom: 20px;
-}
-
-.table-container th,
-.table-container td {
-  padding: 12px;
-  text-align: left;
-}
-
-.table-container th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-/* 각 행의 아래쪽에만 줄 표시 */
-.table-container tr {
-  border-bottom: 1px solid #ddd;
-}
-
-.table-container tr:last-child {
-  border-bottom: 1px solid #ddd;
-}
-
-/* 페이지네이션 스타일 */
-.pagination {
+/* 필터 섹션 스타일 */
+.filters {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: 20px;
+  gap: 20px; /* 필터 간 간격 */
+  padding: 10px;
+  background-color: #f9f9f9; /* 배경색 */
+  border: 1px solid #ddd; /* 경계선 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  margin-bottom: 20px; /* 목록과 간격 추가 */
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
   gap: 10px;
 }
 
-.pagination-page {
-  font-size: 16px;
+.filter-group label {
+  font-size: 14px;
   font-weight: bold;
-  cursor: pointer;
-  color: #000000;
-  transition: color 0.3s ease;
+  color: #333; /* 텍스트 색상 */
 }
 
-.pagination-page:hover {
-  color: #1d4f7a;
+.filter-select {
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.pagination-page.active {
-  color: #3f72af;
-  font-weight: bold;
-  text-decoration: underline;
+.filter-select:focus {
+  border-color: #3f72af;
+  box-shadow: 0 0 4px rgba(63, 114, 175, 0.5);
+  outline: none;
 }
 
-.pagination-arrow {
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #3f72af;
-  border: 1px solid #3f72af;
-  background-color: white;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* 필터 섹션 반응형 디자인 */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
 }
 
-.pagination-arrow:hover {
-  background-color: #3f72af;
-  color: white;
-}
-
-.pagination-arrow:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 .clickable-row {
-  cursor: pointer; /* 마우스 커서를 손 모양으로 변경 */
-  transition: background-color 0.3s ease; /* 배경색 변경에 부드러운 전환 효과 추가 */
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .clickable-row:hover {
-  background-color: #f4f4f4; /* 마우스 hover 시 배경 색상 */
+  background-color: #f4f4f4;
+}
+
+.jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
+}
+
+.status {
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 10px;
+  display: inline;
+  text-align: center;
+}
+
+.status.active {
+  background-color: #4caf50; /* 녹색 */
+}
+
+.status.inactive {
+  background-color: #f44336; /* 빨간색 */
 }
 </style>

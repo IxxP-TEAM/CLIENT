@@ -25,9 +25,9 @@
         </tbody>
       </table>
       <div class="pagination">
-        <button @click="previousPage" :disabled="currentPage === 0">이전</button>
+        <button type="button" @click="previousPage" :disabled="currentPage === 0">이전</button>
         <span>{{ currentPage + 1 }} / {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage >= totalPages - 1">다음</button>
+        <button type="button" @click="nextPage" :disabled="currentPage >= totalPages - 1">다음</button>
       </div>
       <div class="button-group">
         <button @click="confirmSelection" class="confirm-btn">선택 완료</button>
@@ -121,47 +121,53 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6); /* 배경 투명도 조정 */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease; /* 페이드 인 애니메이션 */
 }
 
 .modal-content {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 600px;
+  padding: 30px;
+  border-radius: 12px;
+  width: 700px; /* 더 넓은 너비 */
   max-width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 85vh; /* 최대 높이 제한 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease; /* 슬라이드 인 애니메이션 */
+  -ms-overflow-style: none; /* IE 및 Edge 스크롤바 숨김 */
+  scrollbar-width: none; /* Firefox 스크롤바 숨김 */
 }
 
 .modal-content::-webkit-scrollbar {
-  display: none;
-}
-
-.modal-content {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  display: none; /* Chrome, Safari 스크롤바 숨김 */
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.8em;
   margin-bottom: 20px;
-  color: #3f72af;
+  color: #2c3e50;
+  text-align: center; /* 중앙 정렬 */
+  font-weight: bold;
 }
 
 .search-bar {
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 15px;
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   font-size: 1em;
-  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-bar:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(63, 114, 175, 0.5); /* 포커스 효과 */
 }
 
 .user-table {
@@ -170,64 +176,122 @@ h2 {
   margin-bottom: 20px;
 }
 
-.user-table th, .user-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: center;
+.user-table th,
+.user-table td {
+  padding: 14px 16px;
+  border: 1px solid #eee; /* 부드러운 테두리 */
+  text-align: left; /* 좌측 정렬 */
+  font-size: 1em;
 }
 
 .user-table th {
-  background-color: #f2f2f2;
-  font-weight: bold;
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.user-table td {
+  text-align: center;
 }
 
 .user-table tr:hover {
-  background-color: #f9f9f9;
+  background-color: #f1f5f9; /* 행 호버 효과 */
   cursor: pointer;
 }
 
 .user-table tr.selected {
-  background-color: #cce5ff; /* 선택된 행 색상 */
+  background-color: #e8f0fe; /* 선택된 행 강조 */
+  border: 1px solid #3f72af;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin: 10px 0;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.pagination button {
+  background-color: #3f72af;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+  background-color: #dcdcdc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #2c5987;
 }
 
 .button-group {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 15px;
 }
 
 .confirm-btn {
-  background-color: #3f72af;
+  background-color: #4caf50; /* 초록색 강조 */
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
+  border-radius: 6px;
+  padding: 12px 25px;
   cursor: pointer;
+  font-size: 1em;
   font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .confirm-btn:hover {
-  background-color: #2c5987;
+  background-color: #43a047;
+  transform: scale(1.05); /* 호버 시 크기 증가 */
 }
 
 .cancel-btn {
-  background-color: #d9534f;
+  background-color: #e74c3c; /* 빨간색 경고 */
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
+  border-radius: 6px;
+  padding: 12px 25px;
   cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .cancel-btn:hover {
-  background-color: #c9302c;
+  background-color: #c0392b;
+  transform: scale(1.05);
 }
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+  to {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 </style>

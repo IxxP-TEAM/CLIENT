@@ -240,7 +240,6 @@ export default {
           !this.shippingStatusFilter ||
           order.shippingStatus === this.shippingStatusFilter
 
-        // 선택한 날짜와 일치하는 주문만 표시
         const matchesSelectedDate =
           !this.selectedDate || order.orderDate === this.selectedDate
 
@@ -253,12 +252,15 @@ export default {
         )
       })
 
-      // 고객사 이름으로 정렬
-      if (this.sortOrder === 'asc') {
-        filtered.sort((a, b) => a.customerName.localeCompare(b.customerName))
-      } else if (this.sortOrder === 'desc') {
-        filtered.sort((a, b) => b.customerName.localeCompare(a.customerName))
-      }
+      // 주문일(orderDate) 기준 정렬
+      filtered.sort((a, b) => {
+        const dateA = new Date(a.orderDate)
+        const dateB = new Date(b.orderDate)
+
+        return this.sortOrder === 'desc'
+          ? dateA - dateB // 오래된 날짜 순
+          : dateB - dateA // 최신 날짜 순
+      })
 
       return filtered
     },
@@ -480,6 +482,15 @@ export default {
   padding: 8px;
   font-size: 16px;
   width: 300px;
+  border: 1px solid #ccc; /* 테두리 색상 */
+  border-radius: 5px; /* 둥글기 설정 */
+  outline: none; /* 클릭 시 기본 윤곽선 제거 */
+  transition: box-shadow 0.3s ease; /* 포커스 애니메이션 */
+}
+
+.search-input:focus {
+  border-color: #3f72af; /* 포커스 시 테두리 색상 */
+  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); /* 포커스 시 그림자 효과 */
 }
 
 .filter-icon-button {

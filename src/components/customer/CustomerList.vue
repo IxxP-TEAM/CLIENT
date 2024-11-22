@@ -469,6 +469,15 @@ th {
   padding: 8px;
   font-size: 16px;
   width: 300px;
+  border: 1px solid #ccc; /* 테두리 색상 */
+  border-radius: 5px; /* 둥글기 설정 */
+  outline: none; /* 클릭 시 기본 윤곽선 제거 */
+  transition: box-shadow 0.3s ease; /* 포커스 애니메이션 */
+}
+
+.search-input:focus {
+  border-color: #3f72af; /* 포커스 시 테두리 색상 */
+  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); /* 포커스 시 그림자 효과 */
 }
 
 .filter-icon-button {
@@ -580,11 +589,11 @@ th {
 
 .status {
   color: #fff;
-    border-radius: 12px;
-    padding: 2px 8px;
-    font-size: 10px;
-    display: inline;
-    text-align: center
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 10px;
+  display: inline;
+  text-align: center;
 }
 
 .status.active {
