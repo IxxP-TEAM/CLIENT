@@ -97,7 +97,6 @@
             type="text"
             id="shippingAddr"
             class="form-control"
-            required
           />
         </div>
         <div class="grid-item">
@@ -109,7 +108,9 @@
             class="form-control"
             required
           />
-          <p v-if="dateErrorMessage" class="error-message">{{ dateErrorMessage }}</p>
+          <p v-if="dateErrorMessage" class="error-message">
+            {{ dateErrorMessage }}
+          </p>
         </div>
         <div class="grid-item">
           <label for="shippingStatus">배송 상태</label>
@@ -161,12 +162,28 @@
               <tr v-for="(product, index) in formData.products" :key="index">
                 <td>{{ product.productName }}</td>
                 <td>
-                  <input
-                    v-model="product.quantity"
-                    type="number"
-                    min="1"
-                    class="table-input"
-                  />
+                  <div class="quantity-control">
+                    <button
+                      type="button"
+                      @click="decreaseQuantity(index)"
+                      class="quantity-btn"
+                    >
+                      -
+                    </button>
+                    <input
+                      v-model="product.quantity"
+                      type="number"
+                      min="1"
+                      class="table-input"
+                    />
+                    <button
+                      type="button"
+                      @click="increaseQuantity(index)"
+                      class="quantity-btn"
+                    >
+                      +
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <input
@@ -261,7 +278,7 @@ export default {
         userId: '',
         customerId: '',
         customerName: '', // 고객사 이름 추가
-        orderDate: '',
+        orderDate: this.getTodayDate(),
         orderStatus: '대기',
         paymentMethod: '카드',
         paymentStatus: '미결제',
@@ -303,6 +320,20 @@ export default {
   mounted() {
     this.getUserIdFromToken()
     this.fetchProductOptions()
+    if (!this.isEditMode) {
+      this.formData.orderDate = this.getTodayDate()
+      this.formData.shippingSdate = this.getTodayDate()
+    } else {
+      this.formData = {
+        ...this.orderData,
+        orderDate: this.orderData.orderDate || this.getTodayDate(),
+        shippingSdate: this.orderData.shippingSdate || this.getTodayDate(),
+        products: this.orderData.products.map(product => ({
+          ...product,
+          discount: 0, // 할인율 초기화
+        })),
+      }
+    }
     if (this.isEditMode) {
       this.formData = {
         ...this.orderData,
@@ -330,6 +361,24 @@ export default {
     },
   },
   methods: {
+    getTodayDate() {
+      const today = new Date()
+      return today.toISOString().slice(0, 10) // 'YYYY-MM-DD' 형식으로 반환
+    },
+    // 수량 감소
+    decreaseQuantity(index) {
+      if (this.formData.products[index].quantity > 1) {
+        this.formData.products[index].quantity--
+      }
+    },
+    // 수량 증가
+    increaseQuantity(index) {
+      this.formData.products[index].quantity++
+    },
+    // 제품 삭제
+    removeProduct(index) {
+      this.formData.products.splice(index, 1)
+    },
     selectCustomer(customer) {
       this.formData.customerId = customer.customerId
       this.formData.customerName = customer.customerName || customer.name // 고객사 이름을 필드에 반영
@@ -383,27 +432,27 @@ export default {
       }
     },
     async handleSubmit() {
-    // 유효성 검사 메시지가 있을 경우 제출 방지
-    if (this.dateErrorMessage) {
-      this.message = this.dateErrorMessage;
-      return;
-    }
-    
-    try {
-      if (this.isEditMode) {
-        await apiService.updateOrder(this.formData.orderId, this.formData);
-        this.message = '수정 성공';
-      } else {
-        await apiService.createOrder(this.formData);
-        this.message = '등록 성공';
+      // 유효성 검사 메시지가 있을 경우 제출 방지
+      if (this.dateErrorMessage) {
+        this.message = this.dateErrorMessage
+        return
       }
-      this.$emit('registered');
-      this.close();
-    } catch (error) {
-      console.error('오류:', error);
-      this.message = this.isEditMode ? '수정 실패' : '등록 실패';
-    }
-  },
+
+      try {
+        if (this.isEditMode) {
+          await apiService.updateOrder(this.formData.orderId, this.formData)
+          this.message = '수정 성공'
+        } else {
+          await apiService.createOrder(this.formData)
+          this.message = '등록 성공'
+        }
+        this.$emit('registered')
+        this.close()
+      } catch (error) {
+        console.error('오류:', error)
+        this.message = this.isEditMode ? '수정 실패' : '등록 실패'
+      }
+    },
     close() {
       this.$emit('close')
       this.resetFormData()
@@ -413,12 +462,12 @@ export default {
         userId: '',
         customerId: '',
         customerName: '',
-        orderDate: '',
+        orderDate: this.getTodayDate(),
         orderStatus: '대기',
         paymentMethod: '카드',
         paymentStatus: '미결제',
         shippingAddr: '',
-        shippingSdate: '',
+        shippingSdate: this.getTodayDate(),
         shippingStatus: '미출발',
         products: [],
         orderNote: '',
@@ -476,14 +525,6 @@ export default {
 
 .full-width {
   grid-column: span 2;
-}
-
-.selected-products {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f9fafb;
-  border-radius: 10px;
-  width: 100%;
 }
 
 .product-table {
@@ -585,5 +626,90 @@ input.invalid {
 
 .input-wrapper {
   position: relative;
+}
+
+.selected-products {
+  margin-top: 20px;
+  background: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.selected-products h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.product-table th,
+.product-table td {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.product-table th {
+  background: #f2f2f2;
+  font-weight: bold;
+  color: #555;
+}
+
+.product-table tr:hover {
+  background: #f8f9fa;
+}
+
+.table-input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.quantity-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity-btn {
+  background-color: #3f72af;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.quantity-btn:hover {
+  background-color: #2c5987;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
 }
 </style>
