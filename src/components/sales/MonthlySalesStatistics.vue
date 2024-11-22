@@ -291,7 +291,7 @@ input[type='date']::placeholder {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   font-size: 15px; /* 약간 더 큰 글꼴 크기 */
 }
 

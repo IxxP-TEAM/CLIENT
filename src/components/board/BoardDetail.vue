@@ -21,7 +21,6 @@
 
     <!-- 내용 영역 -->
     <div class="board-content">
-      <h3>내용:</h3>
       <div
         class="quill-content"
         v-html="board.content || '<p>내용이 없습니다.</p>'"

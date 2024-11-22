@@ -215,7 +215,7 @@
                   <td>
                     <button
                       @click.prevent="removeProduct(index)"
-                      class="delete-btn styled-btn"
+                      class="delete-btn"
                     >
                       삭제
                     </button>
@@ -714,5 +714,15 @@ button:active {
 
 .close-button:hover {
   background-color: #333;
+}
+
+.delete-btn{
+  background-color: red;
+  font-size: 12px;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+.delete-btn:hover{
+  background-color: red;
 }
 </style>
