@@ -2,7 +2,7 @@
   <div class="modal-overlay" @click.self="cancel">
     <div class="modal-content">
       <h2 class="modal-title">
-        {{ isEditMode ? "게시글 수정" : "게시글 작성" }}
+        {{ isEditMode ? '게시글 수정' : '게시글 작성' }}
       </h2>
       <form @submit.prevent="submitBoard" class="form-container">
         <div class="form-item">
@@ -27,18 +27,27 @@
           <label for="content" class="form-label">내용</label>
           <div ref="quillEditor" class="quill-editor"></div>
         </div>
-        <div class="form-item" v-if="userRole && userRole === 'ADMIN'">
-          <label for="isPinned" class="form-label">공지 여부</label>
-          <input
-            type="checkbox"
-            v-model="board.isPinned"
-            id="isPinned"
-            class="form-checkbox"
-          />
+        <div class="form-item" v-if="userRole && userRole === 'ROLE_ADMIN'">
+          <div class="pin-container">
+            <label for="isPinned" class="form-label pin-label">
+              <i class="fas fa-thumbtack pin-icon"></i>
+              공지 여부
+            </label>
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                v-model="board.isPinned"
+                id="isPinned"
+                class="hidden-checkbox"
+              />
+              <span class="checkmark"></span>
+            </label>
+          </div>
         </div>
+
         <div class="button-group">
           <button type="submit" class="btn btn-primary">
-            {{ isEditMode ? "수정" : "작성" }}
+            {{ isEditMode ? '수정' : '작성' }}
           </button>
           <button type="button" class="btn btn-secondary" @click="cancel">
             취소
@@ -50,10 +59,10 @@
 </template>
 
 <script>
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
-import apiService from "@/api/apiService";
-import VueJwtDecode from "vue-jwt-decode";
+import Quill from 'quill'
+import 'quill/dist/quill.snow.css'
+import apiService from '@/api/apiService'
+import VueJwtDecode from 'vue-jwt-decode'
 
 export default {
   props: {
@@ -65,11 +74,11 @@ export default {
       type: Object,
       default: () => ({
         boardId: null,
-        title: "",
-        content: "",
-        type: "FREE",
+        title: '',
+        content: '',
+        type: 'FREE',
         isPinned: false,
-        writerName: "",
+        writerName: '',
       }),
     },
   },
@@ -78,123 +87,139 @@ export default {
       board: { ...this.boardData }, // 로컬에서 다룰 데이터
       userRole: null, // 사용자 역할
       quill: null, // Quill 에디터 인스턴스
-    };
+    }
   },
+  watch: {
+    userRole(newRole) {
+      console.log('사용자 역할 변경:', newRole)
+    },
+  },
+
   methods: {
     // 사용자 역할 확인
     async fetchUserRole() {
       try {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-          const decoded = VueJwtDecode.decode(token);
-          this.userRole = decoded.role;
+        const token = localStorage.getItem('accessToken')
+        if (!token) {
+          console.error('토큰이 없습니다.')
+          return
         }
+        const decoded = VueJwtDecode.decode(token)
+        console.log('디코딩된 토큰:', decoded) // 토큰 데이터 확인
+        this.userRole = decoded.role
+        console.log('설정된 역할:', this.userRole)
       } catch (error) {
-        console.error("사용자 역할 로드 실패:", error.message);
+        console.error('사용자 역할 로드 실패:', error.message)
       }
     },
+
     // Quill 에디터 초기화
     initQuillEditor() {
       if (this.quill) {
-        this.quill.destroy();
-        this.quill = null;
+        this.quill.destroy()
+        this.quill = null
       }
       this.quill = new Quill(this.$refs.quillEditor, {
-        theme: "snow",
+        theme: 'snow',
         modules: {
           toolbar: [
-            ["bold", "italic", "underline", "strike"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            ["link", "image"],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link', 'image'],
           ],
         },
-        placeholder: "내용을 입력하세요...",
-      });
-      this.quill.root.innerHTML = this.board.content || "";
+        placeholder: '내용을 입력하세요...',
+      })
+      this.quill.root.innerHTML = this.board.content || ''
     },
     // 이미지 업로드 처리
     async uploadImageToS3() {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "image/*";
-      input.click();
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*'
+      input.click()
 
       input.onchange = async () => {
-        const file = input.files[0];
+        const file = input.files[0]
         if (!file) {
-          console.error("파일이 선택되지 않았습니다.");
-          return;
+          console.error('파일이 선택되지 않았습니다.')
+          return
         }
 
-        const formData = new FormData();
-        formData.append("file", file);
+        const formData = new FormData()
+        formData.append('file', file)
 
         try {
-          const response = await apiService.uploadImage(formData);
-          const imageUrl = response.data?.url || response.data;
+          const response = await apiService.uploadImage(formData)
+          const imageUrl = response.data?.url || response.data
           if (!imageUrl) {
-            console.error("S3 URL을 찾을 수 없습니다.");
-            return;
+            console.error('S3 URL을 찾을 수 없습니다.')
+            return
           }
 
           const range = this.quill.getSelection() || {
             index: this.quill.getLength(),
-          };
+          }
 
-          this.quill.insertEmbed(range.index, "image", imageUrl);
+          this.quill.insertEmbed(range.index, 'image', imageUrl)
 
-          console.log("이미지 삽입 성공:", imageUrl);
+          console.log('이미지 삽입 성공:', imageUrl)
         } catch (error) {
-          console.error("S3 업로드 실패:", error.message);
+          console.error('S3 업로드 실패:', error.message)
         }
-      };
+      }
     },
     // 작성 또는 수정 데이터 전송
     async submitBoard() {
       try {
-        const contentHTML = this.quill.root.innerHTML;
-        this.board.content = contentHTML;
+        const contentHTML = this.quill.root.innerHTML
+        this.board.content = contentHTML
 
         if (this.isEditMode) {
           if (!this.board.boardId) {
-            alert("게시글 ID가 없습니다.");
-            return;
+            alert('게시글 ID가 없습니다.')
+            return
           }
-         await apiService.updateBoard(this.board.boardId, this.board);
-        //this.$emit("saved", response.data); // 수정된 데이터 부모로 전달
+          await apiService.updateBoard(this.board.boardId, this.board)
+          //this.$emit("saved", response.data); // 수정된 데이터 부모로 전달
 
-        // 수정 후 새로고침
-        window.location.reload();
+          // 수정 후 새로고침
+          window.location.reload()
         } else {
-          const response = await apiService.createBoard(this.board);
-          this.$emit("saved", response.data); // 부모로 데이터 전달
+          const response = await apiService.createBoard(this.board)
+          this.$emit('saved', response.data) // 부모로 데이터 전달
         }
 
-      this.$emit("close"); // 폼 닫기 이벤트
-      // 새로고침
-      //window.location.reload();
+        this.$emit('close') // 폼 닫기 이벤트
+        // 새로고침
+        //window.location.reload();
       } catch (error) {
-        console.error("게시글 저장 실패:", error.message);
+        console.error('게시글 저장 실패:', error.message)
       }
     },
     // 취소 버튼 처리
     cancel() {
-      this.$emit("close");
+      this.$emit('close')
     },
   },
   mounted() {
-    this.fetchUserRole();
-    this.initQuillEditor();
+    this.fetchUserRole()
+    this.initQuillEditor()
   },
   beforeUnmount() {
     if (this.quill) {
-      this.quill = null;
+      this.quill = null
     }
   },
-};
+}
 </script>
 
 <style scoped>
+.pin-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 공지 여부와 체크박스 간격 */
+}
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -206,6 +231,9 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+}
+.modal-content::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-content {
@@ -257,16 +285,18 @@ export default {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 20px; /* 버튼 사이 간격 */
   margin-top: 20px;
 }
 
 .btn {
   padding: 12px 20px;
   font-size: 16px;
+  font-weight: bold;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
@@ -275,7 +305,13 @@ export default {
 }
 
 .btn-primary:hover {
-  background-color: #315a8d;
+  background-color: #2c5987;
+  transform: translateY(-3px);
+}
+
+.btn-primary:active {
+  background-color: #1e3f5f;
+  transform: translateY(0);
 }
 
 .btn-secondary {
@@ -285,5 +321,99 @@ export default {
 
 .btn-secondary:hover {
   background-color: #4a4a4a;
+  transform: translateY(-3px);
+}
+
+.btn-secondary:active {
+  background-color: #2e2e2e;
+  transform: translateY(0);
+}
+
+.pin-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.pin-icon {
+  font-size: 18px;
+  color: #e74c3c;
+  transform: rotate(45deg);
+}
+
+.styled-checkbox:checked {
+  background: #4a90e2;
+  border-color: #3f72af;
+}
+
+/* 체크박스 감싸는 기본 컨테이너 */
+.custom-checkbox {
+  display: inline-block;
+  position: relative;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 숨겨진 기본 체크박스 */
+.hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* 사용자 정의 체크박스 디자인 */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background-color: #f9f9f9;
+  border: 2px solid #ccc;
+  border-radius: 6px; /* 둥근 모서리 */
+  transition: all 0.3s ease;
+}
+
+/* 체크박스에 체크되었을 때 스타일 */
+.hidden-checkbox:checked ~ .checkmark {
+  background-color: #4a90e2;
+  border-color: #3f72af;
+}
+
+/* 체크박스 안의 체크 표시 */
+.checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 8px;
+  top: 4px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* 체크박스가 활성화된 경우 체크 표시 보이기 */
+.hidden-checkbox:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* 호버 효과 */
+.custom-checkbox:hover .checkmark {
+  background-color: #e6f4ff;
+  border-color: #4a90e2;
+}
+
+/* 전환 애니메이션 */
+.custom-checkbox .checkmark:after {
+  transition: all 0.2s ease;
 }
 </style>

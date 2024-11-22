@@ -218,7 +218,7 @@ header {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #4caf50;
+  color: black;
 }
 
 .info-sections {

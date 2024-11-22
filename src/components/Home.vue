@@ -233,7 +233,10 @@ export default {
         // 상위 사원 매출
         const topSalespersonsResponse =
           await apiService.getTopSalespersonsBySales(5)
-        this.topSalespersons = (topSalespersonsResponse.data.data || []).slice(0, 5)
+        this.topSalespersons = (topSalespersonsResponse.data.data || []).slice(
+          0,
+          5
+        )
 
         // 기간별 고객사 매출
         const customerSalesResponse =
@@ -276,18 +279,31 @@ export default {
         console.error('대시보드 데이터를 가져오는 중 오류 발생:', error)
       }
     },
-    async fetchNotices() {
-      try {
-        const response = await apiService.fetchBoardList(0, 10)
-        console.log('API 응답:', response) // 응답 데이터 확인
-        const noticesData = response?.data?.data?.content || [] // 응답 데이터에서 실제 공지 내용 추출
-        this.notices = Array.isArray(noticesData) ? noticesData.slice(0, 3) : []
-        console.log('공지사항:', this.notices) // 가공된 공지 데이터 확인
-      } catch (error) {
-        console.error('공지 데이터를 가져오는 중 오류 발생:', error)
-        this.notices = [] // 기본값 설정
-      }
-    },
+async fetchNotices() {
+  try {
+    const response = await apiService.fetchBoardList(0, 10); // 모든 게시글 데이터 가져오기
+    console.log('API 응답:', response);
+
+    const allBoards = response?.data?.data?.content || [];
+    this.notices = allBoards
+      .filter(board => board.isPinned) // `isPinned`인 게시글만 필터링
+      .sort((a, b) => {
+        const timeA = new Date(a.updatedAt || a.createdAt);
+        const timeB = new Date(b.updatedAt || b.createdAt);
+        return timeB - timeA; // 최신순 정렬
+      })
+      .slice(0, 3); // 상위 3개만
+
+    // Vue 반응성 보장을 위해 새로운 배열 할당
+    this.notices = [...this.notices];
+
+    console.log('정렬 후 공지사항:', this.notices); // 정렬 결과 확인
+  } catch (error) {
+    console.error('공지 데이터를 가져오는 중 오류 발생:', error);
+    this.notices = [];
+  }
+}
+,
     renderCharts() {
       this.renderChart(
         'topCustomersChart',
