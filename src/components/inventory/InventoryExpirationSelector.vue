@@ -34,7 +34,7 @@
           @go-to-page="goToPage"
         />
         <div class="button-group">
-          <button @click="$emit('close')">닫기</button>
+          <button class="jump-button" @click="$emit('close')" style="background-color: red; color: white; float: right;">닫기</button>
         </div>
       </div>
     </div>
@@ -174,5 +174,25 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+.jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
 }
 </style>

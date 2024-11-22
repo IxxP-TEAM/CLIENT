@@ -487,8 +487,8 @@ onMounted(() => {
   font-weight: bold;
   cursor: pointer;
   transition:
-    transform 0.2s ease,
-    background-color 0.2s ease;
+  transform 0.2s ease,
+  background-color 0.2s ease;
 }
 
 .jump-button:hover {

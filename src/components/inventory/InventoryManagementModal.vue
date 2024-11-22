@@ -4,13 +4,13 @@
         <h3 class="modal-title">재고 관리</h3>
         <div class="button-group">
 
-          <button @click="openActionModal('입고')">입고</button>
-          <button @click="openActionModal('출고')">출고</button>
-          <button @click="openActionModal('소모')">소모</button>
-          <button @click="openActionModal('조정')">조정</button>
+          <button class="jump-button" @click="openActionModal('입고')">입고</button>
+          <button class="jump-button" @click="openActionModal('출고')">출고</button>
+          <button class="jump-button" @click="openActionModal('소모')">소모</button>
+          <button class="jump-button" @click="openActionModal('조정')">조정</button>
 
     </div>
-        <button class="close-button" @click="$emit('close')">닫기</button>
+        <button class="jump-button" @click="$emit('close')" style="background-color: red; color: white; float: right;">닫기</button>
       </div>
     </div>
   </template>
@@ -98,5 +98,26 @@ button{
   cursor: pointer;
   float: inline-end;
   }
+
+  .jump-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3f72af;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+}
+
+.jump-button:hover {
+  background-color: #434190;
+  transform: translateY(-5px);
+}
+
+.jump-button:active {
+  transform: translateY(2px);
+}
   </style>
   
