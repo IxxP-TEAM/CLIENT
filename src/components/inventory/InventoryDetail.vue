@@ -1,45 +1,60 @@
 <template>
   <div v-if="isOpen" class="modal-overlay" @click.self="closeModal">
     <div class="modal-content">
-      <h3>{{ productName }} - 상세 재고 보기</h3>
-      
-      <!-- 데이터가 있는 경우 최대 10개 항목을 보여주고 나머지는 스크롤 -->
-      <ul v-if="limitedInventoryDetails.length > 0" class="inventory-list">
-        <li v-for="(item, index) in limitedInventoryDetails" :key="index"
-        @click="selectExpiration(item)" 
-          style="cursor: pointer;">
-          유통기한: {{ item.expirationDate }} | 재고 수량: {{ item.currentQuantity }}
-        </li>
-      </ul>
-      
-      <!-- 데이터가 없을 경우 메시지 표시 -->
-      <p v-else>재고 정보가 없습니다.</p>
-      
-      <button class="jump-button" @click="closeModal" style="background-color: red; color: white; float: right;">닫기</button>
+      <h3 class="modal-title">{{ productName }} - 상세 재고 보기</h3>
+
+      <div class="info-section">
+        <h4 class="section-title">재고 목록</h4>
+
+        <!-- 데이터가 있는 경우 -->
+        <ul v-if="limitedInventoryDetails.length > 0" class="inventory-list">
+          <li
+            v-for="(item, index) in limitedInventoryDetails"
+            :key="index"
+            class="inventory-item"
+            @click="selectExpiration(item)"
+          >
+            <span class="inventory-label">유통기한:</span>
+            <span class="inventory-value">{{ item.expirationDate }}</span> |
+            <span class="inventory-label">재고 수량:</span>
+            <span class="inventory-value">{{ item.currentQuantity }}</span>
+          </li>
+        </ul>
+
+        <!-- 데이터가 없는 경우 -->
+        <p v-else class="no-data">재고 정보가 없습니다.</p>
+      </div>
+
+      <!-- 닫기 버튼 -->
+      <div class="button-group">
+        <button class="jump-button" @click="closeModal" style="background-color: gray;">닫기</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue';
 
 const props = defineProps({
   inventoryDetails: Array,
   productName: String,
   isOpen: Boolean,
-})
+});
 
-const emit = defineEmits(['close','select-expiration'])
+const emit = defineEmits(['close', 'select-expiration']);
 
-// 처음 10개 항목만 반환하는 계산 속성
-const limitedInventoryDetails = computed(() => props.inventoryDetails)
+// 재고 데이터를 계산하여 반환
+const limitedInventoryDetails = computed(() =>
+  props.inventoryDetails.slice(0, 10)
+);
 
 function closeModal() {
-  emit('close')
+  emit('close');
 }
 
 function selectExpiration(item) {
-  emit("select-expiration", item.expirationDate); // 유통기한 전달
+  emit('select-expiration', item.expirationDate); // 유통기한 데이터 전달
 }
 </script>
 
@@ -60,27 +75,83 @@ function selectExpiration(item) {
 .modal-content {
   background: white;
   padding: 30px;
-  border-radius: 8px;
-  width: 800px; /* 가로 너비 */
+  border-radius: 12px;
+  width: 800px;
   max-width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: #3f72af;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.info-section {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #3f72af;
+  margin-bottom: 15px;
 }
 
 .inventory-list {
-  max-height: 200px; /* 내부 리스트의 높이 제한 */
-  overflow-y: auto; /* 스크롤 활성화 */
+  max-height: 200px;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
 
-button {
-  padding: 10px 20px;
+.inventory-item {
   font-size: 16px;
-  background-color: #3f72af;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  color: #555;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+}
+
+.inventory-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.inventory-label {
+  font-weight: bold;
+  color: #3f72af;
+}
+
+.inventory-value {
+  color: #333;
+}
+
+.no-data {
+  color: #777;
+  font-size: 16px;
+  text-align: center;
+  padding: 10px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 
 .jump-button {
@@ -92,15 +163,25 @@ button {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition:
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .jump-button:hover {
   background-color: #434190;
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
 .jump-button:active {
   transform: translateY(2px);
 }
+
+.close-button {
+  background-color: red;
+  color: white;
+}
+
+.close-button:hover {
+  background-color: #b22222;
+}
+
 </style>

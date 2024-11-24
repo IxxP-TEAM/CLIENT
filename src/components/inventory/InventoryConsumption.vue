@@ -3,7 +3,14 @@
       <div class="modal-content">
         <h3 class="modal-title">소모 등록</h3>
         <form @submit.prevent="submitConsumption" class="modal-form">
+          <fieldset class="section">
+          <legend><i class="fas fa-building"></i> 기본 정보</legend>
+          <div class="form-group">
+            <div class="input-field">
+              <div class="field-label">
+                <i class="fas fa-user-circle icon"></i>
           <label for="productName">제품 이름</label>
+          </div>
           <input
             type="text"
             id="productName"
@@ -11,24 +18,30 @@
             @click="openProductSelector"
             readonly
             required
-          />
-  
+          /></div>
+          <div class="input-field">
+              <div class="field-label">
+                <i class="fas fa-user-circle icon"></i>
           <label for="quantity">수량</label>
+          </div>
           <input
             type="number"
             id="quantity"
             v-model="consumptionData.quantity"
             required
             min="1"
-          />
+          /></div>
+          <div class="error-container">
           <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
-  
+        </div>
           <div class="button-group">
             <button class="jump-button" type="submit">등록</button>
-            <button class="jump-button" @click="$emit('close')" type="button" style="background-color: red; color: white; float: right;">
+            <button class="jump-button" @click="$emit('close')" type="button" style="background-color: gray; color: white; float: right;">
               닫기
             </button>
+            </div>
           </div>
+          </fieldset>
         </form>
         <!-- 제품 선택 모달 -->
       <InventoryProductSelector
@@ -223,6 +236,52 @@ const openProductSelector = async () => {
 
 .jump-button:active {
   transform: translateY(2px);
+}
+.section {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f7faff;
+}
+
+.section legend {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0066cc;
+}
+
+.form-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  font-size: 16px;
+  color: #666;
+}
+.error-container {
+  min-height: 20px; /* 에러 메시지 공간 유지 */
+  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+}
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  
 }
   </style>
   

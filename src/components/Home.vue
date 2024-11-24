@@ -228,12 +228,12 @@ export default {
 
         // 상위 고객사 매출
         const topCustomersResponse = await apiService.getTopCustomersBySales(5)
-        this.topCustomers = topCustomersResponse.data.data || []
+        this.topCustomers = (topCustomersResponse.data.data || []).slice(0, 5)
 
         // 상위 사원 매출
         const topSalespersonsResponse =
           await apiService.getTopSalespersonsBySales(5)
-        this.topSalespersons = topSalespersonsResponse.data.data || []
+        this.topSalespersons = (topSalespersonsResponse.data.data || []).slice(0, 5)
 
         // 기간별 고객사 매출
         const customerSalesResponse =
