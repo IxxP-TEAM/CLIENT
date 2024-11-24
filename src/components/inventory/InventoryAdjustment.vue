@@ -3,7 +3,14 @@
       <div class="modal-content">
         <h3 class="modal-title">조정 등록</h3>
         <form @submit.prevent="submitAdjustment" class="modal-form">
+          <fieldset class="section">
+          <legend><i class="fas fa-building"></i> 기본 정보</legend>
+          <div class="form-group">
+            <div class="input-field">
+              <div class="field-label">
+                <i class="fas fa-user-circle icon"></i>
           <label for="productName">제품 이름</label>
+          </div>
           <input
             type="text"
             id="productName"
@@ -11,16 +18,23 @@
             @click="openProductSelector"
             readonly
             required
-          />
-  
+          /></div>
+          <div class="input-field">
+              <div class="field-label">
+                <i class="fas fa-user-circle icon"></i>
           <label for="quantity">수량</label>
+          </div>
           <input
             type="number"
             id="quantity"
             v-model="adjustmentData.quantity"
             required
-          />
+          /></div>
+          <div class="input-field">
+              <div class="field-label">
+                <i class="fas fa-user-circle icon"></i>
           <label for="expirationDate">유통기한</label>
+          </div>
         <input
           type="date"
           id="expirationDate"
@@ -28,22 +42,29 @@
           :min="minExpirationDate"
           readonly
           required
-        />
+        /></div>
+        <div class="input-field">
+              <div class="field-label">
+                <i class="fas fa-user-circle icon"></i>
           <label for="adjustment">조정 사유</label>
+          </div>
           <input
             type="text"
             id="adjustment"
             v-model="adjustmentData.adjustment"
             required
-          />
+          /></div>
+          <div class="error-container">
           <div v-if="computedErrorMessage" class="error">{{ computedErrorMessage }}</div>
-  
+        </div>
           <div class="button-group">
             <button class="jump-button" type="submit">등록</button>
-            <button class="jump-button" @click="$emit('close')" type="button" style="background-color: red; color: white; float: right;">
+            <button class="jump-button" @click="$emit('close')" type="button" style="background-color: gray; color: white; float: right;">
               닫기
             </button>
           </div>
+          </div>
+          </fieldset>
         </form>
         <!-- 제품 선택 모달 -->
       <InventoryProductSelector
@@ -121,20 +142,15 @@ const sortDirection = ref('asc'); // 정렬 방향 (기본값: 오름차순)
 const closeProductSelector = () => {
   showProductSelector.value = false
 }
-// // 선택한 제품 처리
-// const selectProduct = product => {
-//   adjustmentData.value.productName = product.productName // 선택된 제품 이름 반영
-//   closeProductSelector() // 모달 닫기
-// }
 
 // 데이터 조회
 async function fetchProducts() {
   try {
     const response = await apiService.getProductList(
-      currentPage.value - 1,        // 백엔드는 0부터 시작하므로 1을 뺌
+      currentPage.value - 1,        
       itemsPerPage,
-      selectedSort.value || 'productId',  // 정렬 기준
-      sortDirection.value || 'asc'       // 정렬 방향
+      selectedSort.value || 'productId',  
+      sortDirection.value || 'asc'       
     );
 
     const fetchedProducts = response.data.data.elements; // 제품 리스트 가져오기
@@ -206,10 +222,10 @@ const fetchAndOpenDetail = async (product) => {
     background: white;
     padding: 30px;
     border-radius: 8px;
-    width: 800px; /* 가로 너비 증가 */
+    width: 800px; 
     max-width: 95%;
-    max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
-    overflow-y: auto; /* 스크롤 활성화 */
+    max-height: 90vh; 
+    overflow-y: auto; 
   }
   .modal-form {
     display: flex;
@@ -239,8 +255,8 @@ const fetchAndOpenDetail = async (product) => {
   }
   .button-group {
     display: flex;
-    justify-content: flex-end; /* 오른쪽으로 정렬 */
-    gap: 10px; /* 두 버튼 사이 간격 */
+    justify-content: flex-end; 
+    gap: 10px; 
     margin-top: 20px;
   }
   button {
@@ -261,11 +277,6 @@ const fetchAndOpenDetail = async (product) => {
     border-radius: 5px;
     cursor: pointer;
   }
-  .error {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-  }
   .jump-button {
   padding: 10px 20px;
   border: none;
@@ -285,6 +296,52 @@ const fetchAndOpenDetail = async (product) => {
 
 .jump-button:active {
   transform: translateY(2px);
+}
+.section {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f7faff;
+}
+
+.section legend {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0066cc;
+}
+
+.form-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  font-size: 16px;
+  color: #666;
+}
+.error-container {
+  min-height: 20px; 
+  margin-bottom: 10px; 
+}
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  
 }
   </style>
   

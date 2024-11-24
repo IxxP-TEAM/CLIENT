@@ -9,7 +9,7 @@
           <button class="jump-button" @click="openActionModal('분석')">생산 분석</button>
 
     </div>
-        <button class="jump-button" @click="$emit('close')" style="background-color: red; color: white; float: right;">닫기</button>
+        <button class="jump-button" @click="$emit('close')" style="background-color: gray; color: white; float: right;">닫기</button>
       </div>
     </div>
   </template>
