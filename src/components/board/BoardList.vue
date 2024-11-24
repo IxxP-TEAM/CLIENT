@@ -31,6 +31,7 @@
           @change="applyFilters"
           class="filter-select"
         >
+          <option>제목</option>
           <option value="asc">제목⬆️</option>
           <option value="desc">제목⬇️</option>
         </select>
@@ -44,6 +45,7 @@
           @change="applyFilters"
           class="filter-select"
         >
+          <option>조회수</option>
           <option value="asc">조회수⬆️</option>
           <option value="desc">조회수⬇️</option>
         </select>
@@ -57,6 +59,7 @@
           @change="applyFilters"
           class="filter-select"
         >
+          <option>작성자</option>
           <option value="asc">작성자⬆️</option>
           <option value="desc">작성자⬇️</option>
         </select>
@@ -151,8 +154,8 @@ export default {
     return {
       boards: [],
       searchQuery: '',
-      sortOrder: 'asc', // 기본값: 오름차순
-      writerFilter: '', // 작성자 필터 추가
+      sortOrder: 'desc', // 기본값: 내림차순 (최신순)
+      writerFilter: '', // 작성자 필터
       currentPage: 1,
       pageSize: 10,
       totalPages: 1,
@@ -160,12 +163,13 @@ export default {
       showForm: false,
       selectedBoard: null,
       isEditMode: false,
-      titleSortOrder: 'desc',
-      viewCountSortOrder: 'desc',
-      writerSortOrder: 'desc',
-      createdAtSortOrder: 'desc',
+      titleSortOrder: '제목', // 빈 문자열 -> 초기값 필요
+      viewCountSortOrder: '조회수', // 빈 문자열 -> 초기값 필요
+      writerSortOrder: '작성자', // 빈 문자열 -> 초기값 필요
+      createdAtSortOrder: 'desc', // 최신순 기본값
     }
   },
+
   methods: {
     toggleFilters() {
       this.showFilters = !this.showFilters // 필터 섹션 표시/숨기기
@@ -180,14 +184,12 @@ export default {
           this.sortOrder
         )
 
-        // API 응답 데이터 처리
         const data = response.data.data
         this.boards = data.content || []
         this.totalPages = data.totalPages || 1
-        this.currentPage = data.number + 1 // API는 0부터 시작하므로 +1
-        this.applyFilters()
-        this.applySearch()
+        this.currentPage = data.number + 1
 
+        // 기본값: 최신순 정렬
         this.boards.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         )
@@ -198,17 +200,8 @@ export default {
       }
     },
     applyFilters() {
-      if (this.createdAtSortOrder) {
-        this.boards.sort((a, b) => {
-          const dateA = new Date(a.createdAt)
-          const dateB = new Date(b.createdAt)
-          return this.createdAtSortOrder === 'asc'
-            ? dateA - dateB
-            : dateB - dateA
-        })
-      }
-      // 정렬 조건에 따라 데이터 정렬
-      if (this.titleSortOrder) {
+      // 제목 정렬
+      if (this.titleSortOrder !== '제목') {
         this.boards.sort((a, b) => {
           return this.titleSortOrder === 'asc'
             ? a.title.localeCompare(b.title)
@@ -216,7 +209,8 @@ export default {
         })
       }
 
-      if (this.viewCountSortOrder) {
+      // 조회수 정렬
+      if (this.viewCountSortOrder !== '조회수') {
         this.boards.sort((a, b) => {
           return this.viewCountSortOrder === 'asc'
             ? a.viewCount - b.viewCount
@@ -224,7 +218,8 @@ export default {
         })
       }
 
-      if (this.writerSortOrder) {
+      // 작성자 정렬
+      if (this.writerSortOrder !== '작성자') {
         this.boards.sort((a, b) => {
           return this.writerSortOrder === 'asc'
             ? a.writerName.localeCompare(b.writerName)
@@ -232,7 +227,6 @@ export default {
         })
       }
     },
-
     handleSearch() {
       this.currentPage = 1 // 검색 시 첫 페이지로 이동
       this.fetchBoards()
@@ -290,7 +284,8 @@ export default {
     this.fetchBoards()
   },
   watch: {
-    type(newType) {// eslint-disable-line no-unused-vars
+    type(newType) {
+      // eslint-disable-line no-unused-vars
       this.fetchBoards()
     },
   },
@@ -365,7 +360,7 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 th,
 td {

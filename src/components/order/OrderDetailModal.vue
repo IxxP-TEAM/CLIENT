@@ -2,56 +2,84 @@
   <div class="modal-overlay" @click.self="close">
     <div class="modal-content">
       <header>
-        <h3>주문 세부 정보</h3>
+        <h2 class="modal-title">주문 세부 정보</h2>
         <button class="close-btn" @click="close">X</button>
       </header>
-      <div v-if="order" class="detail-info">
-        <!-- 주문 요약 카드 -->
-        <section class="order-summary">
-          <p><strong>주문 번호:</strong> {{ order.orderId }}</p>
-          <p><strong>주문일:</strong> {{ order.orderDate }}</p>
-          <p><strong>주문 상태:</strong> <span :class="`status-${order.orderStatus}`">{{ order.orderStatus }}</span></p>
-          <p><strong>총 금액:</strong> ₩{{ order.totalAmount.toLocaleString() }}</p>
-        </section>
-        
-        <!-- 결제 및 배송 정보 카드 -->
-        <section class="payment-shipping-info">
-          <div>
-            <h4>결제 정보</h4>
-            <p><strong>결제 방법:</strong> {{ order.paymentMethod }}</p>
-            <p><strong>결제 상태:</strong> {{ order.paymentStatus }}</p>
-          </div>
-          <div>
-            <h4>배송 정보</h4>
-            <p><strong>배송 주소:</strong> {{ order.shippingAddr }}</p>
-            <p><strong>배송 시작일:</strong> {{ order.shippingSdate }}</p>
-            <p><strong>배송 상태:</strong> {{ order.shippingStatus }}</p>
-          </div>
-        </section>
 
-        <!-- 고객사 및 담당자 정보 -->
-        <section class="customer-info">
-          <p><strong>고객사:</strong> {{ order.customerName }}</p>
-          <p><strong>담당자 이름:</strong> {{ order.userName }}</p>
-        </section>
+      <div v-if="order" class="info-sections">
+        <!-- 주문 요약 -->
+        <div class="info-section">
+          <h3 class="section-title">주문 요약</h3>
+          <div class="info-grid">
+            <div
+              class="info-card"
+              v-for="(value, label, index) in orderSummary"
+              :key="index"
+            >
+              <div class="info-icon-container">
+                <i :class="infoIcons[label]" class="info-icon"></i>
+              </div>
+              <div class="info-details">
+                <p class="info-label">{{ label }}</p>
+                <p class="info-value">{{ value }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <!-- 할인 및 세금 정보 카드 -->
-        <section class="discount-tax">
-          <p><strong>총 금액:</strong> ₩{{ order.totalAmount ? order.totalAmount.toLocaleString() : '0' }}</p>
-          <p><strong>총 할인액:</strong> ₩{{ order.discountAmount ? order.discountAmount.toLocaleString() : '0' }}</p>
-          <p><strong>총 세금액:</strong> ₩{{ order.taxAmount ? order.taxAmount.toLocaleString() : '0' }}</p>
-        </section>
+        <!-- 결제 및 배송 정보 -->
+        <div class="info-section">
+          <h3 class="section-title">결제 및 배송 정보</h3>
+          <div class="info-grid">
+            <div
+              class="info-card"
+              v-for="(value, label, index) in paymentShippingInfo"
+              :key="index"
+            >
+              <div class="info-icon-container">
+                <i :class="infoIcons[label]" class="info-icon"></i>
+              </div>
+              <div class="info-details">
+                <p class="info-label">{{ label }}</p>
+                <p class="info-value">{{ value }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 고객 정보 -->
+        <div class="info-section">
+          <h3 class="section-title">고객 정보</h3>
+          <div class="info-grid">
+            <div
+              class="info-card"
+              v-for="(value, label, index) in customerInfo"
+              :key="index"
+            >
+              <div class="info-icon-container">
+                <i :class="infoIcons[label]" class="info-icon"></i>
+              </div>
+              <div class="info-details">
+                <p class="info-label">{{ label }}</p>
+                <p class="info-value">{{ value }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- 주문 메모 -->
-        <section v-if="order.orderNote" class="order-note">
-          <h4>주문 메모</h4>
-          <p>{{ order.orderNote }}</p>
-        </section>
+        <div v-if="order.orderNote" class="info-section">
+          <h3 class="section-title">주문 메모</h3>
+          <p class="info-value">{{ order.orderNote }}</p>
+        </div>
 
-        <!-- 주문 상품 목록 테이블 -->
-        <section class="product-list">
-          <h4>주문 상품 목록</h4>
-          <table v-if="order.products && order.products.length > 0">
+        <!-- 주문 상품 목록 -->
+        <div class="info-section">
+          <h3 class="section-title">주문 상품 목록</h3>
+          <table
+            class="product-table"
+            v-if="order.products && order.products.length > 0"
+          >
             <thead>
               <tr>
                 <th>제품명</th>
@@ -68,10 +96,13 @@
             </tbody>
           </table>
           <p v-else>상품 목록이 없습니다.</p>
-        </section>
+        </div>
       </div>
+
+      <!-- 버튼 그룹 -->
       <div class="button-group">
-        <button @click="editOrder">수정하기</button>
+        <button class="edit-button" @click="editOrder">수정하기</button>
+        <button class="close-button" @click="close">닫기</button>
       </div>
     </div>
   </div>
@@ -85,15 +116,55 @@ export default {
       required: true,
     },
   },
-  methods: {
-    close() {
-      this.$emit('close');
+  computed: {
+    orderSummary() {
+      return {
+        '주문 번호': this.order.orderId,
+        주문일: this.order.orderDate,
+        '주문 상태': this.order.orderStatus,
+        '총 금액': `₩${this.order.totalAmount.toLocaleString()}`,
+      }
     },
-    editOrder() {
-      this.$emit('edit', this.order);
+    paymentShippingInfo() {
+      return {
+        '결제 방법': this.order.paymentMethod,
+        '결제 상태': this.order.paymentStatus,
+        '배송 주소': this.order.shippingAddr,
+        '배송 시작일': this.order.shippingSdate,
+        '배송 상태': this.order.shippingStatus,
+      }
+    },
+    customerInfo() {
+      return {
+        고객사: this.order.customerName,
+        '담당자 이름': this.order.userName,
+      }
+    },
+    infoIcons() {
+      return {
+        '주문 번호': 'fas fa-receipt',
+        주문일: 'fas fa-calendar-alt',
+        '주문 상태': 'fas fa-info-circle',
+        '총 금액': 'fas fa-dollar-sign',
+        '결제 방법': 'fas fa-credit-card',
+        '결제 상태': 'fas fa-check-circle',
+        '배송 주소': 'fas fa-map-marker-alt',
+        '배송 시작일': 'fas fa-calendar-check',
+        '배송 상태': 'fas fa-shipping-fast',
+        고객사: 'fas fa-building',
+        '담당자 이름': 'fas fa-user',
+      }
     },
   },
-};
+  methods: {
+    close() {
+      this.$emit('close')
+    },
+    editOrder() {
+      this.$emit('edit', this.order)
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -103,7 +174,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,86 +183,116 @@ export default {
 
 .modal-content {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 700px;
+  padding: 30px;
+  border-radius: 12px;
+  width: 800px;
   max-width: 95%;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
 }
 
 .close-btn {
   background: transparent;
   border: none;
-  font-size: 1.5em;
+  font-size: 20px;
   cursor: pointer;
-  color: #888;
+  color: #666;
 }
 
-h3 {
-  font-size: 1.5em;
-  margin: 0;
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
   color: #3f72af;
 }
 
-.detail-info section {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #f9fafb;
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: black;
 }
 
-.order-summary, .payment-shipping-info, .discount-tax {
+.info-sections {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
-.payment-shipping-info {
+.info-section {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.info-card {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h4 {
-  color: #3f72af;
-  margin-bottom: 8px;
+.info-icon-container {
+  background: #3f72af;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
 }
 
-.status-대기 {
-  color: #ff9800;
+.info-icon {
+  font-size: 16px;
 }
 
-.status-완료 {
-  color: #4caf50;
+.info-label {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
-.status-취소 {
-  color: #f44336;
+.info-value {
+  color: #555;
+  font-size: 14px;
 }
 
-.product-list table {
+.product-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 10px;
 }
 
-.product-list th, .product-list td {
-  padding: 10px;
+.product-table th,
+.product-table td {
   text-align: left;
+  padding: 10px;
   border-bottom: 1px solid #ddd;
 }
 
 .button-group {
   display: flex;
   justify-content: center;
+  gap: 20px;
   margin-top: 20px;
 }
 
@@ -199,13 +300,41 @@ button {
   background-color: #3f72af;
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
+  border-radius: 8px;
+  padding: 12px 20px;
   font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 button:hover {
   background-color: #2c5987;
+  transform: translateY(-3px);
+}
+
+button:active {
+  background-color: #1e3f5f;
+  transform: translateY(0);
+}
+
+.edit-button {
+  background-color: #3f72af;
+}
+
+.edit-button:hover {
+  background-color: #2c5987;
+}
+
+.close-button {
+  background-color: gray;
+}
+
+.close-button:hover {
+  background-color: #333;
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none;
 }
 </style>

@@ -27,12 +27,12 @@
         </thead>
         <tbody>
           <!-- 데이터가 없을 때 -->
-          <tr v-if="salesHistories && salesHistories.length === 0">
+          <tr v-if="filteredSalesHistories.length === 0">
             <td colspan="5">판매 이력이 없습니다.</td>
           </tr>
 
           <!-- 데이터가 있을 때 -->
-          <tr v-for="(history, index) in salesHistories" :key="index">
+          <tr v-for="(history, index) in paginatedSalesHistories" :key="index">
             <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
             <td>{{ history.customerId || 'N/A' }}</td>
             <td>{{ history.userId || 'N/A' }}</td>
@@ -77,12 +77,33 @@ import apiservice from '@/api/apiService'
 export default {
   data() {
     return {
-      salesHistories: [], // 항상 배열로 초기화
+      salesHistories: [], // 전체 데이터
       currentPage: 1, // 현재 페이지
       pageSize: 10, // 페이지당 항목 수
-      totalPages: 1, // 전체 페이지 수
       searchQuery: '', // 검색어
     }
+  },
+  computed: {
+    filteredSalesHistories() {
+      if (!this.searchQuery.trim()) {
+        return this.salesHistories
+      }
+      const query = this.searchQuery.toLowerCase()
+      return this.salesHistories.filter(
+        history =>
+          (history.customerId &&
+            history.customerId.toLowerCase().includes(query)) ||
+          (history.userId && history.userId.toLowerCase().includes(query))
+      )
+    },
+    paginatedSalesHistories() {
+      const start = (this.currentPage - 1) * this.pageSize
+      const end = start + this.pageSize
+      return this.filteredSalesHistories.slice(start, end)
+    },
+    totalPages() {
+      return Math.ceil(this.filteredSalesHistories.length / this.pageSize)
+    },
   },
   created() {
     this.fetchSalesHistory()
@@ -94,42 +115,24 @@ export default {
           this.currentPage - 1,
           this.pageSize
         )
-        console.log(
-          'API 요청 URL:',
-          `/sales/all?page=${this.currentPage - 1}&size=${this.pageSize}`
-        )
-        console.log('API 응답 데이터:', response.data)
-
         this.salesHistories = response.data.data.content || []
-        this.totalPages = response.data.data.totalPages || 1
       } catch (error) {
         console.error('판매 이력을 가져오는 중 오류 발생:', error)
         this.salesHistories = []
-        this.totalPages = 1
       }
-    },
-    handleSearch() {
-      this.currentPage = 1
-      this.fetchSalesHistory()
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--
-        this.fetchSalesHistory()
-        console.log('이전 페이지:', this.currentPage)
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++
-        this.fetchSalesHistory()
-        console.log('다음 페이지:', this.currentPage)
       }
     },
     setPage(page) {
       this.currentPage = page
-      this.fetchSalesHistory()
-      console.log('현재 페이지 설정:', this.currentPage)
     },
     formatCurrency(value) {
       return new Intl.NumberFormat('ko-KR', {
@@ -140,6 +143,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 .sales-history {
@@ -174,7 +178,6 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
 }
 
 th,
@@ -237,6 +240,7 @@ th {
   cursor: not-allowed;
   transform: none;
 }
+
 .search-input {
   padding: 8px;
   font-size: 16px;
@@ -251,5 +255,4 @@ th {
   border-color: #3f72af; /* 포커스 시 테두리 색상 */
   box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); /* 포커스 시 그림자 효과 */
 }
-
 </style>
