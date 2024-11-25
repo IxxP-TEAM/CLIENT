@@ -44,8 +44,8 @@
   }
   .button-group {
     display: flex;
-    justify-content: flex-end; /* 오른쪽으로 정렬 */
-    gap: 10px; /* 두 버튼 사이 간격 */
+    justify-content: flex-end; 
+    gap: 10px; 
     margin-top: 20px;
   }
   .button-a{

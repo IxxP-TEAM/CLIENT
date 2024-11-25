@@ -198,12 +198,12 @@ export default {
   margin-left: 140px;
   height: calc(100vh - 50px);
   overflow-y: scroll;
-  -ms-overflow-style: none; /* IE 및 Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 
 .board-detail::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none; 
 }
 
 .board-header h2 {
@@ -270,19 +270,19 @@ export default {
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 15px; /* 패딩 추가 */
+  padding: 15px;
   z-index: 10;
-  min-width: 150px; /* 메뉴 최소 너비 설정 */
+  min-width: 150px; 
 }
 
 .dropdown-item {
   display: flex;
-  align-items: center; /* 수직 중앙 정렬 */
-  justify-content: center; /* 수평 중앙 정렬 */
-  width: 100%; /* 아이템 너비 확장 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-  padding: 12px 20px; /* 높이와 좌우 간격 설정 */
-  font-size: 16px; /* 글자 크기 증가 */
+  align-items: center; 
+  justify-content: center; 
+  width: 100%; 
+  text-align: center; 
+  padding: 12px 20px; 
+  font-size: 16px; 
   color: #333;
   background: none;
   border: none;
@@ -296,7 +296,7 @@ export default {
 
 .dropdown-item.danger {
   color: #ff5a5f;
-  font-weight: bold; /* 강조 */
+  font-weight: bold; 
 }
 
 .dropdown-item.danger:hover {
@@ -309,12 +309,12 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7); /* 배경 투명도 높임 */
+  background: rgba(0, 0, 0, 0.7); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease; /* 배경 페이드 애니메이션 */
+  animation: fadeIn 0.3s ease; 
 }
 
 .modal-content {
@@ -323,7 +323,7 @@ export default {
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.4s ease; /* 모달 슬라이드 애니메이션 */
+  animation: slideUp 0.4s ease; 
 }
 
 .modal-content p {
@@ -335,14 +335,14 @@ export default {
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px; /* 버튼 간격 증가 */
+  gap: 15px; 
 }
 
 .btn-danger {
   background-color: #ff4d4d;
   color: white;
   border: none;
-  padding: 12px 25px; /* 버튼 크기 증가 */
+  padding: 12px 25px; 
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
@@ -351,14 +351,14 @@ export default {
 
 .btn-danger:hover {
   background-color: #e04343;
-  transform: scale(1.05); /* 호버 시 크기 살짝 증가 */
+  transform: scale(1.05); 
 }
 
 .btn-cancel {
   background-color: #f0f0f0;
   color: #333;
   border: none;
-  padding: 12px 25px; /* 버튼 크기 증가 */
+  padding: 12px 25px; 
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
@@ -367,7 +367,7 @@ export default {
 
 .btn-cancel:hover {
   background-color: #d9d9d9;
-  transform: scale(1.05); /* 호버 시 크기 살짝 증가 */
+  transform: scale(1.05); 
 }
 
 @keyframes fadeIn {

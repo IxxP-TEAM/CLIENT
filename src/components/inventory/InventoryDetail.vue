@@ -6,7 +6,6 @@
       <div class="info-section">
         <h4 class="section-title">재고 목록</h4>
 
-        <!-- 데이터가 있는 경우 -->
         <ul v-if="limitedInventoryDetails.length > 0" class="inventory-list">
           <li
             v-for="(item, index) in limitedInventoryDetails"
@@ -21,40 +20,44 @@
           </li>
         </ul>
 
-        <!-- 데이터가 없는 경우 -->
         <p v-else class="no-data">재고 정보가 없습니다.</p>
       </div>
 
-      <!-- 닫기 버튼 -->
       <div class="button-group">
-        <button class="jump-button" @click="closeModal" style="background-color: gray;">닫기</button>
+        <button
+          class="jump-button"
+          @click="closeModal"
+          style="background-color: gray"
+        >
+          닫기
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue';
+import { defineProps, defineEmits, computed } from 'vue'
 
 const props = defineProps({
   inventoryDetails: Array,
   productName: String,
   isOpen: Boolean,
-});
+})
 
-const emit = defineEmits(['close', 'select-expiration']);
+const emit = defineEmits(['close', 'select-expiration'])
 
 // 재고 데이터를 계산하여 반환
 const limitedInventoryDetails = computed(() =>
-  props.inventoryDetails.slice(0, 10)
-);
+  props.inventoryDetails.slice(0, 10),
+)
 
 function closeModal() {
-  emit('close');
+  emit('close')
 }
 
 function selectExpiration(item) {
-  emit('select-expiration', item.expirationDate); // 유통기한 데이터 전달
+  emit('select-expiration', item.expirationDate) // 유통기한 데이터 전달
 }
 </script>
 
@@ -123,7 +126,9 @@ function selectExpiration(item) {
   border-radius: 8px;
   margin-bottom: 10px;
   background: white;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   cursor: pointer;
 }
 
@@ -163,7 +168,9 @@ function selectExpiration(item) {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .jump-button:hover {
@@ -183,5 +190,4 @@ function selectExpiration(item) {
 .close-button:hover {
   background-color: #b22222;
 }
-
 </style>

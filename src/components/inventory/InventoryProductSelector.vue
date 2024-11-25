@@ -2,15 +2,12 @@
     <div class="modal-overlay">
       <div class="modal-content">
         <h3>제품 선택</h3>
-        <!-- 검색 입력 -->
         <input
           v-model="searchQuery"
           @input="handleSearch"
           placeholder="제품 검색"
           class="search-bar"
         />
-  
-        <!-- 제품 목록 -->
         <table class="product-table">
           <thead>
             <tr>
@@ -29,7 +26,6 @@
             </tr>
           </tbody>
         </table>
-  
         <!-- 페이지 네비게이션 -->
         <ProductPagination
           :currentPage="currentPage"
@@ -75,7 +71,6 @@
         product.productName.toLowerCase().includes(query)
       );
     }
-  
     // 페이지를 첫 번째로 초기화
     currentPage.value = 1;
   };
@@ -111,7 +106,6 @@
     emit("confirm-selection", product);
   };
   
-  // 컴포넌트가 마운트될 때 전체 데이터 가져오기
   fetchProducts();
   </script>
   
@@ -147,8 +141,8 @@
 }
 
 .modal-content {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 
 h2 {
@@ -190,7 +184,7 @@ h2 {
 }
 
 .product-table tr.selected {
-  background-color: #cce5ff; /* 선택된 행 색상 */
+  background-color: #cce5ff; 
 }
 
 .pagination {

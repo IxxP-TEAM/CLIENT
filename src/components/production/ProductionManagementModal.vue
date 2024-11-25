@@ -53,10 +53,10 @@ import { defineProps, defineEmits } from 'vue';
   background: white;
   padding: 30px;
   border-radius: 8px;
-  width: 800px; /* 가로 너비 증가 */
+  width: 800px; 
   max-width: 95%;
-  max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
-  overflow-y: auto; /* 스크롤 활성화 */
+  max-height: 90vh; 
+  overflow-y: auto; 
 }
 .modal-form {
   display: flex;
@@ -65,7 +65,7 @@ import { defineProps, defineEmits } from 'vue';
 .button-group {
   display: flex;
   justify-content: center; 
-  gap: 10px; /* 두 버튼 사이 간격 */
+  gap: 10px; 
   margin-top: 20px;
 }
 button{

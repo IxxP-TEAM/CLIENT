@@ -323,7 +323,7 @@ export default {
 
 .right-controls {
   display: flex;
-  gap: 10px; /* 버튼과 필터 사이 간격 */
+  gap: 10px; 
 }
 
 .right-controls select.filter {
@@ -343,7 +343,6 @@ export default {
   cursor: pointer;
 }
 
-/* 테이블 스타일 */
 .table-container {
   overflow-x: auto;
 }
@@ -358,7 +357,6 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  /* margin-bottom: 20px; */
 }
 th,
 td {
@@ -369,7 +367,7 @@ td {
 }
 .ellipsis {
   display: inline-block;
-  max-width: 200px; /* 제한된 너비 설정 */
+  max-width: 200px; 
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -409,32 +407,31 @@ th {
   background-color: #f0f0f0;
 }
 
-/* 페이지네이션 스타일 */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  gap: 5px; /* 버튼 간격 */
+  gap: 5px; 
 }
 
 .pagination-page {
   font-size: 16px;
   font-weight: bold;
-  color: black; /* 기본 색상 */
+  color: black; 
   cursor: pointer;
   padding: 5px 10px;
   transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-page:hover {
-  color: #434190; /* 호버 시 색상 */
-  transform: scale(1.1); /* 살짝 커지는 효과 */
+  color: #434190; 
+  transform: scale(1.1); 
 }
 
 .pagination-page.active {
-  color: #3f72af; /* 현재 페이지 텍스트 강조 */
-  font-size: 18px; /* 약간 더 큰 텍스트 */
+  color: #3f72af; 
+  font-size: 18px; 
   text-decoration: underline;
 }
 
@@ -450,12 +447,12 @@ th {
 }
 
 .pagination-arrow:hover {
-  color: #434190; /* 호버 시 색상 변화 */
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  color: #434190; 
+  transform: translateY(-2px); 
 }
 
 .pagination-arrow:disabled {
-  color: #b0b0b0; /* 비활성화 시 색상 */
+  color: #b0b0b0; 
   cursor: not-allowed;
   transform: none;
 }
@@ -469,15 +466,15 @@ th {
   padding: 8px;
   font-size: 16px;
   width: 300px;
-  border: 1px solid #ccc; /* 테두리 색상 */
-  border-radius: 5px; /* 둥글기 설정 */
-  outline: none; /* 클릭 시 기본 윤곽선 제거 */
-  transition: box-shadow 0.3s ease; /* 포커스 애니메이션 */
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  outline: none; 
+  transition: box-shadow 0.3s ease; 
 }
 
 .search-input:focus {
-  border-color: #3f72af; /* 포커스 시 테두리 색상 */
-  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); /* 포커스 시 그림자 효과 */
+  border-color: #3f72af; 
+  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); 
 }
 
 .filter-icon-button {
@@ -500,17 +497,17 @@ th {
   border-radius: 5px;
   cursor: pointer;
 }
-/* 필터 섹션 스타일 */
+
 .filters {
   display: flex;
   align-items: center;
-  gap: 20px; /* 필터 간 간격 */
+  gap: 20px; 
   padding: 10px;
-  background-color: #f9f9f9; /* 배경색 */
-  border: 1px solid #ddd; /* 경계선 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  margin-bottom: 20px; /* 목록과 간격 추가 */
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin-bottom: 20px; 
 }
 
 .filter-group {
@@ -522,7 +519,7 @@ th {
 .filter-group label {
   font-size: 14px;
   font-weight: bold;
-  color: #333; /* 텍스트 색상 */
+  color: #333; 
 }
 
 .filter-select {
@@ -541,7 +538,6 @@ th {
   outline: none;
 }
 
-/* 필터 섹션 반응형 디자인 */
 @media (max-width: 768px) {
   .filters {
     flex-direction: column;
@@ -597,10 +593,10 @@ th {
 }
 
 .status.active {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50; 
 }
 
 .status.inactive {
-  background-color: #f44336; /* 빨간색 */
+  background-color: #f44336; 
 }
 </style>

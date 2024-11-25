@@ -259,7 +259,6 @@ button:hover {
   background-color: #333;
 }
 
-/* 스크롤바를 숨기기 위한 스타일 */
 .modal-content::-webkit-scrollbar {
   display: none;
 }

@@ -9,7 +9,6 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-          <!-- 생산 선택 -->
           <label for="productionName">생산 계획</label>
           </div>
           <input
@@ -25,7 +24,6 @@
           <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-          <!-- 생산 차질 원인 -->
           <label for="issueCause">생산 차질 원인</label>
           </div>
           <textarea
@@ -37,7 +35,6 @@
           <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-          <!-- 개선 사항 -->
           <label for="improvements">개선 사항</label>
           </div>
           <textarea
@@ -85,10 +82,10 @@
   
   // 데이터
   const analysisData = ref({
-    productionId: null, // 선택된 생산 ID
-    productionName: "", // 생산 계획 이름
-    issueCause: "", // 생산 차질 원인
-    improvements: "", // 개선 사항
+    productionId: null, 
+    productionName: "", 
+    issueCause: "", 
+    improvements: "", 
   });
   
   // 상태 관리
@@ -106,13 +103,12 @@
   }
 
   try {
-    // productionId를 경로 변수로 사용
     await apiService.submitProductionAnalysis(analysisData.value.productionId, {
       issueCause: analysisData.value.issueCause,
       improvements: analysisData.value.improvements,
     });
-    emit("refresh"); // 성공 후 리스트 갱신 요청
-    emit("close"); // 모달 닫기
+    emit("refresh"); 
+    emit("close"); 
   } catch (error) {
     console.error("생산 분석 등록 중 오류 발생:", error);
     emit(
@@ -289,8 +285,8 @@ input[type='date'] {
   color: #666;
 }
 .error-container {
-  min-height: 20px; /* 에러 메시지 공간 유지 */
-  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+  min-height: 20px; 
+  margin-bottom: 10px; 
 }
 .error {
   color: red;

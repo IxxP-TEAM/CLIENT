@@ -80,7 +80,7 @@ const totalPages = computed(() => {
 const fetchExpirationData = async () => {
   try {
     const response = await apiService.getInventoryByExpiration();
-    inventoryItems.value = response.data; // API에서 받은 데이터를 저장
+    inventoryItems.value = response.data; 
   } catch (error) {
     console.error("유통기한별 데이터를 불러오는 중 오류가 발생했습니다:", error);
   }

@@ -439,7 +439,6 @@ async fetchNotices() {
   grid-column: span 2;
 }
 
-/* 요약 정보 위젯 스타일 */
 .summary-widget {
   background: linear-gradient(135deg, #f6f9fc, #ffffff);
   padding: 20px;
@@ -497,7 +496,6 @@ async fetchNotices() {
   color: #333;
 }
 
-/* 목록 스타일 개선 */
 .widget ul {
   list-style: none;
   padding: 0;
@@ -563,7 +561,6 @@ h3[style] {
   font-weight: bold;
 }
 
-/* 공지 게시판 위젯 스타일 */
 .board-widget {
   background: linear-gradient(135deg, #ffffff, #f8f9fa);
   padding: 20px;
@@ -634,7 +631,6 @@ h3[style] {
   color: #888;
 }
 
-/* 월별 매출 통계 위젯 스타일 */
 .monthly-sales-widget {
   background: linear-gradient(135deg, #ffffff, #f0f8ff);
   padding: 20px;
@@ -646,10 +642,9 @@ h3[style] {
   grid-column: span 2;
 }
 
-/* 월별 매출 차트 스타일 */
 .monthly-sales-chart {
   width: 100%;
-  height: 550px; /* 그래프 크기 키움 */
+  height: 550px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -692,7 +687,6 @@ h3[style] {
   height: auto;
 }
 
-/* 툴팁 커스터마이징 (차트.js와 연결 가능) */
 .chart-tooltip {
   background-color: rgba(0, 0, 0, 0.7);
   color: #fff;
@@ -701,57 +695,54 @@ h3[style] {
   font-size: 12px;
 }
 
-/* 호버 강조 효과 */
 .chart-container:hover {
   transform: scale(1.02);
   transition: transform 0.3s ease-in-out;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-/* 기간별 사원 매출 위젯 스타일 */
+
 .salesperson-sales-widget {
   background: linear-gradient(135deg, #ffffff, #f0f8ff);
-  padding: 15px; /* 위젯의 전체 패딩 축소 */
+  padding: 15px; 
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px; /* 위젯 내 요소 간격 축소 */
+  gap: 10px; 
 }
 
 .salesperson-sales-widget h3 {
-  font-size: 18px; /* 제목 크기 축소 */
+  font-size: 18px; 
   font-weight: bold;
   color: #2c3e50;
   text-align: center;
-  margin-bottom: 5px; /* 제목 하단 여백 축소 */
+  margin-bottom: 5px; 
 }
 
 .salesperson-sales-widget hr {
-  margin: 5px 0; /* 구분선 여백 축소 */
+  margin: 5px 0; 
   border: none;
   border-top: 1px solid #ddd;
 }
 
-/* 리스트 스타일 */
 .salesperson-sales-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* 리스트 항목 간격 축소 */
+  gap: 10px; 
 }
 
-/* 사원 매출 카드 스타일 */
 .salesperson-sales-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px; /* 카드 패딩 축소 */
+  padding: 10px; 
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 그림자 축소 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
   transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
   cursor: pointer;
 }
@@ -761,31 +752,31 @@ h3[style] {
   transform: scale(1.02);
 }
 
-/* 메달 스타일 */
+
 .salesperson-medal {
-  font-size: 18px; /* 메달 크기 축소 */
-  margin-right: 10px; /* 메달과 이름 간격 축소 */
+  font-size: 18px; 
+  margin-right: 10px; 
 }
 
 .salesperson-info {
   display: flex;
   align-items: center;
-  gap: 8px; /* 이름과 메달 간격 축소 */
+  gap: 8px; 
 }
 
 .salesperson-name {
-  font-size: 14px; /* 이름 텍스트 크기 축소 */
+  font-size: 14px; 
   font-weight: bold;
   color: #333;
 }
 
 .salesperson-sales {
-  font-size: 14px; /* 매출 금액 텍스트 크기 축소 */
+  font-size: 14px; 
   font-weight: bold;
   color: #4a90e2;
 }
 
-/* 기간별 고객사 매출 위젯 스타일 */
+
 .customer-sales-widget {
   background: linear-gradient(135deg, #ffffff, #f8f9fa);
   padding: 15px;
@@ -839,7 +830,7 @@ h3[style] {
   transform: scale(1.02);
 }
 
-/* 메달 스타일 */
+
 .customer-medal {
   font-size: 18px;
   margin-right: 10px;
@@ -852,22 +843,21 @@ h3[style] {
 }
 
 .customer-name {
-  flex-grow: 1; /* 이름 텍스트가 가능한 넓게 공간 사용 */
-  text-align: left; /* 왼쪽 정렬 */
-  margin-right: 10px; /* 이름과 가격 사이 간격 추가 */
+  flex-grow: 1; 
+  text-align: left; 
+  margin-right: 10px; 
   font-size: 14px;
   font-weight: bold;
   color: #333;
 }
 
 .customer-sales {
-  text-align: right; /* 오른쪽 정렬 */
+  text-align: right; 
   font-size: 14px;
   font-weight: bold;
   color: #4a90e2;
 }
 
-/* 상위 사원 매출 위젯 스타일 */
 .top-salespersons-widget {
   background: linear-gradient(135deg, #ffffff, #f9f9fc);
   padding: 15px;
@@ -892,7 +882,6 @@ h3[style] {
   border-top: 1px solid #ddd;
 }
 
-/* 리스트 스타일 */
 .top-salespersons-list {
   list-style: none;
   padding: 0;
@@ -902,7 +891,6 @@ h3[style] {
   gap: 10px;
 }
 
-/* 사원 매출 항목 스타일 */
 .top-salespersons-item {
   display: flex;
   align-items: center;
@@ -921,7 +909,6 @@ h3[style] {
   transform: scale(1.02);
 }
 
-/* 메달 스타일 */
 .salesperson-medal {
   font-size: 18px;
   margin-right: 10px;
@@ -945,7 +932,6 @@ h3[style] {
   color: #4a90e2;
 }
 
-/* 상위 고객사 매출 위젯 스타일 */
 .top-customers-widget {
   background: linear-gradient(135deg, #ffffff, #f9f9fc);
   padding: 15px;
@@ -970,7 +956,6 @@ h3[style] {
   border-top: 1px solid #ddd;
 }
 
-/* 리스트 스타일 */
 .top-customers-list {
   list-style: none;
   padding: 0;
@@ -980,7 +965,6 @@ h3[style] {
   gap: 10px;
 }
 
-/* 고객사 매출 항목 스타일 */
 .top-customers-item {
   display: flex;
   align-items: center;
@@ -999,7 +983,6 @@ h3[style] {
   transform: scale(1.02);
 }
 
-/* 메달 스타일 */
 .customer-medal {
   font-size: 18px;
   margin-right: 10px;

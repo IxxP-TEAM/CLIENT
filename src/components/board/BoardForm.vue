@@ -218,7 +218,7 @@ export default {
 .pin-container {
   display: flex;
   align-items: center;
-  gap: 10px; /* 공지 여부와 체크박스 간격 */
+  gap: 10px; 
 }
 .modal-overlay {
   position: fixed;
@@ -285,7 +285,7 @@ export default {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px; /* 버튼 사이 간격 */
+  gap: 20px; 
   margin-top: 20px;
 }
 
@@ -349,7 +349,6 @@ export default {
   border-color: #3f72af;
 }
 
-/* 체크박스 감싸는 기본 컨테이너 */
 .custom-checkbox {
   display: inline-block;
   position: relative;
@@ -359,7 +358,6 @@ export default {
   user-select: none;
 }
 
-/* 숨겨진 기본 체크박스 */
 .hidden-checkbox {
   position: absolute;
   opacity: 0;
@@ -368,7 +366,6 @@ export default {
   width: 0;
 }
 
-/* 사용자 정의 체크박스 디자인 */
 .checkmark {
   position: absolute;
   top: 0;
@@ -377,17 +374,15 @@ export default {
   height: 24px;
   background-color: #f9f9f9;
   border: 2px solid #ccc;
-  border-radius: 6px; /* 둥근 모서리 */
+  border-radius: 6px; 
   transition: all 0.3s ease;
 }
 
-/* 체크박스에 체크되었을 때 스타일 */
 .hidden-checkbox:checked ~ .checkmark {
   background-color: #4a90e2;
   border-color: #3f72af;
 }
 
-/* 체크박스 안의 체크 표시 */
 .checkmark:after {
   content: '';
   position: absolute;
@@ -401,18 +396,15 @@ export default {
   transform: rotate(45deg);
 }
 
-/* 체크박스가 활성화된 경우 체크 표시 보이기 */
 .hidden-checkbox:checked ~ .checkmark:after {
   display: block;
 }
 
-/* 호버 효과 */
 .custom-checkbox:hover .checkmark {
   background-color: #e6f4ff;
   border-color: #4a90e2;
 }
 
-/* 전환 애니메이션 */
 .custom-checkbox .checkmark:after {
   transition: all 0.2s ease;
 }

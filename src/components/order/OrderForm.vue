@@ -538,13 +538,12 @@ textarea {
   resize: none;
 }
 
-/* 스크롤바 숨기기 */
 .modal-content::-webkit-scrollbar {
   display: none;
 }
 .modal-content {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 
 .grid-form {
@@ -577,7 +576,7 @@ textarea {
 
 .submit-btn,
 .cancel-btn {
-  width: 150px; /* 버튼 너비 고정 */
+  width: 150px; 
   padding: 12px;
   font-size: 16px;
   font-weight: bold;
@@ -631,7 +630,6 @@ input.invalid {
   position: relative;
 }
 
-/* 제품 테이블 스타일 */
 .product-table {
   width: 100%;
   border-collapse: collapse;
@@ -674,8 +672,8 @@ input.invalid {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px; /* 버튼 사이 간격 */
-  margin-top: 20px; /* 위로부터 간격 */
+  gap: 20px; 
+  margin-top: 20px; 
 }
 
 button {

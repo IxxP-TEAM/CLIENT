@@ -78,12 +78,12 @@ return pages
 }
 
 .pagination-arrow:hover {
-  color: #434190; /* 호버 시 색상 변화 */
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  color: #434190; 
+  transform: translateY(-2px); 
 }
 
 .pagination-arrow:disabled {
-  color: #b0b0b0; /* 비활성화 시 색상 */
+  color: #b0b0b0; 
   cursor: not-allowed;
   transform: none;
 }

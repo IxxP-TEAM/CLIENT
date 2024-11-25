@@ -46,12 +46,9 @@ const props = defineProps({// eslint-disable-line no-unused-vars
   table {
     width: 100%;
     border-collapse: collapse;
-    /* margin-bottom: 20px; */
   }
   
   th, td {
-    /* border: 1px solid #ddd;
-    padding: 8px; */
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -64,7 +61,7 @@ const props = defineProps({// eslint-disable-line no-unused-vars
   }
   
   .low-stock {
-  color: red; /* 재고 수량이 임계 수량 이하일 때 빨간색으로 표시 */
+  color: red; 
 }
   
   </style>

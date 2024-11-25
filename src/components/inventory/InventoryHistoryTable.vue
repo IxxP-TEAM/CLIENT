@@ -48,13 +48,10 @@ const props = defineProps({// eslint-disable-line no-unused-vars
 table {
   width: 100%;
   border-collapse: collapse;
-  /* margin-bottom: 20px; */
 }
 
 th,
 td {
-  /* border: 1px solid #ddd;
-    padding: 8px; */
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -69,15 +66,14 @@ th {
 span {
   float: right;
 }
-/* 조정 사유 컬럼 스타일 */
+
 .adjustment-column {
-  max-width: 150px; /* 최대 너비 설정 */
-  overflow: hidden; /* 넘치는 텍스트 숨기기 */
-  text-overflow: ellipsis; /* 말줄임표 */
-  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+  max-width: 150px; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
 }
 
-/* 반응형 테이블 */
 @media (max-width: 768px) {
   table {
     font-size: 12px;

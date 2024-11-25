@@ -323,7 +323,6 @@ onMounted(() => {
   border-radius: 4px;
 }
 
-/* 호버 효과 고정 */
 .dropdown-title.active {
   background-color: #ddd;
   border-radius: 4px;

@@ -186,7 +186,6 @@ export default {
     margin-bottom: 20px;
 }
 
-/* 테이블 스타일 */
 .table-container {
     overflow-x: auto;
     border: 1px solid #ddd;
@@ -204,7 +203,6 @@ export default {
 table {
     width: 100%;
     border-collapse: collapse;
-    /* margin-bottom: 20px; */
 }
 
 th,

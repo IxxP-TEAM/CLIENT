@@ -2,7 +2,6 @@
   <div class="inventory-list">
     <h2 @click="resetToInitialState" style="cursor: pointer">재고 목록</h2>
     <div class="header">
-      <!-- 검색 입력 및 검색 버튼 -->
       <div class="search-filter-container">
         <input
           type="text"
@@ -12,39 +11,40 @@
           class="search-input"
         />
         <button @click="triggerSearch" class="jump-button">검색</button>
-
-        <!-- 필터 아이콘 버튼 -->
         <button @click="toggleFilters" class="jump-button">
           <i class="fas fa-sliders-h"></i>
         </button>
       </div>
 
-      <!-- 재고등록 버튼 -->
-      <button @click="openInventoryManagementModal" class="jump-button">재고 관리</button>
+      <button @click="openInventoryManagementModal" class="jump-button">
+        재고 관리
+      </button>
     </div>
 
-
-      <!-- 필터 섹션 -->
     <div v-if="showFilters" class="filters">
-      <!-- 정렬 필터 -->
       <div class="filter-group">
-        <!-- 정렬 선택 셀렉트 박스 -->
-        <select v-model="selectedSort" @change="triggerSort" class="filter-select">
+        <select
+          v-model="selectedSort"
+          @change="triggerSort"
+          class="filter-select"
+        >
           <option value="" disabled hidden>정렬 기준을 선택하세요</option>
           <option value="productName">이름순</option>
           <option value="totalQuantity">수량순</option>
         </select>
       </div>
       <div class="filter-group">
-        <select v-model="sortDirection" @change="triggerSort" class="filter-select">
+        <select
+          v-model="sortDirection"
+          @change="triggerSort"
+          class="filter-select"
+        >
           <option value="" disabled hidden>정렬 방향을 선택하세요</option>
           <option value="asc">오름차순</option>
           <option value="desc">내림차순</option>
         </select>
       </div>
-      </div>
-
-      
+    </div>
 
     <!-- InventoryTable 컴포넌트에 데이터 전달 -->
     <InventoryTable
@@ -70,8 +70,8 @@
       @close="isModalOpen = false"
     />
     <!-- 재고관리 -->
-    <InventoryManagementModal 
-      v-if="isInventoryManagementModalOpen" 
+    <InventoryManagementModal
+      v-if="isInventoryManagementModalOpen"
       :is-open="isInventoryManagementModalOpen"
       @close="isInventoryManagementModalOpen = false"
       @open-action-modal="openActionModal"
@@ -81,8 +81,8 @@
     <InventoryInbound
       v-if="isInboundModalOpen"
       :errorMessage="errorMessage"
-      :is-open="isInboundModalOpen" 
-      @close="isInboundModalOpen = false" 
+      :is-open="isInboundModalOpen"
+      @close="isInboundModalOpen = false"
       @refresh="resetToInitialState"
       @error="handleInboundError"
     />
@@ -91,8 +91,8 @@
     <InventoryOutbound
       v-if="isOutboundModalOpen"
       :errorMessage="errorMessage"
-      :is-open="isOutboundModalOpen" 
-      @close="isOutboundModalOpen = false" 
+      :is-open="isOutboundModalOpen"
+      @close="isOutboundModalOpen = false"
       @refresh="resetToInitialState"
       @error="handleOutboundError"
     />
@@ -101,8 +101,8 @@
     <InventoryConsumption
       v-if="isConsumptionModalOpen"
       :errorMessage="errorMessage"
-      :is-open="isConsumptionModalOpen" 
-      @close="isConsumptionModalOpen = false" 
+      :is-open="isConsumptionModalOpen"
+      @close="isConsumptionModalOpen = false"
       @refresh="resetToInitialState"
       @error="handleConsumptionError"
     />
@@ -111,12 +111,11 @@
     <InventoryAdjustment
       v-if="isAdjustmentModalOpen"
       :errorMessage="errorMessage"
-      :is-open="isAdjustmentModalOpen" 
-      @close="isAdjustmentModalOpen = false" 
+      :is-open="isAdjustmentModalOpen"
+      @close="isAdjustmentModalOpen = false"
       @refresh="resetToInitialState"
       @error="handleAdjustmentError"
     />
-
   </div>
 </template>
 
@@ -127,8 +126,8 @@ import InventoryTable from '@/components/inventory/InventoryTable.vue'
 import InventoryPagination from '@/components/inventory/InventoryPagination.vue'
 import InventoryDetail from '@/components/inventory/InventoryDetail.vue'
 import InventoryManagementModal from '@/components/inventory/InventoryManagementModal.vue'
-import InventoryInbound from '@/components/inventory/InventoryInbound.vue';
-import InventoryOutbound from '@/components/inventory/InventoryOutbound.vue';
+import InventoryInbound from '@/components/inventory/InventoryInbound.vue'
+import InventoryOutbound from '@/components/inventory/InventoryOutbound.vue'
 import InventoryConsumption from '@/components/inventory/InventoryConsumption.vue'
 import InventoryAdjustment from '@/components/inventory/InventoryAdjustment.vue'
 
@@ -156,7 +155,6 @@ function toggleFilters() {
   showFilters.value = !showFilters.value
 }
 
-
 // 재고 목록
 // fetchInventoryList 함수에서 productId 포함 확인
 async function fetchInventoryList(isSearch = false) {
@@ -166,73 +164,66 @@ async function fetchInventoryList(isSearch = false) {
       itemsPerPage.value,
       selectedSort.value || 'productName',
       sortDirection.value || 'asc',
-      isSearch ? searchQuery.value : ''
-    );
+      isSearch ? searchQuery.value : '',
+    )
     // 응답 데이터에 productId가 포함되어 있는지 확인
     inventoryItems.value = response.data.data.elements.map(item => {
       if (!item.productId) {
-        console.warn("productId가 없는 항목:", item);
+        console.warn('productId가 없는 항목:', item)
       }
-      return item;
-    });
-    totalPages.value = response.data.data.totalPages;
+      return item
+    })
+    totalPages.value = response.data.data.totalPages
   } catch (error) {
-    console.error('재고 목록을 가져오는 중 오류 발생:', error);
+    console.error('재고 목록을 가져오는 중 오류 발생:', error)
   }
 }
 
 // fetchAndOpenDetail 함수에서 productId가 없을 경우 오류 출력
 async function fetchAndOpenDetail(item) {
-  selectedProductId.value = item.productId;
-  selectedProductName.value = item.productName;
+  selectedProductId.value = item.productId
+  selectedProductName.value = item.productName
 
   try {
-    const response = await apiService.getInventoriesByProductId(item.productId);
-    inventoryDetails.value = response.data.data;
-    isModalOpen.value = true;
-    console.log("모달 열림 상태:", isModalOpen.value); // 디버깅 로그 추가
+    const response = await apiService.getInventoriesByProductId(item.productId)
+    inventoryDetails.value = response.data.data
+    isModalOpen.value = true
   } catch (error) {
-    console.error('상세 재고 정보를 가져오는 중 오류 발생:', error);
+    console.error('상세 재고 정보를 가져오는 중 오류 발생:', error)
   }
 }
 
 function openInventoryManagementModal() {
-  isInventoryManagementModalOpen.value = true;
+  isInventoryManagementModalOpen.value = true
 }
 
 function openActionModal(actionType) {
-  isInventoryManagementModalOpen.value = false;
-  errorMessage.value = ''; // 기존 오류 메시지 초기화
+  isInventoryManagementModalOpen.value = false
+  errorMessage.value = '' // 기존 오류 메시지 초기화
   if (actionType === '입고') {
-    isInboundModalOpen.value = true;
-  }
-  else if (actionType === '출고') {
-    isOutboundModalOpen.value = true;
-  }
-  else if (actionType === '소모') {
-    isConsumptionModalOpen.value = true;
-  }
-  else if (actionType === '조정') {
-    isAdjustmentModalOpen.value = true;
+    isInboundModalOpen.value = true
+  } else if (actionType === '출고') {
+    isOutboundModalOpen.value = true
+  } else if (actionType === '소모') {
+    isConsumptionModalOpen.value = true
+  } else if (actionType === '조정') {
+    isAdjustmentModalOpen.value = true
   }
 }
 
 // `InventoryInbound` 모달에서 에러 메시지 설정
 function handleInboundError(message) {
-  errorMessage.value = message;
+  errorMessage.value = message
 }
 function handleOutboundError(message) {
-  errorMessage.value = message;
+  errorMessage.value = message
 }
 function handleConsumptionError(message) {
-  errorMessage.value = message;
+  errorMessage.value = message
 }
 function handleAdjustmentError(message) {
-  errorMessage.value = message;
+  errorMessage.value = message
 }
-
-
-
 
 // 검색 기능 실행
 function triggerSearch() {
@@ -263,34 +254,32 @@ function triggerSort() {
 
 // 초기 상태로 복귀
 async function resetToInitialState() {
-  searchQuery.value = '' // 검색어 초기화
-  currentPage.value = 1 // 첫 페이지로 이동
-  selectedSort.value = '' // 정렬 기준 초기화
-  sortDirection.value = '' // 정렬 방향을 기본 오름차순으로 초기화
-  await fetchInventoryList() // 전체 제품 목록 새로 가져오기
+  searchQuery.value = '' 
+  currentPage.value = 1 
+  selectedSort.value = '' 
+  sortDirection.value = '' 
+  await fetchInventoryList() 
 }
 
-// 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(() => {
   fetchInventoryList()
 })
 </script>
 
 <style scoped>
-
 .inventory-list {
   padding-top: 70px;
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-y: auto; 
 }
 .inventory-list h2 {
   width: 150px;
 }
 .header {
   display: flex;
-  justify-content: space-between; /* 양 끝으로 배치 */
+  justify-content: space-between; 
   align-items: center;
   margin-bottom: 20px;
 }
@@ -342,18 +331,16 @@ onMounted(() => {
   color: #4caf50;
 }
 
-
-/* 필터 섹션 스타일 */
 .filters {
   display: flex;
   align-items: center;
-  gap: 20px; /* 필터 간 간격 */
+  gap: 20px; 
   padding: 10px;
-  background-color: #f9f9f9; /* 배경색 */
-  border: 1px solid #ddd; /* 경계선 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  margin-bottom: 20px; /* 목록과 간격 추가 */
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin-bottom: 20px; 
 }
 
 .filter-group {
@@ -365,7 +352,7 @@ onMounted(() => {
 .filter-group label {
   font-size: 14px;
   font-weight: bold;
-  color: #333; /* 텍스트 색상 */
+  color: #333; 
 }
 
 .filter-select {
@@ -386,7 +373,6 @@ onMounted(() => {
   outline: none;
 }
 
-/* 필터 섹션 반응형 디자인 */
 @media (max-width: 768px) {
   .filters {
     flex-direction: column;
@@ -442,10 +428,10 @@ onMounted(() => {
 }
 
 .status.active {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50; 
 }
 
 .status.inactive {
-  background-color: #f44336; /* 빨간색 */
+  background-color: #f44336; 
 }
 </style>

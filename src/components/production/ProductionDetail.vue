@@ -2,9 +2,7 @@
   <div v-if="isOpen" class="modal-overlay" @click.self="closeModal">
     <div class="modal-content">
       <h2 class="modal-title">{{ productionName }} - 원재료 상세보기</h2>
-
       <div class="info-sections">
-        <!-- 기본 정보 -->
         <div class="info-section">
           <h3 class="section-title">기본 정보</h3>
           <div class="info-grid">
@@ -19,8 +17,6 @@
             <p v-else class="no-data">등록된 원재료가 없습니다.</p>
           </div>
         </div>
-
-        <!-- 생산 분석 -->
         <div class="info-section">
           <h3 class="section-title">생산 분석</h3>
           <div v-if="productionAnalysis">
@@ -30,8 +26,6 @@
           <p v-else class="no-data">생산 분석 데이터가 없습니다.</p>
         </div>
       </div>
-
-      <!-- 닫기 버튼 -->
       <div class="button-group">
         <button class="jump-button close-button" @click="closeModal" style="background-color: gray;">닫기</button>
       </div>

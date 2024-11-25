@@ -9,7 +9,6 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-          <!-- 생산 선택 -->
           <label for="productionName">생산 계획</label>
           </div>
           <input
@@ -23,7 +22,6 @@
           <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-          <!-- 생산 결과 수량 -->
           <label for="resultQuantity">생산 결과 수량</label>
           </div>
           <input
@@ -44,7 +42,6 @@
           </fieldset>
         </form>
   
-        <!-- 생산 선택 모달 -->
         <ProductionSelector
           v-if="showProductionSelector"
           :productionOptions="productionOptions"
@@ -60,7 +57,6 @@
   import ProductionSelector from "@/components/production/ProductionSelector.vue";
   import apiService from "@/api/apiService";
   
-  // Props
 
   const props = defineProps({
   filteredProductions: {
@@ -74,7 +70,6 @@
     errorMessage: String,
 });
   
-  // Emits
   const emit = defineEmits(["close", "refresh"]);
   
   // 데이터
@@ -271,8 +266,8 @@ const submitProductionResult = async () => {
   color: #666;
 }
 .error-container {
-  min-height: 20px; /* 에러 메시지 공간 유지 */
-  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+  min-height: 20px; 
+  margin-bottom: 10px; 
 }
 .error {
   color: red;

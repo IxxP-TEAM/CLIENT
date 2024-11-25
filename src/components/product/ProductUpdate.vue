@@ -88,7 +88,7 @@ const props = defineProps({
     type: Array,
     default: () => ['완제품', '원재료'],
   },
-  errorMessage: String, // 에러 메시지를 prop으로 받아옴
+  errorMessage: String, 
 })
 
 const emits = defineEmits(['close', 'submit'])
@@ -124,10 +124,8 @@ async function submitForm() {
 
   try {
     await emits('submit', updatedProduct)
-    // closeModal()을 여기서 호출하지 않음 - 성공 시에만 모달 닫히도록 함
   } catch (error) {// eslint-disable-line no-unused-vars
-    
-    // 여기서는 오류 발생 시 closeModal 호출하지 않음
+
   }
 }
 
@@ -164,10 +162,10 @@ function resetForm() {
   background: white;
   padding: 30px;
   border-radius: 8px;
-  width: 800px; /* 가로 너비 증가 */
+  width: 800px; 
   max-width: 95%;
-  max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
-  overflow-y: auto; /* 스크롤 활성화 */
+  max-height: 90vh; 
+  overflow-y: auto; 
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 .modal-title {
@@ -212,13 +210,12 @@ function resetForm() {
   font-size: 16px;
   color: #666;
 }
-/* 스크롤바를 숨기기 위한 스타일 */
 .modal-content::-webkit-scrollbar {
   display: none;
 }
 .modal-content {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
 }
 .modal-form {
   display: flex;
@@ -236,8 +233,8 @@ function resetForm() {
 }
 .button-group {
   display: flex;
-  justify-content: flex-end; /* 오른쪽으로 정렬 */
-  gap: 10px; /* 두 버튼 사이 간격 */
+  justify-content: flex-end; 
+  gap: 10px; 
   margin-top: 20px;
 }
 
@@ -272,8 +269,8 @@ select {
   border-radius: 5px;
 }
 .error-container {
-  min-height: 20px; /* 에러 메시지 공간 유지 */
-  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+  min-height: 20px; 
+  margin-bottom: 10px; 
 }
 .error {
   color: red;

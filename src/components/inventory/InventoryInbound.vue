@@ -108,11 +108,11 @@ const showProductSelector = ref(false) // 모달 열림 여부
 const productOptions = ref([]) // 제품 목록
 
 const products = ref([]); // 제품 목록 데이터
-const totalPages = ref(0); // 총 페이지 수
-const currentPage = ref(1); // 현재 페이지
-const itemsPerPage = 10; // 페이지당 항목 수
-const selectedSort = ref('productId'); // 정렬 기준 (기본값: productId)
-const sortDirection = ref('asc'); // 정렬 방향 (기본값: 오름차순)
+const totalPages = ref(0); 
+const currentPage = ref(1); 
+const itemsPerPage = 10; 
+const selectedSort = ref('productId'); 
+const sortDirection = ref('asc'); 
 
 
 
@@ -123,7 +123,7 @@ const closeProductSelector = () => {
 // 선택한 제품 처리
 const selectProduct = product => {
   inboundData.value.productName = product.productName // 선택된 제품 이름 반영
-  closeProductSelector() // 모달 닫기
+  closeProductSelector() 
 }
 
 // 데이터 조회
@@ -132,8 +132,8 @@ async function fetchProducts() {
     const response = await apiService.getProductList(
       currentPage.value - 1,        // 백엔드는 0부터 시작하므로 1을 뺌
       itemsPerPage,
-      selectedSort.value || 'productId',  // 정렬 기준
-      sortDirection.value || 'asc'       // 정렬 방향
+      selectedSort.value || 'productId',  
+      sortDirection.value || 'asc'      
     );
 
     const fetchedProducts = response.data.data.elements; // 제품 리스트 가져오기
@@ -176,10 +176,10 @@ const openProductSelector = async () => {
   background: white;
   padding: 30px;
   border-radius: 8px;
-  width: 800px; /* 가로 너비 증가 */
+  width: 800px; 
   max-width: 95%;
-  max-height: 90vh; /* 높이를 제한하여 스크롤 가능 */
-  overflow-y: auto; /* 스크롤 활성화 */
+  max-height: 90vh; 
+  overflow-y: auto; 
 }
 .modal-form {
   display: flex;
@@ -209,8 +209,8 @@ input[type='date'] {
 }
 .button-group {
   display: flex;
-  justify-content: flex-end; /* 오른쪽으로 정렬 */
-  gap: 10px; /* 두 버튼 사이 간격 */
+  justify-content: flex-end; 
+  gap: 10px; 
   margin-top: 20px;
 }
 button {
@@ -289,8 +289,8 @@ button {
   color: #666;
 }
 .error-container {
-  min-height: 20px; /* 에러 메시지 공간 유지 */
-  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+  min-height: 20px; 
+  margin-bottom: 10px; 
 }
 .error {
   color: red;

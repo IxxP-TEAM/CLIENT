@@ -121,37 +121,37 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6); /* 배경 투명도 조정 */
+  background: rgba(0, 0, 0, 0.6); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease; /* 페이드 인 애니메이션 */
+  animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
   background: white;
   padding: 30px;
   border-radius: 12px;
-  width: 700px; /* 더 넓은 너비 */
+  width: 700px; 
   max-width: 90%;
-  max-height: 85vh; /* 최대 높이 제한 */
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  max-height: 85vh; 
+  overflow-y: auto; 
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s ease; /* 슬라이드 인 애니메이션 */
-  -ms-overflow-style: none; /* IE 및 Edge 스크롤바 숨김 */
-  scrollbar-width: none; /* Firefox 스크롤바 숨김 */
+  animation: slideIn 0.3s ease; 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 
 .modal-content::-webkit-scrollbar {
-  display: none; /* Chrome, Safari 스크롤바 숨김 */
+  display: none; 
 }
 
 h2 {
   font-size: 1.8em;
   margin-bottom: 20px;
   color: #2c3e50;
-  text-align: center; /* 중앙 정렬 */
+  text-align: center; 
   font-weight: bold;
 }
 
@@ -167,7 +167,7 @@ h2 {
 
 .search-bar:focus {
   outline: none;
-  box-shadow: 0 0 8px rgba(63, 114, 175, 0.5); /* 포커스 효과 */
+  box-shadow: 0 0 8px rgba(63, 114, 175, 0.5); 
 }
 
 .user-table {
@@ -179,8 +179,8 @@ h2 {
 .user-table th,
 .user-table td {
   padding: 14px 16px;
-  border: 1px solid #eee; /* 부드러운 테두리 */
-  text-align: left; /* 좌측 정렬 */
+  border: 1px solid #eee; 
+  text-align: left; 
   font-size: 1em;
 }
 
@@ -196,12 +196,12 @@ h2 {
 }
 
 .user-table tr:hover {
-  background-color: #f1f5f9; /* 행 호버 효과 */
+  background-color: #f1f5f9; 
   cursor: pointer;
 }
 
 .user-table tr.selected {
-  background-color: #e8f0fe; /* 선택된 행 강조 */
+  background-color: #e8f0fe; 
   border: 1px solid #3f72af;
 }
 
@@ -240,7 +240,7 @@ h2 {
 }
 
 .confirm-btn {
-  background-color: #4caf50; /* 초록색 강조 */
+  background-color: #4caf50; 
   color: white;
   border: none;
   border-radius: 6px;
@@ -253,11 +253,11 @@ h2 {
 
 .confirm-btn:hover {
   background-color: #43a047;
-  transform: scale(1.05); /* 호버 시 크기 증가 */
+  transform: scale(1.05); 
 }
 
 .cancel-btn {
-  background-color: #e74c3c; /* 빨간색 경고 */
+  background-color: #e74c3c; 
   color: white;
   border: none;
   border-radius: 6px;
@@ -273,7 +273,6 @@ h2 {
   transform: scale(1.05);
 }
 
-/* 애니메이션 */
 @keyframes fadeIn {
   from {
     background: rgba(0, 0, 0, 0);

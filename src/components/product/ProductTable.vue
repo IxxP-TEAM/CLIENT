@@ -53,12 +53,9 @@ const props = defineProps({// eslint-disable-line no-unused-vars
 table {
   width: 100%;
   border-collapse: collapse;
-  /* margin-bottom: 20px; */
 }
 
 th, td {
-  /* border: 1px solid #ddd;
-  padding: 8px; */
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
