@@ -91,7 +91,7 @@
               <tr v-for="(product, index) in order.products" :key="index">
                 <td>{{ product.productName }}</td>
                 <td>{{ product.quantity }}개</td>
-                <td>₩{{ product.price.toLocaleString() }}</td>
+                <td>₩{{ (product.price * product.quantity).toLocaleString() }}</td>
               </tr>
             </tbody>
           </table>

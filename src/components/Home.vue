@@ -238,23 +238,30 @@ export default {
           5
         )
 
-        // 기간별 고객사 매출
+        // 고객사 매출 전체 데이터 가져오기
         const customerSalesResponse =
           await apiService.getTotalSalesByCustomerAndDate({
             startDate: '2024-01-01',
             endDate: '2024-12-31',
           })
-        this.customerSales = (customerSalesResponse.data.data || []).slice(0, 5) // 상위 5개만
 
-        // 기간별 사원 매출
+        // 사원 매출 전체 데이터 가져오기
         const salespersonSalesResponse =
           await apiService.getTotalSalesByUserAndDate({
             startDate: '2024-01-01',
             endDate: '2024-12-31',
           })
-        this.salespersonSales = (
-          salespersonSalesResponse.data.data || []
-        ).slice(0, 5) // 상위 5개만
+        // 전체 데이터 확인
+        const allCustomerSales = customerSalesResponse.data.data || []
+        const allSalespersonSales = salespersonSalesResponse.data.data || []
+
+        // 전체 길이를 기반으로 총합 계산
+        this.totalCustomers = allCustomerSales.length // 총 고객사 수 = 전체 데이터 길이
+        this.totalSalespersons = allSalespersonSales.length // 총 사원 수 = 전체 데이터 길이
+
+        // UI에 상위 데이터만 표시 (상위 5개)
+        this.customerSales = allCustomerSales.slice(0, 5) // 상위 5개 고객사
+        this.salespersonSales = allSalespersonSales.slice(0, 5) // 상위 5개 사원
 
         // 월별 매출 통계
         const monthlySalesResponse = await apiService.getMonthlySalesStatistics(
@@ -270,8 +277,6 @@ export default {
           (sum, sale) => sum + sale.totalSales,
           0
         )
-        this.totalCustomers = this.customerSales.length
-        this.totalSalespersons = this.salespersonSales.length
 
         // 그래프 렌더링
         this.renderCharts()
@@ -279,31 +284,30 @@ export default {
         console.error('대시보드 데이터를 가져오는 중 오류 발생:', error)
       }
     },
-async fetchNotices() {
-  try {
-    const response = await apiService.fetchBoardList(0, 10); // 모든 게시글 데이터 가져오기
-    console.log('API 응답:', response);
+    async fetchNotices() {
+      try {
+        const response = await apiService.fetchBoardList(0, 40) // 모든 게시글 데이터 가져오기
+        console.log('API 응답:', response)
 
-    const allBoards = response?.data?.data?.content || [];
-    this.notices = allBoards
-      .filter(board => board.isPinned) // `isPinned`인 게시글만 필터링
-      .sort((a, b) => {
-        const timeA = new Date(a.updatedAt || a.createdAt);
-        const timeB = new Date(b.updatedAt || b.createdAt);
-        return timeB - timeA; // 최신순 정렬
-      })
-      .slice(0, 3); // 상위 3개만
+        const allBoards = response?.data?.data?.content || []
+        this.notices = allBoards
+          .filter(board => board.isPinned) // `isPinned`인 게시글만 필터링
+          .sort((a, b) => {
+            const timeA = new Date(a.updatedAt || a.createdAt)
+            const timeB = new Date(b.updatedAt || b.createdAt)
+            return timeB - timeA // 최신순 정렬
+          })
+          .slice(0, 3) // 상위 3개만
 
-    // Vue 반응성 보장을 위해 새로운 배열 할당
-    this.notices = [...this.notices];
+        // Vue 반응성 보장을 위해 새로운 배열 할당
+        this.notices = [...this.notices]
 
-    console.log('정렬 후 공지사항:', this.notices); // 정렬 결과 확인
-  } catch (error) {
-    console.error('공지 데이터를 가져오는 중 오류 발생:', error);
-    this.notices = [];
-  }
-}
-,
+        console.log('정렬 후 공지사항:', this.notices) // 정렬 결과 확인
+      } catch (error) {
+        console.error('공지 데이터를 가져오는 중 오류 발생:', error)
+        this.notices = []
+      }
+    },
     renderCharts() {
       this.renderChart(
         'topCustomersChart',
@@ -464,7 +468,7 @@ async fetchNotices() {
   gap: 10px;
   font-size: 16px;
   color: #333;
-  padding: 10px 8px;
+  padding: 10px 1px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   width: 100%;
