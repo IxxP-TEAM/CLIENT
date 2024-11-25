@@ -9,7 +9,6 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-                <!-- 생산할 제품 -->
                 <label for="productName">생산할 제품</label>
               </div>
               <input
@@ -24,7 +23,6 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-                <!-- 목표 수량 -->
                 <label for="targetQuantity">목표 수량</label>
               </div>
               <input
@@ -38,7 +36,6 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-                <!-- 시작 날짜 -->
                 <label for="startDate">시작 날짜</label>
               </div>
               <input
@@ -52,7 +49,6 @@
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-                <!-- 종료 날짜 -->
                 <label for="endDate">종료 날짜</label>
               </div>
               <input
@@ -65,7 +61,6 @@
             </div>
           </div>
           <br>
-          <!-- 원재료 목록 -->
           <div
             v-for="(material, index) in productionData.materials"
             :key="index"
@@ -73,7 +68,6 @@
           >
             
             <label for="productMaterialName">원재료 이름</label>
-
             <input
               type="text"
               v-model="material.productMaterialName"
@@ -81,9 +75,7 @@
               readonly
               required
             />
-
             <label for="materialQuantity">수량</label>
-
             <input
               type="number"
               v-model="material.materialQuantity"
@@ -108,11 +100,9 @@
           <button type="button" @click="addMaterial" class="jump-button">
             + 원재료 추가
           </button>
-
           <div v-if="computedErrorMessage" class="error">
             {{ computedErrorMessage }}
           </div>
-
           <div class="button-group">
             <button class="jump-button" type="submit">등록</button>
             <button
@@ -126,7 +116,6 @@
           </div>
         </fieldset>
       </form>
-
       <!-- 제품 선택 모달 -->
       <InventoryProductSelector
         v-if="showProductSelector"
@@ -168,7 +157,7 @@ const productionData = ref({
       productMaterialName: '',
       materialQuantity: null,
     },
-  ], // 원재료 리스트
+  ], 
 })
 
 // 모달 상태
@@ -213,8 +202,8 @@ const removeMaterial = index => {
 const submitProduction = async () => {
   try {
     await apiService.createProduction(productionData.value)
-    emit('refresh') // 성공 후 리스트 갱신 요청
-    emit('close') // 모달 닫기
+    emit('refresh') 
+    emit('close') 
   } catch (error) {
     console.error('생산 등록 중 오류 발생:', error)
     emit(
@@ -242,7 +231,7 @@ const openMaterialSelector = async index => {
 const fetchProducts = async () => {
   try {
     const response = await apiService.getProductList()
-    productOptions.value = response.data.data // 제품 목록 설정
+    productOptions.value = response.data.data 
   } catch (error) {
     console.error('제품 목록 불러오기 중 오류 발생:', error)
   }
@@ -379,8 +368,8 @@ button {
   color: #666;
 }
 .error-container {
-  min-height: 20px; /* 에러 메시지 공간 유지 */
-  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+  min-height: 20px; 
+  margin-bottom: 10px; 
 }
 .error {
   color: red;

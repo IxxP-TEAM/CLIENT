@@ -138,16 +138,13 @@ h2 {
 
 .input-container {
   width: 100%;
-  /* 부모 요소의 너비를 100%로 설정 */
   max-width: 600px;
-  /* 최대 너비를 지정 */
 }
 
 input {
   margin: 15px 0;
   padding: 10px 0;
   width: 400px;
-  /* max-width: 500px; */
   border: none;
   border-bottom: 2px solid #ccc;
   font-size: 16px;

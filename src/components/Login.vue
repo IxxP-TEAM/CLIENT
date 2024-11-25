@@ -100,7 +100,6 @@ button {
 
 button:hover {
     background-color: #3F72AF;
-    /* color: #fff; */
 }
 
 .error {

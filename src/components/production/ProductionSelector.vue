@@ -67,14 +67,14 @@
   const currentPage = ref(1);
   const itemsPerPage = 10;
   const searchQuery = ref("");
-  const selectedStatus = ref(""); // 선택된 상태 필터
+  const selectedStatus = ref(""); 
   
   const fetchProductionList = async () => {
     try {
-      const response = await apiService.fetchProductionList(0, 1000); // 생산 계획 데이터 가져오기
+      const response = await apiService.fetchProductionList(0, 1000); 
       productions.value = response.data.data.elements;
       filteredProductions.value = productions.value.slice();
-      filterByStatus(); // 상태 필터링 적용
+      filterByStatus(); 
       handleSearch();
     } catch (error) {
       console.error("생산 계획 목록을 불러오는 중 오류가 발생했습니다:", error);
@@ -167,8 +167,8 @@ const filterByStatus = () => {
 }
 
 .modal-content {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
 }
 
 h2 {
@@ -210,7 +210,7 @@ h2 {
 }
 
 .production-table tr.selected {
-  background-color: #cce5ff; /* 선택된 행 색상 */
+  background-color: #cce5ff;
 }
 
 .pagination {
@@ -262,10 +262,9 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
-/* 검색 입력과 검색 버튼을 나란히 배치 */
 .search-group {
     display: flex;
-    gap: 8px; /* 입력창과 버튼 간격 */
+    gap: 8px; 
   }
   
   .search-group input[type='text'] {

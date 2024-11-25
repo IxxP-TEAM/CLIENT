@@ -1,7 +1,6 @@
 <!-- src/components/inventoryPagination.vue -->
 <template>
   <div class="pagination">
-    <!-- <button @click="$emit('go-to-page', 1)" :disabled="currentPage === 1">처음 페이지 이동</button> -->
     <button @click="$emit('go-to-page', currentPage - 1)" :disabled="currentPage === 1" class="pagination-arrow">&lt;</button>
     <span
     v-for="page in visiblePages"
@@ -13,7 +12,6 @@
       {{ page }}
     </span>
     <button @click="$emit('go-to-page', currentPage + 1)" :disabled="currentPage === totalPages" class="pagination-arrow">&gt;</button>
-    <!-- <button @click="$emit('go-to-page', totalPages)" :disabled="currentPage === totalPages">마지막 페이지 이동</button> -->
   </div>
 </template>
 
@@ -78,12 +76,12 @@ return pages
 }
 
 .pagination-arrow:hover {
-  color: #434190; /* 호버 시 색상 변화 */
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  color: #434190; 
+  transform: translateY(-2px); 
 }
 
 .pagination-arrow:disabled {
-  color: #b0b0b0; /* 비활성화 시 색상 */
+  color: #b0b0b0; 
   cursor: not-allowed;
   transform: none;
 }

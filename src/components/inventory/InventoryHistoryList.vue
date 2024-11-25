@@ -12,25 +12,32 @@
         />
         <button @click="triggerSearch" class="jump-button">검색</button>
 
-        <!-- 필터 아이콘 버튼 -->
         <button @click="toggleFilters" class="jump-button">
           <i class="fas fa-sliders-h"></i>
         </button>
       </div>
-      </div>
-        <!-- 필터 섹션 -->
+    </div>
+    <!-- 필터 섹션 -->
     <div v-if="showFilters" class="filters">
       <!-- 정렬 필터 -->
       <div class="filter-group">
-        <select v-model="selectedSort" @change="triggerSort"  class="filter-select">
+        <select
+          v-model="selectedSort"
+          @change="triggerSort"
+          class="filter-select"
+        >
           <option value="" disabled hidden>정렬 기준을 선택하세요</option>
           <option value="productName">이름순</option>
           <option value="changeDate">변경일순</option>
           <option value="changeType">유형순</option>
         </select>
-        </div>
-        <div class="filter-group">
-        <select v-model="sortDirection" @change="triggerSort" class="filter-select">
+      </div>
+      <div class="filter-group">
+        <select
+          v-model="sortDirection"
+          @change="triggerSort"
+          class="filter-select"
+        >
           <option value="" disabled hidden>정렬 방향을 선택하세요</option>
           <option value="asc">오름차순</option>
           <option value="desc">내림차순</option>
@@ -90,16 +97,16 @@ async function fetchInventoryHistoryList(isSearch = false) {
 
 // 초기 상태로 복귀
 async function resetToInitialState() {
-  searchQuery.value = '' // 검색어 초기화
-  currentPage.value = 1 // 첫 페이지로 이동
-  selectedSort.value = '' // 정렬 기준 초기화
-  sortDirection.value = '' // 정렬 방향을 기본 오름차순으로 초기화
-  await fetchInventoryHistoryList() // 전체 제품 목록 새로 가져오기
+  searchQuery.value = ''
+  currentPage.value = 1
+  selectedSort.value = ''
+  sortDirection.value = ''
+  await fetchInventoryHistoryList()
 }
 
 // 검색 기능 실행
 function triggerSearch() {
-  currentPage.value = 1 // 검색할 때 페이지를 첫 페이지로 설정
+  currentPage.value = 1
   fetchInventoryHistoryList(true)
 }
 
@@ -124,7 +131,6 @@ function goToPage(page) {
   }
 }
 
-// 컴포넌트가 마운트될 때 데이터 가져오기
 onMounted(() => {
   fetchInventoryHistoryList()
 })
@@ -139,14 +145,14 @@ onMounted(() => {
   width: 1180px;
   margin-left: 140px;
   height: calc(100vh - 50px);
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-y: auto;
 }
 .inventory-list h2 {
   width: 150px;
 }
 .header {
   display: flex;
-  justify-content: space-between; /* 양 끝으로 배치 */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -198,18 +204,16 @@ onMounted(() => {
   color: #4caf50;
 }
 
-
-/* 필터 섹션 스타일 */
 .filters {
   display: flex;
   align-items: center;
-  gap: 20px; /* 필터 간 간격 */
+  gap: 20px;
   padding: 10px;
-  background-color: #f9f9f9; /* 배경색 */
-  border: 1px solid #ddd; /* 경계선 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  margin-bottom: 20px; /* 목록과 간격 추가 */
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .filter-group {
@@ -221,7 +225,7 @@ onMounted(() => {
 .filter-group label {
   font-size: 14px;
   font-weight: bold;
-  color: #333; /* 텍스트 색상 */
+  color: #333;
 }
 
 .filter-select {
@@ -242,7 +246,6 @@ onMounted(() => {
   outline: none;
 }
 
-/* 필터 섹션 반응형 디자인 */
 @media (max-width: 768px) {
   .filters {
     flex-direction: column;
@@ -298,10 +301,10 @@ onMounted(() => {
 }
 
 .status.active {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50;
 }
 
 .status.inactive {
-  background-color: #f44336; /* 빨간색 */
+  background-color: #f44336;
 }
 </style>

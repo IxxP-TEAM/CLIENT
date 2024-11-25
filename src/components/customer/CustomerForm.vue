@@ -523,7 +523,6 @@ textarea {
   margin-top: 4px;
 }
 
-/* 스크롤바를 숨기기 위한 스타일 */
 .modal-content::-webkit-scrollbar {
   display: none;
 }
@@ -531,8 +530,8 @@ textarea {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 20px; /* 버튼 사이 간격 */
-  margin-top: 20px; /* 위로부터 간격 */
+  gap: 20px; 
+  margin-top: 20px; 
 }
 
 button {

@@ -128,8 +128,8 @@ export default {
   padding: 20px;
   border-radius: 10px;
   width: 400px;
-  max-height: 80vh; /* 최대 높이를 80%로 설정 */
-  overflow-y: auto; /* 세로 스크롤 활성화 */
+  max-height: 80vh; 
+  overflow-y: auto; 
 }
 
 .modal-title {

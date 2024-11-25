@@ -160,7 +160,7 @@ h2 {
 
 .search-bar:focus {
   outline: none;
-  box-shadow: 0 0 8px rgba(63, 114, 175, 0.5); /* 포커스 효과 */
+  box-shadow: 0 0 8px rgba(63, 114, 175, 0.5); 
 }
 
 .product-table {
@@ -172,8 +172,8 @@ h2 {
 .product-table th,
 .product-table td {
   padding: 14px 16px;
-  border: 1px solid #eee; /* 부드러운 테두리 */
-  text-align: left; /* 좌측 정렬 */
+  border: 1px solid #eee; 
+  text-align: left; 
   font-size: 1em;
 }
 
@@ -194,7 +194,7 @@ h2 {
 }
 
 .product-table tr.selected {
-  background-color: #e8f0fe; /* 선택된 행 강조 */
+  background-color: #e8f0fe; 
   border: 1px solid #3f72af;
 }
 
@@ -233,7 +233,7 @@ h2 {
 }
 
 .confirm-btn {
-  background-color: #4caf50; /* 초록색 강조 */
+  background-color: #4caf50; 
   color: white;
   border: none;
   border-radius: 6px;
@@ -246,11 +246,11 @@ h2 {
 
 .confirm-btn:hover {
   background-color: #43a047;
-  transform: scale(1.05); /* 호버 시 크기 증가 */
+  transform: scale(1.05); 
 }
 
 .cancel-btn {
-  background-color: #e74c3c; /* 빨간색 경고 */
+  background-color: #e74c3c; 
   color: white;
   border: none;
   border-radius: 6px;
@@ -266,7 +266,6 @@ h2 {
   transform: scale(1.05);
 }
 
-/* 애니메이션 */
 @keyframes fadeIn {
   from {
     background: rgba(0, 0, 0, 0);

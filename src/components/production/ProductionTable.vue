@@ -53,7 +53,6 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    /* margin-bottom: 20px; */
   }
   
   th, td {
@@ -85,11 +84,11 @@
 }
 
 .status.active {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50; 
 }
 
 .status.inactive {
-  background-color: blue; /* 빨간색 */
+  background-color: blue;
 }
   </style>
   

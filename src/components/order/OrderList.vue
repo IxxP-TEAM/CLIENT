@@ -398,7 +398,7 @@ export default {
   cursor: pointer;
 }
 .clickable-row:hover {
-  background-color: #f4f4f4; /* 마우스 hover 시 배경 색상 */
+  background-color: #f4f4f4; 
 }
 
 .order-list {
@@ -454,7 +454,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
-/* 필터 토글 버튼 스타일 */
+
 .filter-toggle {
   padding: 10px 20px;
   font-size: 16px;
@@ -465,7 +465,7 @@ export default {
   cursor: pointer;
   margin-bottom: 15px;
 }
-/* 검색 및 필터 아이콘 스타일 */
+
 .search-filter-container {
   display: flex;
   align-items: center;
@@ -482,15 +482,15 @@ export default {
   padding: 8px;
   font-size: 16px;
   width: 300px;
-  border: 1px solid #ccc; /* 테두리 색상 */
-  border-radius: 5px; /* 둥글기 설정 */
-  outline: none; /* 클릭 시 기본 윤곽선 제거 */
-  transition: box-shadow 0.3s ease; /* 포커스 애니메이션 */
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  outline: none; 
+  transition: box-shadow 0.3s ease; 
 }
 
 .search-input:focus {
-  border-color: #3f72af; /* 포커스 시 테두리 색상 */
-  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); /* 포커스 시 그림자 효과 */
+  border-color: #3f72af; 
+  box-shadow: 0 0 5px rgba(63, 114, 175, 0.5); 
 }
 
 .filter-icon-button {
@@ -507,13 +507,13 @@ export default {
 .filters {
   display: flex;
   align-items: center;
-  gap: 15px; /* 필터 간 간격 */
+  gap: 15px; 
   padding: 15px;
-  background-color: #f9f9f9; /* 필터 배경 색상 */
-  border: 1px solid #ddd; /* 경계선 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  margin-bottom: 20px; /* 테이블과 간격 */
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin-bottom: 20px; 
 }
 
 .filters select.filter {
@@ -544,17 +544,17 @@ export default {
 }
 
 .table-container {
-  margin-top: 10px; /* 테이블과 필터 간 간격 */
+  margin-top: 10px; 
 }
 
 .register-button {
-  font-size: 18px; /* 버튼 텍스트 크기 강조 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  font-size: 18px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .register-button:hover {
   background-color: #4c51bf;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강화 */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); 
 }
 
 .table-container {
@@ -571,7 +571,6 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  /* margin-bottom: 20px; */
 }
 th,
 td {
@@ -584,32 +583,31 @@ th {
   font-weight: bold;
 }
 
-/* 페이지네이션 스타일 */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  gap: 8px; /* 버튼과 번호 간의 간격 */
+  gap: 8px; 
 }
 
 .pagination-page {
   font-size: 16px;
   font-weight: bold;
-  color: black; /* 기본 색상 */
+  color: black; 
   cursor: pointer;
   padding: 5px 10px;
   transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .pagination-page:hover {
-  color: #434190; /* 호버 시 색상 */
-  transform: scale(1.1); /* 살짝 커지는 효과 */
+  color: #434190; 
+  transform: scale(1.1); 
 }
 
 .pagination-page.active {
-  color: #3f72af; /* 현재 페이지 텍스트 강조 */
-  font-size: 18px; /* 약간 더 큰 텍스트 */
+  color: #3f72af; 
+  font-size: 18px; 
   text-decoration: underline;
 }
 
@@ -625,12 +623,12 @@ th {
 }
 
 .pagination-arrow:hover {
-  color: #434190; /* 호버 시 색상 변화 */
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  color: #434190; 
+  transform: translateY(-2px); 
 }
 
 .pagination-arrow:disabled {
-  color: #b0b0b0; /* 비활성화 시 색상 */
+  color: #b0b0b0; 
   cursor: not-allowed;
   transform: none;
 }
@@ -669,10 +667,10 @@ th {
 }
 
 .status.middle {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50; 
 }
 
 .status.inactive {
-  background-color: #f44336; /* 빨간색 */
+  background-color: #f44336; 
 }
 </style>

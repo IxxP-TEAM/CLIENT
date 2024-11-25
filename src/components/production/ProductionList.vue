@@ -3,22 +3,14 @@
       <h2 @click="resetToInitialState" style="cursor: pointer">생산 목록</h2>
       <div class="header">
         <div class="search-filter-container">
-
-          <!-- 필터 아이콘 버튼 -->
         <button @click="toggleFilters" class="jump-button">
           <i class="fas fa-sliders-h"></i>
         </button>
       </div>
-
-      <!-- 생산관리 버튼 -->
       <button @click="openProductionManagementModal" class="jump-button">생산 관리</button>
       </div>
-
-      <!-- 필터 섹션 -->
     <div v-if="showFilters" class="filters">
-      <!-- 정렬 필터 -->
       <div class="filter-group">
-          <!-- 정렬 선택 셀렉트 박스 -->
           <select v-model="selectedSort" @change="triggerSort" class="filter-select">
             <option value="" disabled hidden>정렬 기준을 선택하세요</option>
             <option value="productionId">최신순</option>
@@ -33,9 +25,6 @@
           </select>
         </div>
       </div>
-  
-        
-  
       <!-- InventoryTable 컴포넌트에 데이터 전달 -->
     <ProductionTable
       :productionItems="productionItems"
@@ -196,7 +185,7 @@ function openProductionManagementModal() {
 
 function openActionModal(actionType) {
   isProductionManagementModalOpen.value = false;
-  errorMessage.value = ''; // 기존 오류 메시지 초기화
+  errorMessage.value = ''; 
   if (actionType === '생산') {
     isProductionModalOpen.value = true;
   }
@@ -242,14 +231,14 @@ onMounted(() => {
     width: 1180px;
     margin-left: 140px;
     height: calc(100vh - 50px);
-    overflow-y: auto; /* 세로 스크롤 활성화 */
+    overflow-y: auto;
   }
   .production-list h2 {
     width: 150px;
   }
   .header {
     display: flex;
-    justify-content: space-between; /* 양 끝으로 배치 */
+    justify-content: space-between; 
     align-items: center;
     margin-bottom: 20px;
   }
@@ -301,18 +290,16 @@ onMounted(() => {
   color: #4caf50;
 }
 
-
-/* 필터 섹션 스타일 */
 .filters {
   display: flex;
   align-items: center;
-  gap: 20px; /* 필터 간 간격 */
+  gap: 20px;
   padding: 10px;
-  background-color: #f9f9f9; /* 배경색 */
-  border: 1px solid #ddd; /* 경계선 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  margin-bottom: 20px; /* 목록과 간격 추가 */
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .filter-group {
@@ -324,7 +311,7 @@ onMounted(() => {
 .filter-group label {
   font-size: 14px;
   font-weight: bold;
-  color: #333; /* 텍스트 색상 */
+  color: #333;
 }
 
 .filter-select {
@@ -345,7 +332,6 @@ onMounted(() => {
   outline: none;
 }
 
-/* 필터 섹션 반응형 디자인 */
 @media (max-width: 768px) {
   .filters {
     flex-direction: column;
@@ -401,11 +387,11 @@ onMounted(() => {
 }
 
 .status.active {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50; 
 }
 
 .status.inactive {
-  background-color: #f44336; /* 빨간색 */
+  background-color: #f44336; 
 }
   </style>
   

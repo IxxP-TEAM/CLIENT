@@ -2,16 +2,13 @@
   <div v-if="isVisible" class="modal-overlay">
     <div class="modal-content">
       <h3 class="modal-title">제품 등록</h3>
-
       <form @submit.prevent="submitForm" class="form">
         <fieldset class="section">
           <legend><i class="fas fa-building"></i> 기본 정보</legend>
-
           <div class="form-group">
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
-
                 <label for="productName">제품 이름:</label>
               </div>
               <input
@@ -32,7 +29,6 @@
                 <option value="원재료">원재료</option></select
               ><br />
             </div>
-
             <div class="input-field">
               <div class="field-label">
                 <i class="fas fa-user-circle icon"></i>
@@ -60,11 +56,10 @@
               /><br />
             </div>
             <div class="error-container">
-            <div v-if="computedErrorMessage" class="error">
-              {{ computedErrorMessage }}
+              <div v-if="computedErrorMessage" class="error">
+                {{ computedErrorMessage }}
+              </div>
             </div>
-          </div>
-
             <div class="button-group">
               <button type="submit" class="jump-button">등록</button>
               <button
@@ -189,13 +184,12 @@ function resetForm() {
   color: #666;
 }
 
-/* 스크롤바를 숨기기 위한 스타일 */
 .modal-content::-webkit-scrollbar {
   display: none;
 }
 .modal-content {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 .modal-form {
   display: flex;
@@ -203,8 +197,8 @@ function resetForm() {
 }
 .button-group {
   display: flex;
-  justify-content: flex-end; /* 오른쪽으로 정렬 */
-  gap: 10px; /* 두 버튼 사이 간격 */
+  justify-content: flex-end;
+  gap: 10px; 
   margin-top: 20px;
 }
 
@@ -239,14 +233,13 @@ select {
   border-radius: 5px;
 }
 .error-container {
-  min-height: 20px; /* 에러 메시지 공간 유지 */
-  margin-bottom: 10px; /* 버튼 그룹과 간격 유지 */
+  min-height: 20px; 
+  margin-bottom: 10px; 
 }
 .error {
   color: red;
   font-size: 14px;
   margin-top: 10px;
-  
 }
 
 .jump-button {

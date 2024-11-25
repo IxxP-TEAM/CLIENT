@@ -59,7 +59,7 @@
         </div>
         <div class="pagination">
             <button class="pagination-arrow" :disabled="currentPage === 0" @click="handlePageChange(currentPage - 1)">
-                < </button>
+                 </button>
                     <span v-for="page in totalPages" :key="page" :class="{
                         'pagination-page': true,
                         'active': page === currentPage + 1
@@ -187,7 +187,6 @@ export default {
 table {
     width: 100%;
     border-collapse: collapse;
-    /* margin-bottom: 20px; */
 
 }
 
@@ -217,7 +216,6 @@ th {
     display: inline-block;
     text-align: center;
     line-height: 1;
-    /* 요소 높이 맞추기 */
 }
 
 .paid {
@@ -294,7 +292,6 @@ th {
     font-size: 14px;
     font-weight: bold;
     color: #333;
-    /* 텍스트 색상 */
 }
 
 .filter-select {
